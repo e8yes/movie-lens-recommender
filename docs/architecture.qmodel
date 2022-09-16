@@ -49,7 +49,7 @@
                          </base-DElement>
                          <object>{9a197a5f-15e9-44c1-bbee-db5f3c53f38c}</object>
                          <name>Content Interaction Service</name>
-                         <pos>x:480;y:-575</pos>
+                         <pos>x:345;y:-600</pos>
                          <rect>x:-100;y:-30;w:200;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -69,7 +69,7 @@
                          </base-DElement>
                          <object>{0ba22de2-77c3-4384-90cb-bd5a11578596}</object>
                          <name>User-Content Rating</name>
-                         <pos>x:70;y:-580</pos>
+                         <pos>x:-130;y:-595</pos>
                          <rect>x:-60;y:-15;w:120;h:30</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -90,7 +90,7 @@
                          </base-DElement>
                          <object>{b409ed9b-d1b9-4902-b4b0-e73ad7107b59}</object>
                          <name>User-Content SQL Database</name>
-                         <pos>x:480;y:-685</pos>
+                         <pos>x:345;y:-495</pos>
                          <rect>x:-90;y:-35;w:180;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -111,6 +111,7 @@
                          <object>{f3be136a-8d3c-4f8a-8491-6b1d8494305a}</object>
                          <a>{6817d28d-70d2-4f77-8018-869d320ac6c7}</a>
                          <b>{cc1790cf-31f2-4be2-8c9c-d64926c4d7e8}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -128,7 +129,7 @@
                          </base-DElement>
                          <object>{3abe6594-5875-473e-8909-262100591140}</object>
                          <name>User-Content Interaction Logs</name>
-                         <pos>x:925;y:-570</pos>
+                         <pos>x:1220;y:-610</pos>
                          <rect>x:-95;y:-35;w:190;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -149,6 +150,7 @@
                          <object>{a8d24de8-97cf-4346-b35b-b405dbe3cf19}</object>
                          <a>{6817d28d-70d2-4f77-8018-869d320ac6c7}</a>
                          <b>{e3537b9a-3673-4d83-9ed6-7925988a868b}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -166,7 +168,7 @@
                          </base-DElement>
                          <object>{5870d89d-7986-4127-afa1-bcc77ea12389}</object>
                          <name>User Profile Cassandra Store</name>
-                         <pos>x:1285;y:-435</pos>
+                         <pos>x:745;y:-475</pos>
                          <rect>x:-90;y:-35;w:180;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -186,7 +188,7 @@
                          </base-DElement>
                          <object>{20c5b220-d834-447e-ba19-15a74baa2682}</object>
                          <name>Content Profile Cassandra Store</name>
-                         <pos>x:1300;y:-315</pos>
+                         <pos>x:750;y:-365</pos>
                          <rect>x:-100;y:-35;w:200;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -206,7 +208,7 @@
                          </base-DElement>
                          <object>{556bd472-3387-4002-b40c-4c986ff8574e}</object>
                          <name>User-Content Model Training Pipeline</name>
-                         <pos>x:925;y:-440</pos>
+                         <pos>x:1220;y:-475</pos>
                          <rect>x:-125;y:-30;w:250;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -226,48 +228,12 @@
                          </base-DElement>
                          <object>{aef7f715-b6e8-48ef-98e0-474a4c1a3723}</object>
                          <name>User-Content Model Inference Service</name>
-                         <pos>x:930;y:-170</pos>
+                         <pos>x:1220;y:-210</pos>
                          <rect>x:-130;y:-30;w:260;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
                       </DComponent>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DDependency">
-                      <DDependency>
-                       <base-DRelation>
-                        <DRelation>
-                         <base-DElement>
-                          <DElement>
-                           <uid>{f6cf2ab6-0f7d-46d2-855d-af337154a7a0}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{f797e723-e315-471c-8b8a-6edc8a91a34d}</object>
-                         <a>{716457f0-dde3-4766-ade6-70e815656d6c}</a>
-                         <b>{2c3ccdeb-5764-4fb5-b2ee-474914aecfa2}</b>
-                        </DRelation>
-                       </base-DRelation>
-                      </DDependency>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DDependency">
-                      <DDependency>
-                       <base-DRelation>
-                        <DRelation>
-                         <base-DElement>
-                          <DElement>
-                           <uid>{819c4a65-62df-45f9-9136-c84923900469}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{ee3fb61d-3fad-4c6b-b566-65a96ce82cc2}</object>
-                         <a>{f30a0e9f-c6ba-4501-b0a5-9445fcd875f4}</a>
-                         <b>{2c3ccdeb-5764-4fb5-b2ee-474914aecfa2}</b>
-                        </DRelation>
-                       </base-DRelation>
-                      </DDependency>
                      </instance>
                     </item>
                     <item>
@@ -283,6 +249,7 @@
                          <object>{4b6d5ecd-c20d-43aa-844e-6e40f10bddf8}</object>
                          <a>{e3537b9a-3673-4d83-9ed6-7925988a868b}</a>
                          <b>{2c3ccdeb-5764-4fb5-b2ee-474914aecfa2}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -300,7 +267,7 @@
                          </base-DElement>
                          <object>{867325fe-15ee-4c30-981c-e7b9c6990aa0}</object>
                          <name>Model Parameter File Store</name>
-                         <pos>x:925;y:-310</pos>
+                         <pos>x:1220;y:-365</pos>
                          <rect>x:-85;y:-35;w:170;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -321,6 +288,7 @@
                          <object>{96235de7-40e6-4683-b3f1-3881265301e4}</object>
                          <a>{2c3ccdeb-5764-4fb5-b2ee-474914aecfa2}</a>
                          <b>{8430c7c2-5c28-4613-baad-b5eaa31c3e1b}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -337,9 +305,9 @@
                           </DElement>
                          </base-DElement>
                          <object>{4d3b6e8f-5c88-4a43-b476-ae268928a052}</object>
-                         <name>User &amp; Content Profile Updater</name>
-                         <pos>x:1250;y:-170</pos>
-                         <rect>x:-110;y:-30;w:220;h:60</rect>
+                         <name>User &amp; Content Profile Update Pipeline</name>
+                         <pos>x:345;y:-385</pos>
+                         <rect>x:-130;y:-30;w:260;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
@@ -359,6 +327,7 @@
                          <object>{708fdcb6-5964-4ba0-afd0-21253c251e74}</object>
                          <a>{2a0c2ae7-4b82-40e2-8a32-000c958340e7}</a>
                          <b>{716457f0-dde3-4766-ade6-70e815656d6c}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -377,24 +346,7 @@
                          <object>{861fae24-04f5-40ed-b3a5-eb64f84a1416}</object>
                          <a>{2a0c2ae7-4b82-40e2-8a32-000c958340e7}</a>
                          <b>{f30a0e9f-c6ba-4501-b0a5-9445fcd875f4}</b>
-                        </DRelation>
-                       </base-DRelation>
-                      </DDependency>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DDependency">
-                      <DDependency>
-                       <base-DRelation>
-                        <DRelation>
-                         <base-DElement>
-                          <DElement>
-                           <uid>{12e82446-432f-41d5-9e29-5b476764237d}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{dd0b2207-8576-4696-b939-229c64672c45}</object>
-                         <a>{8430c7c2-5c28-4613-baad-b5eaa31c3e1b}</a>
-                         <b>{decb38eb-0a20-47c7-87f9-0780d4513ffb}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -412,7 +364,7 @@
                          </base-DElement>
                          <object>{e93e171f-c9de-42af-b58b-02d07084f7a4}</object>
                          <name>Content Recommendation Service</name>
-                         <pos>x:535;y:220</pos>
+                         <pos>x:375;y:225</pos>
                          <rect>x:-120;y:-30;w:240;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -432,7 +384,7 @@
                          </base-DElement>
                          <object>{0a839fd3-daee-4db2-bf4d-98b6e14bb8db}</object>
                          <name>Recommendation Request</name>
-                         <pos>x:75;y:215</pos>
+                         <pos>x:-100;y:230</pos>
                          <rect>x:-75;y:-15;w:150;h:30</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -453,7 +405,7 @@
                          </base-DElement>
                          <object>{a1252c7a-13d0-4751-b5ae-b8b9d683dec6}</object>
                          <name>User Clustering Pipeline</name>
-                         <pos>x:1625;y:-315</pos>
+                         <pos>x:340;y:-190</pos>
                          <rect>x:-95;y:-30;w:190;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -472,9 +424,9 @@
                           </DElement>
                          </base-DElement>
                          <object>{8b562bdc-bba6-4fd1-8f9f-1ecf7a979592}</object>
-                         <name>Cluster Parameter File Store</name>
-                         <pos>x:1255;y:-10</pos>
-                         <rect>x:-90;y:-35;w:180;h:70</rect>
+                         <name>Cluster Parameter Store</name>
+                         <pos>x:745;y:-195</pos>
+                         <rect>x:-80;y:-35;w:160;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
@@ -494,24 +446,7 @@
                          <object>{dddc72c3-cd93-4cb3-8d83-c01c41a9668a}</object>
                          <a>{838c2eeb-6bdb-45d5-9dc5-127aa54e75ed}</a>
                          <b>{928abf2c-2e66-4c6e-a119-cc23e0111d52}</b>
-                        </DRelation>
-                       </base-DRelation>
-                      </DDependency>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DDependency">
-                      <DDependency>
-                       <base-DRelation>
-                        <DRelation>
-                         <base-DElement>
-                          <DElement>
-                           <uid>{f718af54-275f-426a-8b82-0a2c92706e7c}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{cc78d3a5-0a61-429f-85d0-93c50916db31}</object>
-                         <a>{8430c7c2-5c28-4613-baad-b5eaa31c3e1b}</a>
-                         <b>{2a0c2ae7-4b82-40e2-8a32-000c958340e7}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -530,6 +465,7 @@
                          <object>{274fe246-48bd-46e3-be20-b7d50beba515}</object>
                          <a>{838c2eeb-6bdb-45d5-9dc5-127aa54e75ed}</a>
                          <b>{716457f0-dde3-4766-ade6-70e815656d6c}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -548,6 +484,7 @@
                          <object>{cfbe2560-84ec-4503-8914-2b3616d61c80}</object>
                          <a>{838c2eeb-6bdb-45d5-9dc5-127aa54e75ed}</a>
                          <b>{f30a0e9f-c6ba-4501-b0a5-9445fcd875f4}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -565,30 +502,12 @@
                          </base-DElement>
                          <object>{b784149e-645e-4915-b8ae-b937ac53cf03}</object>
                          <name>User Cluster Inference Service</name>
-                         <pos>x:1260;y:145</pos>
+                         <pos>x:370;y:-90</pos>
                          <rect>x:-110;y:-30;w:220;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
                       </DComponent>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DDependency">
-                      <DDependency>
-                       <base-DRelation>
-                        <DRelation>
-                         <base-DElement>
-                          <DElement>
-                           <uid>{cc681886-0636-4118-9c6c-9d93bab23c01}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{942e9603-1995-4ef4-a20c-54e55ed4a590}</object>
-                         <a>{928abf2c-2e66-4c6e-a119-cc23e0111d52}</a>
-                         <b>{308e48b5-7362-4da0-95ed-980ce0261446}</b>
-                        </DRelation>
-                       </base-DRelation>
-                      </DDependency>
                      </instance>
                     </item>
                     <item>
@@ -602,9 +521,9 @@
                           </DElement>
                          </base-DElement>
                          <object>{73958705-6f5c-4c6f-a0af-349d40c9ba39}</object>
-                         <name>Representative Rating Inference Pusher</name>
-                         <pos>x:935;y:-3.55271e-15</pos>
-                         <rect>x:-135;y:-30;w:270;h:60</rect>
+                         <name>Representative Rating Pusher Pipeline</name>
+                         <pos>x:730;y:-100</pos>
+                         <rect>x:-130;y:-30;w:260;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
@@ -623,7 +542,7 @@
                          </base-DElement>
                          <object>{0eb18e36-1850-4430-8995-9baf48ceddaf}</object>
                          <name>Broad Phase Recommendation Redis Store</name>
-                         <pos>x:935;y:110</pos>
+                         <pos>x:555;y:5</pos>
                          <rect>x:-125;y:-35;w:250;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -644,6 +563,7 @@
                          <object>{1b29ad10-5383-47c7-8e2b-21b8ede11c79}</object>
                          <a>{c719e0b1-ab28-4b41-a68f-091cbd312ac7}</a>
                          <b>{ffcd6802-b8ad-48a4-b956-31c79ca8837d}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -662,6 +582,7 @@
                          <object>{d767e9db-ec71-472c-a7a5-3b2666667d1d}</object>
                          <a>{c719e0b1-ab28-4b41-a68f-091cbd312ac7}</a>
                          <b>{decb38eb-0a20-47c7-87f9-0780d4513ffb}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -680,6 +601,7 @@
                          <object>{0dc6f2a4-5125-4213-ae98-25d62ee0beb9}</object>
                          <a>{c719e0b1-ab28-4b41-a68f-091cbd312ac7}</a>
                          <b>{308e48b5-7362-4da0-95ed-980ce0261446}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -698,6 +620,7 @@
                          <object>{302527ab-88dc-47ed-8a55-b262be9e7328}</object>
                          <a>{a468879f-54d7-4ae9-a69f-151dc7ff1dd8}</a>
                          <b>{308e48b5-7362-4da0-95ed-980ce0261446}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -716,6 +639,7 @@
                          <object>{1f164f68-efe3-4515-b19a-e319baee7df8}</object>
                          <a>{a468879f-54d7-4ae9-a69f-151dc7ff1dd8}</a>
                          <b>{ffcd6802-b8ad-48a4-b956-31c79ca8837d}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -734,6 +658,7 @@
                          <object>{233bbd46-f6c5-46e1-b4e7-f567e132fc84}</object>
                          <a>{a468879f-54d7-4ae9-a69f-151dc7ff1dd8}</a>
                          <b>{decb38eb-0a20-47c7-87f9-0780d4513ffb}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -751,7 +676,7 @@
                          </base-DElement>
                          <object>{20a86141-d811-4967-b961-27c1daa4eef5}</object>
                          <name>Load Balancer</name>
-                         <pos>x:245;y:-575</pos>
+                         <pos>x:70;y:-595</pos>
                          <rect>x:-45;y:-30;w:90;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -772,6 +697,7 @@
                          <object>{fac5fd09-38da-41dd-9f1c-26c6cb63bd8f}</object>
                          <a>{1be5d6df-fbfe-4455-9303-e27bc753e3a5}</a>
                          <b>{2e909859-4ad0-4404-be5d-0c19badb1ad0}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -790,6 +716,7 @@
                          <object>{337ad759-1f3e-40b1-9ea6-3a616439aadc}</object>
                          <a>{2e909859-4ad0-4404-be5d-0c19badb1ad0}</a>
                          <b>{6817d28d-70d2-4f77-8018-869d320ac6c7}</b>
+                         <name>Write</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -807,7 +734,7 @@
                          </base-DElement>
                          <object>{a7f70efe-0cd6-48d8-8f12-3aadb0fd4196}</object>
                          <name>Load Balancer</name>
-                         <pos>x:260;y:215</pos>
+                         <pos>x:80;y:225</pos>
                          <rect>x:-45;y:-30;w:90;h:60</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -828,6 +755,7 @@
                          <object>{1148daff-2455-474d-85bc-930da08a6323}</object>
                          <a>{bb8757dc-ade0-4068-98bd-82d15258d2fb}</a>
                          <b>{3019a010-7fc8-4f15-b14a-3d741f792c42}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -846,6 +774,121 @@
                          <object>{2552b3b8-6baf-4579-b747-76245f3baa89}</object>
                          <a>{3019a010-7fc8-4f15-b14a-3d741f792c42}</a>
                          <b>{a468879f-54d7-4ae9-a69f-151dc7ff1dd8}</b>
+                         <name>Read</name>
+                        </DRelation>
+                       </base-DRelation>
+                      </DDependency>
+                     </instance>
+                    </item>
+                    <item>
+                     <instance type="DDependency">
+                      <DDependency>
+                       <base-DRelation>
+                        <DRelation>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{22c0f72d-5bf1-48cf-9548-acf2d843314c}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{e4eebb0e-5c3a-4492-8467-1e0681be980c}</object>
+                         <a>{2a0c2ae7-4b82-40e2-8a32-000c958340e7}</a>
+                         <b>{decb38eb-0a20-47c7-87f9-0780d4513ffb}</b>
+                         <name>Read</name>
+                        </DRelation>
+                       </base-DRelation>
+                      </DDependency>
+                     </instance>
+                    </item>
+                    <item>
+                     <instance type="DDependency">
+                      <DDependency>
+                       <base-DRelation>
+                        <DRelation>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{d83e6a88-0451-478b-b496-54f04b0e1c2a}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{0a37efdd-ebb0-42a8-9b07-38427a44ec23}</object>
+                         <a>{decb38eb-0a20-47c7-87f9-0780d4513ffb}</a>
+                         <b>{8430c7c2-5c28-4613-baad-b5eaa31c3e1b}</b>
+                         <name>Read</name>
+                        </DRelation>
+                       </base-DRelation>
+                      </DDependency>
+                     </instance>
+                    </item>
+                    <item>
+                     <instance type="DDependency">
+                      <DDependency>
+                       <base-DRelation>
+                        <DRelation>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{5a4c9292-8ba1-49fd-9e36-9984d63b3859}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{0c8d691d-c91e-46dc-85be-00cb85016f1f}</object>
+                         <a>{2a0c2ae7-4b82-40e2-8a32-000c958340e7}</a>
+                         <b>{cc1790cf-31f2-4be2-8c9c-d64926c4d7e8}</b>
+                         <name>Read</name>
+                        </DRelation>
+                       </base-DRelation>
+                      </DDependency>
+                     </instance>
+                    </item>
+                    <item>
+                     <instance type="DDependency">
+                      <DDependency>
+                       <base-DRelation>
+                        <DRelation>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{f0bd4da3-38a2-43a1-9603-c2963f89047e}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{582e948e-64a1-4d47-97ae-9ab23c38e631}</object>
+                         <a>{308e48b5-7362-4da0-95ed-980ce0261446}</a>
+                         <b>{928abf2c-2e66-4c6e-a119-cc23e0111d52}</b>
+                         <name>Read</name>
+                        </DRelation>
+                       </base-DRelation>
+                      </DDependency>
+                     </instance>
+                    </item>
+                    <item>
+                     <instance type="DDependency">
+                      <DDependency>
+                       <base-DRelation>
+                        <DRelation>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{bc8b66b4-80a9-4c1f-96d5-14eab5ca795f}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{148167f2-1995-499f-9dcd-272e3fe35962}</object>
+                         <a>{2c3ccdeb-5764-4fb5-b2ee-474914aecfa2}</a>
+                         <b>{f30a0e9f-c6ba-4501-b0a5-9445fcd875f4}</b>
+                         <name>Read</name>
+                        </DRelation>
+                       </base-DRelation>
+                      </DDependency>
+                     </instance>
+                    </item>
+                    <item>
+                     <instance type="DDependency">
+                      <DDependency>
+                       <base-DRelation>
+                        <DRelation>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{81254ac7-a2bc-4dc5-b56e-cd1236b917f8}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{ebcc7641-2fb6-4776-b931-ac44102334a5}</object>
+                         <a>{2c3ccdeb-5764-4fb5-b2ee-474914aecfa2}</a>
+                         <b>{716457f0-dde3-4766-ade6-70e815656d6c}</b>
+                         <name>Read</name>
                         </DRelation>
                        </base-DRelation>
                       </DDependency>
@@ -853,7 +896,7 @@
                     </item>
                    </qlist>
                   </elements>
-                  <last-modified>1663303517900</last-modified>
+                  <last-modified>1663352535875</last-modified>
                   <toolbarid>General</toolbarid>
                  </MDiagram>
                 </base-MDiagram>
@@ -986,6 +1029,7 @@
                                <uid>{f3be136a-8d3c-4f8a-8491-6b1d8494305a}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{9a197a5f-15e9-44c1-bbee-db5f3c53f38c}</a>
                              <b>{b409ed9b-d1b9-4902-b4b0-e73ad7107b59}</b>
                             </MRelation>
@@ -1008,6 +1052,7 @@
                                <uid>{a8d24de8-97cf-4346-b35b-b405dbe3cf19}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{9a197a5f-15e9-44c1-bbee-db5f3c53f38c}</a>
                              <b>{3abe6594-5875-473e-8909-262100591140}</b>
                             </MRelation>
@@ -1081,6 +1126,7 @@
                                <uid>{fac5fd09-38da-41dd-9f1c-26c6cb63bd8f}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{0ba22de2-77c3-4384-90cb-bd5a11578596}</a>
                              <b>{20a86141-d811-4967-b961-27c1daa4eef5}</b>
                             </MRelation>
@@ -1115,6 +1161,36 @@
                    </MElement>
                   </base-MElement>
                   <name>User-Content SQL Database</name>
+                  <relations>
+                   <handles>
+                    <handles>
+                     <qlist>
+                      <item>
+                       <handle>
+                        <uid>{8c52fd3c-5a92-464e-9f64-925a37b7eec7}</uid>
+                        <target>
+                         <instance type="MDependency">
+                          <MDependency>
+                           <base-MRelation>
+                            <MRelation>
+                             <base-MElement>
+                              <MElement>
+                               <uid>{8c52fd3c-5a92-464e-9f64-925a37b7eec7}</uid>
+                              </MElement>
+                             </base-MElement>
+                             <a>{b409ed9b-d1b9-4902-b4b0-e73ad7107b59}</a>
+                             <b>{4d3b6e8f-5c88-4a43-b476-ae268928a052}</b>
+                            </MRelation>
+                           </base-MRelation>
+                          </MDependency>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                     </qlist>
+                    </handles>
+                   </handles>
+                  </relations>
                  </MObject>
                 </base-MObject>
                </MPackage>
@@ -1189,6 +1265,40 @@
                    </MElement>
                   </base-MElement>
                   <name>User-Content Interaction Logs</name>
+                  <children>
+                   <handles>
+                    <handles>
+                     <qlist>
+                      <item>
+                       <handle>
+                        <uid>{fd42a71a-cac4-4005-9388-d1776867211a}</uid>
+                        <target>
+                         <instance type="MCanvasDiagram">
+                          <MCanvasDiagram>
+                           <base-MDiagram>
+                            <MDiagram>
+                             <base-MObject>
+                              <MObject>
+                               <base-MElement>
+                                <MElement>
+                                 <uid>{fd42a71a-cac4-4005-9388-d1776867211a}</uid>
+                                </MElement>
+                               </base-MElement>
+                               <name>User-Content Interaction Logs</name>
+                              </MObject>
+                             </base-MObject>
+                             <toolbarid>General</toolbarid>
+                            </MDiagram>
+                           </base-MDiagram>
+                          </MCanvasDiagram>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                     </qlist>
+                    </handles>
+                   </handles>
+                  </children>
                   <relations>
                    <handles>
                     <handles>
@@ -1206,6 +1316,7 @@
                                <uid>{4b6d5ecd-c20d-43aa-844e-6e40f10bddf8}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{3abe6594-5875-473e-8909-262100591140}</a>
                              <b>{556bd472-3387-4002-b40c-4c986ff8574e}</b>
                             </MRelation>
@@ -1359,8 +1470,55 @@
                                <uid>{96235de7-40e6-4683-b3f1-3881265301e4}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{556bd472-3387-4002-b40c-4c986ff8574e}</a>
                              <b>{867325fe-15ee-4c30-981c-e7b9c6990aa0}</b>
+                            </MRelation>
+                           </base-MRelation>
+                          </MDependency>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                      <item>
+                       <handle>
+                        <uid>{148167f2-1995-499f-9dcd-272e3fe35962}</uid>
+                        <target>
+                         <instance type="MDependency">
+                          <MDependency>
+                           <base-MRelation>
+                            <MRelation>
+                             <base-MElement>
+                              <MElement>
+                               <uid>{148167f2-1995-499f-9dcd-272e3fe35962}</uid>
+                              </MElement>
+                             </base-MElement>
+                             <name>Read</name>
+                             <a>{556bd472-3387-4002-b40c-4c986ff8574e}</a>
+                             <b>{20c5b220-d834-447e-ba19-15a74baa2682}</b>
+                            </MRelation>
+                           </base-MRelation>
+                          </MDependency>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                      <item>
+                       <handle>
+                        <uid>{ebcc7641-2fb6-4776-b931-ac44102334a5}</uid>
+                        <target>
+                         <instance type="MDependency">
+                          <MDependency>
+                           <base-MRelation>
+                            <MRelation>
+                             <base-MElement>
+                              <MElement>
+                               <uid>{ebcc7641-2fb6-4776-b931-ac44102334a5}</uid>
+                              </MElement>
+                             </base-MElement>
+                             <name>Read</name>
+                             <a>{556bd472-3387-4002-b40c-4c986ff8574e}</a>
+                             <b>{5870d89d-7986-4127-afa1-bcc77ea12389}</b>
                             </MRelation>
                            </base-MRelation>
                           </MDependency>
@@ -1412,6 +1570,29 @@
                              </base-MElement>
                              <a>{aef7f715-b6e8-48ef-98e0-474a4c1a3723}</a>
                              <b>{4d3b6e8f-5c88-4a43-b476-ae268928a052}</b>
+                            </MRelation>
+                           </base-MRelation>
+                          </MDependency>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                      <item>
+                       <handle>
+                        <uid>{0a37efdd-ebb0-42a8-9b07-38427a44ec23}</uid>
+                        <target>
+                         <instance type="MDependency">
+                          <MDependency>
+                           <base-MRelation>
+                            <MRelation>
+                             <base-MElement>
+                              <MElement>
+                               <uid>{0a37efdd-ebb0-42a8-9b07-38427a44ec23}</uid>
+                              </MElement>
+                             </base-MElement>
+                             <name>Read</name>
+                             <a>{aef7f715-b6e8-48ef-98e0-474a4c1a3723}</a>
+                             <b>{867325fe-15ee-4c30-981c-e7b9c6990aa0}</b>
                             </MRelation>
                            </base-MRelation>
                           </MDependency>
@@ -1538,7 +1719,7 @@
                     <uid>{4d3b6e8f-5c88-4a43-b476-ae268928a052}</uid>
                    </MElement>
                   </base-MElement>
-                  <name>User &amp; Content Profile Updater</name>
+                  <name>User &amp; Content Profile Update Pipeline</name>
                   <relations>
                    <handles>
                     <handles>
@@ -1556,6 +1737,7 @@
                                <uid>{708fdcb6-5964-4ba0-afd0-21253c251e74}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{4d3b6e8f-5c88-4a43-b476-ae268928a052}</a>
                              <b>{5870d89d-7986-4127-afa1-bcc77ea12389}</b>
                             </MRelation>
@@ -1578,6 +1760,7 @@
                                <uid>{861fae24-04f5-40ed-b3a5-eb64f84a1416}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{4d3b6e8f-5c88-4a43-b476-ae268928a052}</a>
                              <b>{20c5b220-d834-447e-ba19-15a74baa2682}</b>
                             </MRelation>
@@ -1631,6 +1814,52 @@
                         </target>
                        </handle>
                       </item>
+                      <item>
+                       <handle>
+                        <uid>{e4eebb0e-5c3a-4492-8467-1e0681be980c}</uid>
+                        <target>
+                         <instance type="MDependency">
+                          <MDependency>
+                           <base-MRelation>
+                            <MRelation>
+                             <base-MElement>
+                              <MElement>
+                               <uid>{e4eebb0e-5c3a-4492-8467-1e0681be980c}</uid>
+                              </MElement>
+                             </base-MElement>
+                             <name>Read</name>
+                             <a>{4d3b6e8f-5c88-4a43-b476-ae268928a052}</a>
+                             <b>{aef7f715-b6e8-48ef-98e0-474a4c1a3723}</b>
+                            </MRelation>
+                           </base-MRelation>
+                          </MDependency>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                      <item>
+                       <handle>
+                        <uid>{0c8d691d-c91e-46dc-85be-00cb85016f1f}</uid>
+                        <target>
+                         <instance type="MDependency">
+                          <MDependency>
+                           <base-MRelation>
+                            <MRelation>
+                             <base-MElement>
+                              <MElement>
+                               <uid>{0c8d691d-c91e-46dc-85be-00cb85016f1f}</uid>
+                              </MElement>
+                             </base-MElement>
+                             <name>Read</name>
+                             <a>{4d3b6e8f-5c88-4a43-b476-ae268928a052}</a>
+                             <b>{b409ed9b-d1b9-4902-b4b0-e73ad7107b59}</b>
+                            </MRelation>
+                           </base-MRelation>
+                          </MDependency>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
                      </qlist>
                     </handles>
                    </handles>
@@ -1673,6 +1902,7 @@
                                <uid>{302527ab-88dc-47ed-8a55-b262be9e7328}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{e93e171f-c9de-42af-b58b-02d07084f7a4}</a>
                              <b>{b784149e-645e-4915-b8ae-b937ac53cf03}</b>
                             </MRelation>
@@ -1695,6 +1925,7 @@
                                <uid>{1f164f68-efe3-4515-b19a-e319baee7df8}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{e93e171f-c9de-42af-b58b-02d07084f7a4}</a>
                              <b>{0eb18e36-1850-4430-8995-9baf48ceddaf}</b>
                             </MRelation>
@@ -1739,6 +1970,7 @@
                                <uid>{233bbd46-f6c5-46e1-b4e7-f567e132fc84}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{e93e171f-c9de-42af-b58b-02d07084f7a4}</a>
                              <b>{aef7f715-b6e8-48ef-98e0-474a4c1a3723}</b>
                             </MRelation>
@@ -1790,6 +2022,7 @@
                                <uid>{1148daff-2455-474d-85bc-930da08a6323}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{0a839fd3-daee-4db2-bf4d-98b6e14bb8db}</a>
                              <b>{a7f70efe-0cd6-48d8-8f12-3aadb0fd4196}</b>
                             </MRelation>
@@ -1906,6 +2139,7 @@
                                <uid>{dddc72c3-cd93-4cb3-8d83-c01c41a9668a}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{a1252c7a-13d0-4751-b5ae-b8b9d683dec6}</a>
                              <b>{8b562bdc-bba6-4fd1-8f9f-1ecf7a979592}</b>
                             </MRelation>
@@ -1928,6 +2162,7 @@
                                <uid>{274fe246-48bd-46e3-be20-b7d50beba515}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{a1252c7a-13d0-4751-b5ae-b8b9d683dec6}</a>
                              <b>{5870d89d-7986-4127-afa1-bcc77ea12389}</b>
                             </MRelation>
@@ -1950,6 +2185,7 @@
                                <uid>{cfbe2560-84ec-4503-8914-2b3616d61c80}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{a1252c7a-13d0-4751-b5ae-b8b9d683dec6}</a>
                              <b>{20c5b220-d834-447e-ba19-15a74baa2682}</b>
                             </MRelation>
@@ -1983,7 +2219,41 @@
                     <uid>{8b562bdc-bba6-4fd1-8f9f-1ecf7a979592}</uid>
                    </MElement>
                   </base-MElement>
-                  <name>Cluster Parameter File Store</name>
+                  <name>Cluster Parameter Store</name>
+                  <children>
+                   <handles>
+                    <handles>
+                     <qlist>
+                      <item>
+                       <handle>
+                        <uid>{e45c4ea8-e93b-4b25-bed9-c008967cc9cd}</uid>
+                        <target>
+                         <instance type="MCanvasDiagram">
+                          <MCanvasDiagram>
+                           <base-MDiagram>
+                            <MDiagram>
+                             <base-MObject>
+                              <MObject>
+                               <base-MElement>
+                                <MElement>
+                                 <uid>{e45c4ea8-e93b-4b25-bed9-c008967cc9cd}</uid>
+                                </MElement>
+                               </base-MElement>
+                               <name>Cluster Parameter File Store</name>
+                              </MObject>
+                             </base-MObject>
+                             <toolbarid>General</toolbarid>
+                            </MDiagram>
+                           </base-MDiagram>
+                          </MCanvasDiagram>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                     </qlist>
+                    </handles>
+                   </handles>
+                  </children>
                   <relations>
                    <handles>
                     <handles>
@@ -2035,6 +2305,37 @@
                    </MElement>
                   </base-MElement>
                   <name>User Cluster Inference Service</name>
+                  <relations>
+                   <handles>
+                    <handles>
+                     <qlist>
+                      <item>
+                       <handle>
+                        <uid>{582e948e-64a1-4d47-97ae-9ab23c38e631}</uid>
+                        <target>
+                         <instance type="MDependency">
+                          <MDependency>
+                           <base-MRelation>
+                            <MRelation>
+                             <base-MElement>
+                              <MElement>
+                               <uid>{582e948e-64a1-4d47-97ae-9ab23c38e631}</uid>
+                              </MElement>
+                             </base-MElement>
+                             <name>Read</name>
+                             <a>{b784149e-645e-4915-b8ae-b937ac53cf03}</a>
+                             <b>{8b562bdc-bba6-4fd1-8f9f-1ecf7a979592}</b>
+                            </MRelation>
+                           </base-MRelation>
+                          </MDependency>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                     </qlist>
+                    </handles>
+                   </handles>
+                  </relations>
                  </MObject>
                 </base-MObject>
                </MComponent>
@@ -2055,7 +2356,7 @@
                     <uid>{73958705-6f5c-4c6f-a0af-349d40c9ba39}</uid>
                    </MElement>
                   </base-MElement>
-                  <name>Representative Rating Inference Pusher</name>
+                  <name>Representative Rating Pusher Pipeline</name>
                   <relations>
                    <handles>
                     <handles>
@@ -2073,6 +2374,7 @@
                                <uid>{1b29ad10-5383-47c7-8e2b-21b8ede11c79}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{73958705-6f5c-4c6f-a0af-349d40c9ba39}</a>
                              <b>{0eb18e36-1850-4430-8995-9baf48ceddaf}</b>
                             </MRelation>
@@ -2095,6 +2397,7 @@
                                <uid>{d767e9db-ec71-472c-a7a5-3b2666667d1d}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{73958705-6f5c-4c6f-a0af-349d40c9ba39}</a>
                              <b>{aef7f715-b6e8-48ef-98e0-474a4c1a3723}</b>
                             </MRelation>
@@ -2117,6 +2420,7 @@
                                <uid>{0dc6f2a4-5125-4213-ae98-25d62ee0beb9}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{73958705-6f5c-4c6f-a0af-349d40c9ba39}</a>
                              <b>{b784149e-645e-4915-b8ae-b937ac53cf03}</b>
                             </MRelation>
@@ -2189,6 +2493,7 @@
                                <uid>{337ad759-1f3e-40b1-9ea6-3a616439aadc}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Write</name>
                              <a>{20a86141-d811-4967-b961-27c1daa4eef5}</a>
                              <b>{9a197a5f-15e9-44c1-bbee-db5f3c53f38c}</b>
                             </MRelation>
@@ -2240,6 +2545,7 @@
                                <uid>{2552b3b8-6baf-4579-b747-76245f3baa89}</uid>
                               </MElement>
                              </base-MElement>
+                             <name>Read</name>
                              <a>{a7f70efe-0cd6-48d8-8f12-3aadb0fd4196}</a>
                              <b>{e93e171f-c9de-42af-b58b-02d07084f7a4}</b>
                             </MRelation>
@@ -2253,6 +2559,48 @@
                     </handles>
                    </handles>
                   </relations>
+                 </MObject>
+                </base-MObject>
+               </MClass>
+              </instance>
+             </target>
+            </handle>
+           </item>
+           <item>
+            <handle>
+             <uid>{65119402-d341-4bfc-b1ef-8caaed38c171}</uid>
+             <target>
+              <instance type="MClass">
+               <MClass>
+                <base-MObject>
+                 <MObject>
+                  <base-MElement>
+                   <MElement>
+                    <uid>{65119402-d341-4bfc-b1ef-8caaed38c171}</uid>
+                   </MElement>
+                  </base-MElement>
+                  <name>New Class</name>
+                 </MObject>
+                </base-MObject>
+               </MClass>
+              </instance>
+             </target>
+            </handle>
+           </item>
+           <item>
+            <handle>
+             <uid>{7ead589a-b09a-4dc9-95c1-288a94523503}</uid>
+             <target>
+              <instance type="MClass">
+               <MClass>
+                <base-MObject>
+                 <MObject>
+                  <base-MElement>
+                   <MElement>
+                    <uid>{7ead589a-b09a-4dc9-95c1-288a94523503}</uid>
+                   </MElement>
+                  </base-MElement>
+                  <name>New Class</name>
                  </MObject>
                 </base-MObject>
                </MClass>
