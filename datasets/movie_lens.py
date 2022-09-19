@@ -24,16 +24,16 @@ class GenomeScoreDataset:
     def __init__(self):
         self.df_genome_scores = pd.read_csv(MOVIE_LENS_GENOME_SCORES)
 
-    def DataFrame(self):
+    def Data(self):
         return self.df_genome_scores
     
-    def MovieIdColumnName(self):
+    def MovieId(self):
         return "movieId"
     
-    def TagIdColumnName(self):
+    def TagId(self):
         return "tagId"
     
-    def RelevanceColumnName(self):
+    def Relevance(self):
         return "relevance"
 
 class GenomeTagDataset:
@@ -42,13 +42,13 @@ class GenomeTagDataset:
     def __init__(self):
         self.df_genome_tags = pd.read_csv(MOVIE_LENS_GENOME_TAGS)
     
-    def DataFrame(self):
+    def Data(self):
         return self.df_genome_tags
     
-    def TagIdColumnName(self):
+    def TagId(self):
         return "tagId"
     
-    def TagColumnName(self):
+    def Tag(self):
         return "tag"
 
 class LinkDataset:
@@ -57,16 +57,16 @@ class LinkDataset:
     def __init__(self):
         self.df_links = pd.read_csv(MOVIE_LENS_LINKS)
     
-    def DataFrame(self):
+    def Data(self):
         return self.df_links
     
-    def MovieIdColumnName(self):
+    def MovieId(self):
         return "movieId"
     
-    def ImdbIdColumnName(self):
+    def ImdbId(self):
         return "imdbId"
     
-    def tmdbIdColumnName(self):
+    def TmdbId(self):
         return "tmdbId"
 
 class MovieDataset:
@@ -75,13 +75,13 @@ class MovieDataset:
     def __init__(self):
         self.df_movies = pd.read_csv(MOVIE_LENS_MOVIES)
     
-    def DataFrame(self):
+    def Data(self):
         return self.df_movies
     
-    def MovieIdColumnName(self):
+    def MovieId(self):
         return "movieId"
     
-    def TitleColumnName(self):
+    def Title(self):
         return "title"
 
 class RatingDataset:
@@ -90,19 +90,19 @@ class RatingDataset:
     def __init__(self):
         self.df_ratings = pd.read_csv(MOVIE_LENS_RATINGS)
     
-    def DataFrame(self):
+    def Data(self):
         return self.df_ratings
     
-    def UserIdColumnName(self):
+    def UserId(self):
         return "userId"
     
-    def MovieIdColumnName(self):
+    def MovieId(self):
         return "movieId"
     
-    def RatingColumnName(self):
+    def Rating(self):
         return "rating"
     
-    def TimestampColumnName(self):
+    def Timestamp(self):
         return "timestamp"
 
 class TagDataset:
@@ -111,19 +111,19 @@ class TagDataset:
     def __init__(self):
         self.df_tags = pd.read_csv(MOVIE_LENS_TAGS)
     
-    def DataFrame(self):
+    def Data(self):
         return self.df_tags
     
-    def UserIdColumnName(self):
+    def UserId(self):
         return "userId"
     
-    def MovieIdColumnName(self):
+    def MovieId(self):
         return "movieId"
     
-    def TagColumnName(self):
+    def Tag(self):
         return "tag"
     
-    def TimestampColumnName(self):
+    def Timestamp(self):
         return "timestamp"
 
 class MovieLensDataset:
