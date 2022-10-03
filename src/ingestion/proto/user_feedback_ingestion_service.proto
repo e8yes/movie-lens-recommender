@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package e8;
+
+message RecordRatingFeedbackRequest {
+  // ID of the user who sent the rating feedback.
+  int64 user_id = 1;
+
+  // ID of the movie which was rated on.
+  int64 movie_id = 2;
+
+  // In unix timestamp.
+  int64 timestamp_secs = 3;
+
+  // From 0.5 to 5.0. Step unspecified.
+  float rating = 4;
+}
+
+message RecordRatingFeedbackResponse {}
+
+service UserFeedbackIngestionService {
+  // Records a user’s feedback to a piece of content. It rejects the feedback if
+  // a triplet <user ID, movie ID, timestamp_secs> has already existed in the
+  // recent rating history.
+  rpc RecordRatingFeedback(RecordRatingFeedbackRequest)
+      returns (RecordRatingFeedbackResponse);
+}

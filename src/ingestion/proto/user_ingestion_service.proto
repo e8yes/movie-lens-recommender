@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package e8;
+
+message CreateProfileRequest {
+  // It assumes a unique user ID was assigned by the outside system.
+  int64 user_id = 1;
+}
+
+message CreateProfileResponse {}
+
+service UserIngestionService {
+  // It creates a new user profile, keyed by the user ID. It rejects the
+  // creation request if the user profile has already existed in the system.
+  rpc CreateProfile(CreateProfileRequest) returns (CreateProfileResponse);
+}

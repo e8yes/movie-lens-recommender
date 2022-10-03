@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package e8;
+
+message CreateContentProfileRequest {
+  message Tag {
+    // An unstructured string.
+    string text = 1;
+
+    // In unix timestamp.
+    int64 timestamp_secs = 2;
+  }
+
+  // It assumes a unique movie ID was assigned by the outside system.
+  int64 movie_id = 1;
+
+  // An unstructured string.
+  string title = 2;
+
+  // Zero of more genres referred to using structured strings.
+  repeated string genres = 3;
+
+  // Stores a map of <tag ID, relevance> pairs. The relevance scores sum to 1.
+  // Note, the tag ID key has nothing to do with the list of Tags in the field
+  // below.
+  map<int64, float> genome_scores = 4;
+
+  // Zero or more user defined tags. See the Tag message for what it is.
+  repeated Tag tags = 5;
+
+  // Optionally provides the content’s corresponding ID at IMDB.
+  int64 imdb_id = 6;
+
+  // Optionally provides the content’s corresponding ID at TMDB.
+  int64 tmdb_id = 7;
+}
+
+message CreateContentProfileResponse {}
+
+service ContentIngestionService {
+  // It creates a metadata entry for the specified content, keyed by the movie
+  // ID. It rejects the creation request if there is an existing entry.
+  rpc CreateContentProfile(CreateContentProfileRequest)
+      returns (CreateContentProfileResponse);
+}
