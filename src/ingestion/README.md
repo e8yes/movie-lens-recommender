@@ -8,4 +8,4 @@ Design doc: https://docs.google.com/document/d/1h4WPJDB1XV3-0rYfTvzqV6r28yvEmMsC
  - Install python protobuf package ```pip3 install protobuf```
  - Install python gRPC package ```pip3 install grpcio```
  - Generate code ```./generate_code.sh ```
- - Sets up the ingestion database ```./push_schema.sh```
+ - Set up the ingestion database ```./push_schema.sh```
