@@ -5,6 +5,7 @@ Design doc: https://docs.google.com/document/d/1h4WPJDB1XV3-0rYfTvzqV6r28yvEmMsC
  - Supported OS: Ubuntu 22.04
  - Install pip ```apt install python3-pip```
  - Install postgresql DBMS ```apt install postgresql```
+ - Install postgres python driver package ```apt install libpq-dev``` and ```pip3 install psycopg2```
  - Install protobuf compiler ```apt install protobuf-compiler-grpc```
  - Install python protobuf package ```pip3 install protobuf```
  - Install python gRPC package ```pip3 install grpcio```
