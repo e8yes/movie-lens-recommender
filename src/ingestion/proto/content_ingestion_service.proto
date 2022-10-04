@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package e8;
 
-message CreateContentProfileRequest {
+message WriteContentProfileRequest {
   message Tag {
     // An unstructured string.
     string text = 1;
@@ -35,11 +35,11 @@ message CreateContentProfileRequest {
   int64 tmdb_id = 7;
 }
 
-message CreateContentProfileResponse {}
+message WriteContentProfileResponse {}
 
 service ContentIngestionService {
-  // It creates a metadata entry for the specified content, keyed by the movie
-  // ID. It rejects the creation request if there is an existing entry.
-  rpc CreateContentProfile(CreateContentProfileRequest)
-      returns (CreateContentProfileResponse);
+  // It creates/updates a metadata entry for the specified content, keyed by the
+  // movie ID. It overwrites the profile if there is an existing entry.
+  rpc CreateContentProfile(WriteContentProfileRequest)
+      returns (WriteContentProfileResponse);
 }
