@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package e8;
 
-message RecordRatingFeedbackRequest {
+message RatingFeedback {
   // ID of the user who sent the rating feedback.
   int64 user_id = 1;
 
@@ -16,12 +16,15 @@ message RecordRatingFeedbackRequest {
   float rating = 4;
 }
 
-message RecordRatingFeedbackResponse {}
+message RecordRatingFeedbacksRequest {
+  repeated RatingFeedback rating_feedbacks = 1;
+}
+
+message RecordRatingFeedbacksResponse {}
 
 service UserFeedbackIngestionService {
-  // Records a user’s feedback to a piece of content. It rejects the feedback if
-  // a triplet <user ID, movie ID, timestamp_secs> has already existed in the
-  // recent rating history.
-  rpc RecordRatingFeedback(RecordRatingFeedbackRequest)
-      returns (RecordRatingFeedbackResponse);
+  // Records a list of user feedbacks to pieces of content. It overwrites any
+  // existing entries keyed by (user_id, content_id).
+  rpc RecordRatingFeedbacks(RecordRatingFeedbacksRequest)
+      returns (RecordRatingFeedbacksResponse);
 }

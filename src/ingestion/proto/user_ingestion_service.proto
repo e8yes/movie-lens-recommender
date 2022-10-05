@@ -2,15 +2,18 @@ syntax = "proto3";
 
 package e8;
 
-message WriteProfileRequest {
-  // It assumes a unique user ID was assigned by the outside system.
-  int64 user_id = 1;
+message UserProfile { int64 user_id = 1; }
+
+message WriteProfilesRequest {
+  // It assumes unique user IDs were assigned by the outside system.
+  repeated UserProfile user_profiles = 1;
 }
 
-message WriteProfileResponse {}
+message WriteProfilesResponse {}
 
 service UserIngestionService {
-  // It creates/updates a new user profile, keyed by the user ID. The call
-  // overwrites the profile if the it has already been created in the system.
-  rpc WriteProfile(WriteProfileRequest) returns (WriteProfileResponse);
+  // It creates/updates a list of new user profiles, keyed by the user IDs. The
+  // call overwrites the profiles if the they have already been created in the
+  // system.
+  rpc WriteProfiles(WriteProfilesRequest) returns (WriteProfilesResponse);
 }
