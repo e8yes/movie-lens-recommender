@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import psycopg2.extras as pge
 from typing import List, Set
@@ -8,7 +9,7 @@ from src.ingestion.database.common import *
 def __CreateExternalDbEntries(table_name: str,
                               id_column_name: str,
                               ids: Set[int],
-                              conn):
+                              conn) -> None:
     query = "INSERT INTO {table_name} ({id}) VALUES %s      \
              ON CONFLICT DO NOTHING".                       \
         format(table_name=table_name,
@@ -27,7 +28,7 @@ def __CreateExternalDbEntries(table_name: str,
     conn.commit()
 
 
-def WriteUserProfiles(user_profiles: List[UserProfileEntity], conn):
+def WriteUserProfiles(user_profiles: List[UserProfileEntity], conn) -> None:
     """Writes the specified list of user profiles to the user_profile table.
     It overwrites existing entries.
 
@@ -37,7 +38,7 @@ def WriteUserProfiles(user_profiles: List[UserProfileEntity], conn):
         conn (psycopg2.connection): A psycopg2 connection.
     """
     query = "INSERT INTO {table_name} ({id}) VALUES %s                      \
-             ON CONFLICT (id) DO NOTHING".                                  \
+             ON CONFLICT ({id}) DO NOTHING".                                \
         format(table_name=USER_PROFILE_TABLE, id=USER_PROFILE_TABLE_ID)
 
     cursor = conn.cursor()
@@ -53,9 +54,11 @@ def WriteUserProfiles(user_profiles: List[UserProfileEntity], conn):
     conn.commit()
 
 
-def WriteContentProfiles(content_profiles: List[ContentProfileEntity], conn):
+def WriteContentProfiles(content_profiles: List[ContentProfileEntity], conn) -> None:
     """Writes the specified list of content profiles to the content_profile
-    table. It overwrites existing entries.
+    table. It overwrites existing entries. For external references to IMDB or
+    TMDB, it creates placeholder entries on those tables if they have not
+    already existed.
 
     Args:
         content_profiles (List[ContentProfileEntity]): The list of content
@@ -89,7 +92,7 @@ def WriteContentProfiles(content_profiles: List[ContentProfileEntity], conn):
                                        {tags},                      \
                                        {imdb_id},                   \
                                        {tmdb_id}) VALUES %s         \
-             ON CONFLICT (id)                                       \
+             ON CONFLICT ({id})                                     \
              DO UPDATE SET                                          \
                 {title}=excluded.{title},                           \
                 {genres}=excluded.{genres},                         \
@@ -125,3 +128,55 @@ def WriteContentProfiles(content_profiles: List[ContentProfileEntity], conn):
                        argslist=rows_to_insert,
                        template=None)
     conn.commit()
+
+
+def WriteUserFeedbacks(user_feedbacks: List[UserFeedbackEntity], conn) -> bool:
+    """Writes the specified list of user feedbacks to the user_feedback table.
+    It overwrites existing entries. It assumes the referenced user_ids and
+    content_ids exist in their respective tables. Otherwise, it rejects the 
+    write and no change will be applied to the user_feedback table.
+
+    Args:
+        user_feedbacks (List[UserFeedbackEntity]):  The list of user feedbacks
+            to write to the database table.
+        conn (psycopg2.connection): A psycopg2 connection.
+
+    Returns:
+        bool: It returns true when all the user_ids and content_ids are valid.
+            Otherwise, it returns false.
+    """
+    query = "INSERT INTO {table_name} ({user_id},                   \
+                                       {content_id},                \
+                                       {rating},                    \
+                                       {rated_at}) VALUES %s        \
+             ON CONFLICT ({user_id}, {content_id})                  \
+             DO UPDATE SET                                          \
+                {rating}=excluded.{rating},                         \
+                {rated_at}=excluded.{rated_at}".\
+        format(table_name=USER_FEEDBACK_TABLE,
+               user_id=USER_FEEDBACK_TABLE_USER_ID,
+               content_id=USER_FEEDBACK_TABLE_CONTENT_ID,
+               rating=USER_FEEDBACK_TABLE_RATING,
+               rated_at=USER_FEEDBACK_TABLE_RATED_AT)
+
+    cursor = conn.cursor()
+
+    rows_to_insert = list()
+    for user_feedback in user_feedbacks:
+        rows_to_insert.append((
+            user_feedback.user_id,
+            user_feedback.content_id,
+            user_feedback.rating,
+            datetime.utcfromtimestamp(user_feedback.timestamp_secs),
+        ))
+
+    try:
+        pge.execute_values(cur=cursor,
+                           sql=query,
+                           argslist=rows_to_insert,
+                           template=None)
+        conn.commit()
+        return True
+    except:
+        conn.rollback()
+        return False
