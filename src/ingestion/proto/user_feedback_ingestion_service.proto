@@ -6,8 +6,8 @@ message RecordRatingFeedbackRequest {
   // ID of the user who sent the rating feedback.
   int64 user_id = 1;
 
-  // ID of the movie which was rated on.
-  int64 movie_id = 2;
+  // ID of the piece of content which was rated on.
+  int64 content_id = 2;
 
   // In unix timestamp.
   int64 timestamp_secs = 3;

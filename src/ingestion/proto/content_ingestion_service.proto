@@ -11,8 +11,8 @@ message WriteContentProfileRequest {
     int64 timestamp_secs = 2;
   }
 
-  // It assumes a unique movie ID was assigned by the outside system.
-  int64 movie_id = 1;
+  // It assumes a unique content ID was assigned by the outside system.
+  int64 content_id = 1;
 
   // An unstructured string.
   string title = 2;
