@@ -11,7 +11,7 @@ message WriteProfilesRequest {
 
 message WriteProfilesResponse {}
 
-service UserIngestionService {
+service UserIngestion {
   // It creates/updates a list of new user profiles, keyed by the user IDs. The
   // call overwrites the profiles if the they have already been created in the
   // system.

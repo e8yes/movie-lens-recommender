@@ -41,7 +41,7 @@ message WriteContentProfilesRequest {
 
 message WriteContentProfilesResponse {}
 
-service ContentIngestionService {
+service ContentIngestion {
   // It creates/updates a list metadata entries for the specified contents,
   // keyed by the content IDs. It overwrites the profile if there is an existing
   // entry.

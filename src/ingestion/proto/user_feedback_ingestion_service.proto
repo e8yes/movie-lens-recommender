@@ -22,7 +22,7 @@ message RecordRatingFeedbacksRequest {
 
 message RecordRatingFeedbacksResponse {}
 
-service UserFeedbackIngestionService {
+service UserFeedbackIngestion {
   // Records a list of user feedbacks to pieces of content. It overwrites any
   // existing entries keyed by (user_id, content_id).
   rpc RecordRatingFeedbacks(RecordRatingFeedbacksRequest)
