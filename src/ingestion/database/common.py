@@ -8,12 +8,12 @@ from typing import Dict, List
 
 INGESTION_DATABASE = "ingestion"
 
-IMDB_TABLE = "imdb_table"
+IMDB_TABLE = "imdb"
 IMDB_TABLE_ID = "id"
 IMDB_TABLE_PRIMARY_INFO = "primary_info"
 IMDB_TABLE_INGESTED_AT = "ingested_at"
 
-TMDB_TABLE = "tmdb_table"
+TMDB_TABLE = "tmdb"
 TMDB_TABLE_ID = "id"
 TMDB_TABLE_PRIMARY_INFO = "primary_info"
 TMDB_CREDITS = "credits"
