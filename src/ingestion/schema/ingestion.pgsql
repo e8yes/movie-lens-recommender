@@ -15,7 +15,7 @@ SET default_with_oids = false;
 CREATE TABLE IF NOT EXISTS imdb (
     id BIGINT NOT NULL,
     primary_info JSONB NULL,
-    ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    ingested_at TIMESTAMP WITHOUT TIME ZONE NULL,
     PRIMARY KEY (id)
 );
 
@@ -31,8 +31,7 @@ CREATE TABLE IF NOT EXISTS tmdb (
 /* User profile */
 CREATE TABLE IF NOT EXISTS user_profile (
     id BIGINT NOT NULL,
-    summary CHARACTER VARYING NULL,
-    ingested_at TIMESTAMP WITHOUT TIME ZONE NULL,
+    ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -45,7 +44,7 @@ CREATE TABLE IF NOT EXISTS content_profile (
     tags JSONB NULL,
     imdb_id BIGINT NULL,
     tmdb_id BIGINT NULL,
-    ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (imdb_id) REFERENCES imdb (id) ON DELETE SET NULL,
     FOREIGN KEY (tmdb_id) REFERENCES imdb (id) ON DELETE SET NULL,
     PRIMARY KEY (id)
@@ -57,7 +56,7 @@ CREATE TABLE IF NOT EXISTS user_feedback (
     content_id BIGINT NOT NULL,
     rating FLOAT NOT NULL,
     rated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user_profile (id) ON DELETE SET NULL,
     FOREIGN KEY (content_id) REFERENCES content_profile (id) ON DELETE SET NULL,
     PRIMARY KEY (user_id, content_id)
