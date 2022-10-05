@@ -1,6 +1,7 @@
-from datetime import datetime
 import json
+import psycopg2 as pg
 import psycopg2.extras as pge
+from datetime import datetime
 from typing import List, Set
 
 from src.ingestion.database.common import *
@@ -180,3 +181,83 @@ def WriteUserFeedbacks(user_feedbacks: List[UserFeedbackEntity], conn) -> bool:
     except:
         conn.rollback()
         return False
+
+
+def WriteImdbContentProfiles(imdb_profiles: List[ImdbContentProfileEntity],
+                             conn) -> None:
+    """Writes the specified list of IMDB profiles to the imdb table.
+    It overwrites existing entries with the content supplied.
+
+    Args:
+        imdb_profiles (List[ImdbContentProfileEntity]): the list of IMDB
+            profiles to be written to the database table.
+        conn (psycopg2.connection): A psycopg2 connection.
+    """
+    query = "INSERT INTO {table_name} ({id},                    \
+                                       {primary_info},          \
+                                       {ingested_at}) VALUES %s \
+             ON CONFLICT ({id})                                 \
+             DO UPDATE SET                                      \
+                {primary_info}=excluded.{primary_info},         \
+                {ingested_at}=excluded.{ingested_at}".          \
+        format(table_name=IMDB_TABLE,
+               id=IMDB_TABLE_ID,
+               primary_info=IMDB_TABLE_PRIMARY_INFO,
+               ingested_at=IMDB_TABLE_INGESTED_AT)
+
+    cursor = conn.cursor()
+
+    rows_to_insert = list()
+    for imdb_profile in imdb_profiles:
+        rows_to_insert.append((
+            imdb_profile.imdb_id,
+            json.dumps(imdb_profile.primary_info),
+        ))
+
+    pge.execute_values(cur=cursor,
+                       sql=query,
+                       argslist=rows_to_insert,
+                       template="(%s,%s,CURRENT_TIMESTAMP)")
+    conn.commit()
+
+
+def WriteTmdbContentProfiles(tmdb_profiles: List[TmdbContentProfileEntity],
+                             conn) -> None:
+    """Writes the specified list of TMDB profiles to the tmdb table.
+    It overwrites existing entries with the content supplied.
+
+    Args:
+        imdb_profiles (List[TmdbContentProfileEntity]): the list of TMDB
+            profiles to be written to the database table.
+        conn (psycopg2.connection): A psycopg2 connection.
+    """
+    query = "INSERT INTO {table_name} ({id},                    \
+                                       {primary_info},          \
+                                       {credits},               \
+                                       {ingested_at}) VALUES %s \
+             ON CONFLICT ({id})                                 \
+             DO UPDATE SET                                      \
+                {primary_info}=excluded.{primary_info},         \
+                {credits}=excluded.{credits},                   \
+                {ingested_at}=excluded.{ingested_at}".          \
+        format(table_name=TMDB_TABLE,
+               id=TMDB_TABLE_ID,
+               primary_info=TMDB_TABLE_PRIMARY_INFO,
+               credits=TMDB_TABLE_CREDITS,
+               ingested_at=TMDB_TABLE_INGESTED_AT)
+
+    cursor = conn.cursor()
+
+    rows_to_insert = list()
+    for tmdb_profile in tmdb_profiles:
+        rows_to_insert.append((
+            tmdb_profile.tmdb_id,
+            json.dumps(tmdb_profile.primary_info),
+            json.dumps(tmdb_profile.credits),
+        ))
+
+    pge.execute_values(cur=cursor,
+                       sql=query,
+                       argslist=rows_to_insert,
+                       template="(%s,%s,%s,CURRENT_TIMESTAMP)")
+    conn.commit()
