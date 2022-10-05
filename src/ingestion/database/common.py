@@ -1,6 +1,6 @@
 import psycopg2 as pg
 from json import JSONEncoder
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
 # Database, table and column names.
@@ -16,8 +16,8 @@ IMDB_TABLE_INGESTED_AT = "ingested_at"
 TMDB_TABLE = "tmdb"
 TMDB_TABLE_ID = "id"
 TMDB_TABLE_PRIMARY_INFO = "primary_info"
-TMDB_CREDITS = "credits"
-TMDB_INGESTED_AT = "ingested_at"
+TMDB_TABLE_CREDITS = "credits"
+TMDB_TABLE_INGESTED_AT = "ingested_at"
 
 USER_PROFILE_TABLE = "user_profile"
 USER_PROFILE_TABLE_ID = "id"
@@ -89,22 +89,22 @@ class UserFeedbackEntity:
 class ImdbContentProfileEntity:
     def __init__(self,
                  imdb_id: int,
-                 primary_info_json: str,
-                 ingested_at_json: int = None) -> None:
+                 primary_info: Any,
+                 ingested_at: int = None) -> None:
         self.imdb_id = imdb_id
-        self.primary_info_json = primary_info_json
-        self.ingested_at_json = ingested_at_json
+        self.primary_info = primary_info
+        self.ingested_at = ingested_at
 
 
 class TmdbContentProfileEntity:
     def __init__(self,
                  tmdb_id: int,
-                 primary_info_json: str,
-                 credits_json: str,
+                 primary_info: Any,
+                 credits: Any,
                  ingested_at: int = None) -> None:
         self.tmdb_id = tmdb_id
-        self.primary_info_json = primary_info_json
-        self.credits_json = credits_json
+        self.primary_info = primary_info
+        self.credits = credits
         self.ingested_at = ingested_at
 
 # Util classes and functions
