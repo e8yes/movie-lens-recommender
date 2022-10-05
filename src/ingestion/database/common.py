@@ -1,6 +1,10 @@
 import psycopg2 as pg
+from typing import Dict, List
+
 
 # Database, table and column names.
+
+
 INGESTION_DATABASE = "ingestion"
 
 IMDB_TABLE = "imdb_table"
@@ -34,6 +38,74 @@ USER_FEEDBACK_TABLE_CONTENT_ID = "content_id"
 USER_FEEDBACK_TABLE_RATING = "rating"
 USER_FEEDBACK_TABLE_RATED_AT = "rated_at"
 USER_FEEDBACK_TABLE_INGESTED_AT = "ingested_at"
+
+# ORM entities.
+
+
+class UserProfileEntity:
+    def __init__(self, user_id: int, ingested_at: int = None) -> None:
+        self.user_id = user_id
+        self.ingested_at = ingested_at
+
+
+class ContentTag:
+    def __init__(self, tag: str, timestamp_secs: int) -> None:
+        self.tag = tag
+        self.timestamp_secs = timestamp_secs
+
+
+class ContentProfileEntity:
+    def __init__(self,
+                 content_id: int,
+                 title: str,
+                 genres: List[str],
+                 genome_scores: Dict[str, float],
+                 tags: List[ContentTag],
+                 imdb_id: int,
+                 tmdb_id: int) -> None:
+        self.content_id = content_id
+        self.title = title
+        self.genres = genres
+        self.genome_scores = genome_scores
+        self.tags = tags
+        self.imdb_id = imdb_id
+        self.tmdb_id = tmdb_id
+
+
+class UserFeedbackEntity:
+    def __init__(self,
+                 user_id: int,
+                 content_id: int,
+                 timestamp_secs: int,
+                 rating: float) -> None:
+        self.user_id = user_id
+        self.content_id = content_id
+        self.timestamp_secs = timestamp_secs
+        self.rating = rating
+
+
+class ImdbContentProfileEntity:
+    def __init__(self,
+                 imdb_id: int,
+                 primary_info_json: str,
+                 ingested_at_json: int = None) -> None:
+        self.imdb_id = imdb_id
+        self.primary_info_json = primary_info_json
+        self.ingested_at_json = ingested_at_json
+
+
+class TmdbContentProfileEntity:
+    def __init__(self,
+                 tmdb_id: int,
+                 primary_info_json: str,
+                 credits_json: str,
+                 ingested_at: int = None) -> None:
+        self.tmdb_id = tmdb_id
+        self.primary_info_json = primary_info_json
+        self.credits_json = credits_json
+        self.ingested_at = ingested_at
+
+# Util functions
 
 
 def CreateConnection(host: str, password: str):
