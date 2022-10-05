@@ -1,4 +1,5 @@
 import psycopg2 as pg
+from json import JSONEncoder
 from typing import Dict, List
 
 
@@ -26,7 +27,7 @@ CONTENT_PROFILE_TABLE = "content_profile"
 CONTENT_PROFILE_TABLE_ID = "id"
 CONTENT_PROFILE_TABLE_TITLE = "title"
 CONTENT_PROFILE_TABLE_GENRES = "genres"
-CONTENT_PROFILE_TABLE_GENOME_SCORES = "genres"
+CONTENT_PROFILE_TABLE_GENOME_SCORES = "genome_scores"
 CONTENT_PROFILE_TABLE_TAGS = "tags"
 CONTENT_PROFILE_TABLE_IMDB_ID = "imdb_id"
 CONTENT_PROFILE_TABLE_TMDB_ID = "tmdb_id"
@@ -38,6 +39,7 @@ USER_FEEDBACK_TABLE_CONTENT_ID = "content_id"
 USER_FEEDBACK_TABLE_RATING = "rating"
 USER_FEEDBACK_TABLE_RATED_AT = "rated_at"
 USER_FEEDBACK_TABLE_INGESTED_AT = "ingested_at"
+
 
 # ORM entities.
 
@@ -105,7 +107,15 @@ class TmdbContentProfileEntity:
         self.credits_json = credits_json
         self.ingested_at = ingested_at
 
-# Util functions
+# Util classes and functions
+
+
+class StatelessClassJsonEncoder(JSONEncoder):
+    """Encodes classes that don't contain external states into JSON.
+    """
+
+    def default(self, obj):
+        return obj.__dict__
 
 
 def CreateConnection(host: str, password: str):
