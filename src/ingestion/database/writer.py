@@ -12,7 +12,7 @@ def __CreateExternalDbEntries(table_name: str,
                               ids: Set[int],
                               conn) -> None:
     query = "INSERT INTO {table_name} ({id}) VALUES %s      \
-             ON CONFLICT DO NOTHING".                       \
+             ON CONFLICT ({id}) DO NOTHING".                \
         format(table_name=table_name,
                id=id_column_name)
 
