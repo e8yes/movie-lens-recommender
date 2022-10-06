@@ -4,7 +4,9 @@ from concurrent import futures
 from typing import Any
 
 from src.ingestion.database.common import CreateConnection
+from src.ingestion.proto_py.content_ingestion_service_pb2_grpc import add_ContentIngestionServicer_to_server
 from src.ingestion.proto_py.user_ingestion_service_pb2_grpc import add_UserIngestionServicer_to_server
+from src.ingestion.services.content_profile_service import ContentIngestionService
 from src.ingestion.services.user_profile_service import UserIngestionService
 
 
@@ -12,7 +14,11 @@ def RunServer(grpc_port: int, pg_conn: Any):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
     user_ingestion_service = UserIngestionService(pg_conn=pg_conn)
-    add_UserIngestionServicer_to_server(user_ingestion_service, server)
+    content_ingestion_service = ContentIngestionService(pg_conn=pg_conn)
+    add_UserIngestionServicer_to_server(
+        servicer=user_ingestion_service, server=server)
+    add_ContentIngestionServicer_to_server(
+        servicer=content_ingestion_service, server=server)
 
     server.add_insecure_port("[::]:{port}".format(port=grpc_port))
     server.start()
@@ -21,13 +27,13 @@ def RunServer(grpc_port: int, pg_conn: Any):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Launches a gRPC server which serves the user ingestion services.")
+        description="Launches a gRPC server which serves the ingestion services.")
     parser.add_argument("--grpc_port",
                         type=int,
                         help="The port number on which the gRPC server runs.")
-    parser.add_argument("--postgres_host",
-                        type=str,
-                        help="The IP address which points to the postgres database server.")
+    parser.add_argument(
+        "--postgres_host", type=str,
+        help="The IP address which points to the postgres database server.")
     parser.add_argument("--postgres_password",
                         type=str,
                         help="The password of the postgres database user.")
