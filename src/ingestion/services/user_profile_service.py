@@ -3,8 +3,8 @@ from typing import Any
 
 from src.ingestion.database.common import UserProfileEntity
 from src.ingestion.database.writer import WriteUserProfiles
-from src.ingestion.proto_py.user_ingestion_service_pb2 import WriteProfilesRequest
-from src.ingestion.proto_py.user_ingestion_service_pb2 import WriteProfilesResponse
+from src.ingestion.proto_py.user_ingestion_service_pb2 import WriteUserProfilesRequest
+from src.ingestion.proto_py.user_ingestion_service_pb2 import WriteUserProfilesResponse
 from src.ingestion.proto_py.user_ingestion_service_pb2_grpc import UserIngestionServicer
 
 
@@ -22,9 +22,9 @@ class UserIngestionService(UserIngestionServicer):
         super().__init__()
         self.pg_conn = pg_conn
 
-    def WriteProfiles(self,
-                      request: WriteProfilesRequest,
-                      context: grpc.ServicerContext) -> WriteProfilesResponse:
+    def WriteUserProfiles(
+            self, request: WriteUserProfilesRequest,
+            context: grpc.ServicerContext) -> WriteUserProfilesResponse:
         """It creates/updates a list of new user profiles, keyed by the user
         IDs. The call overwrites the profiles if the they have already been
         created in the system.
@@ -43,4 +43,4 @@ class UserIngestionService(UserIngestionServicer):
         WriteUserProfiles(user_profiles=to_be_written, conn=self.pg_conn)
 
         context.set_code(grpc.StatusCode.OK)
-        return WriteProfilesResponse()
+        return WriteUserProfilesResponse()

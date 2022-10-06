@@ -4,16 +4,17 @@ package e8;
 
 message UserProfile { int64 user_id = 1; }
 
-message WriteProfilesRequest {
+message WriteUserProfilesRequest {
   // It assumes unique user IDs were assigned by the outside system.
   repeated UserProfile user_profiles = 1;
 }
 
-message WriteProfilesResponse {}
+message WriteUserProfilesResponse {}
 
 service UserIngestion {
   // It creates/updates a list of new user profiles, keyed by the user IDs. The
   // call overwrites the profiles if the they have already been created in the
   // system.
-  rpc WriteProfiles(WriteProfilesRequest) returns (WriteProfilesResponse);
+  rpc WriteUserProfiles(WriteUserProfilesRequest)
+      returns (WriteUserProfilesResponse);
 }
