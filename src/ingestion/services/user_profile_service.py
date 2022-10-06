@@ -30,10 +30,11 @@ class UserIngestionService(UserIngestionServicer):
         created in the system.
 
         Args:
-            request (WriteProfilesRequest): See user_ingestion_service.proto.
+            request (WriteUserProfilesRequest): See
+                user_ingestion_service.proto.
 
         Returns:
-            WriteProfilesResponse: See user_ingestion_service.proto.
+            WriteUserProfilesResponse: See user_ingestion_service.proto.
         """
         to_be_written = list()
         for profile in request.user_profiles:
