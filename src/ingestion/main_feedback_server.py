@@ -8,7 +8,7 @@ from src.ingestion.proto_py.user_feedback_ingestion_service_pb2_grpc import add_
 from src.ingestion.services.user_feedback_service import UserFeedbackIngestionService
 
 
-def RunServer(grpc_port: int, pg_conn: Any):
+def __RunServer(grpc_port: int, pg_conn: Any):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
     user_feedback_ingestion_service = UserFeedbackIngestionService(
@@ -48,4 +48,4 @@ if __name__ == "__main__":
 
     pg_conn = CreateConnection(host=args.postgres_host,
                                password=args.postgres_password)
-    RunServer(grpc_port=args.grpc_port, pg_conn=pg_conn)
+    __RunServer(grpc_port=args.grpc_port, pg_conn=pg_conn)
