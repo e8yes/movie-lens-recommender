@@ -126,4 +126,6 @@ def UploadRecords(records: RDD[Row],
         if failed_uploads.count() == 0:
             break
 
+    logging.info(
+        "UploadRecords(): upload finished. Returning failed records, if there is any.")
     return failed_uploads
