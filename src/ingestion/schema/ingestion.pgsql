@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS user_feedback (
     rating FLOAT NOT NULL,
     rated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user_profile (id) ON DELETE SET NULL,
-    FOREIGN KEY (content_id) REFERENCES content_profile (id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES user_profile (id) ON DELETE CASCADE,
+    FOREIGN KEY (content_id) REFERENCES content_profile (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, content_id)
 );
