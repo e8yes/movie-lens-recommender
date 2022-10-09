@@ -25,7 +25,7 @@ RATINGS_COL_TIMESTAMP = "timestamp"
 TAGS_COL_USER_ID = "userId"
 TAGS_COL_MOVIE_ID = "movieId"
 TAGS_COL_TAG = "tag"
-TAGS_COL_TIMESTAMP = "tag"
+TAGS_COL_TIMESTAMP = "timestamp"
 
 
 class MovieLensDataset:
