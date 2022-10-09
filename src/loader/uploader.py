@@ -4,7 +4,7 @@ from math import ceil
 from pyspark import RDD, Row
 from typing import Any, Iterable, List
 
-__CONNECTION_REUSE = 40
+__CONNECTION_REUSE = 39
 
 
 class RecordUploaderConnection:
@@ -109,7 +109,9 @@ def UploadRecords(records: RDD[Row],
     failed_uploads = records
 
     for retry in range(num_retries + 1):
-        num_records_per_partition = __CONNECTION_REUSE*uploader.MaxBatchSize()
+        num_records_per_upload = uploader.MaxBatchSize()
+        num_records_per_partition = num_records_per_upload * \
+            (1 + __CONNECTION_REUSE)
         num_partitions = ceil(failed_uploads.count()/num_records_per_partition)
 
         logging.info(
