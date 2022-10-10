@@ -1,7 +1,9 @@
 import logging
 import grpc
+
 from math import ceil
 from pyspark import RDD, Row
+from pyspark.sql import DataFrame
 from typing import Any, Iterable, List
 
 __CONNECTION_REUSE = 39
@@ -89,24 +91,24 @@ def __UploadPartition(
             yield failed_record
 
 
-def UploadRecords(records: RDD[Row],
-                  uploader: RecordUploaderInterface,
-                  num_retries: int) -> RDD[Row]:
-    """Uploads a generic RDD via RPCs. It properly partitions the RDD and
-    uploads records in batches.
+def UploadDataFrame(data_frame: DataFrame,
+                    uploader: RecordUploaderInterface,
+                    num_retries: int) -> DataFrame:
+    """Uploads a generic data frame via RPCs. It properly partitions the
+    underlying RDD and uploads row recordsd in batches.
 
     Args:
-        records (RDD[Row]): The generic RDD to be uploaded.
+        data_frame (DataFrame): The generic data frame to be uploaded.
         uploader (RecordUploaderInterface): Defines the network connection and
             how each batch of records are sent.
         num_retries (int): The maximum number of time where failed uploads are
-            retried. Must be greater than or equals to 0.
+            retried. Must be greater than or equal to 0.
 
     Returns:
-        RDD[Row]: The collection of records that failed to be uploaded after
-            retries.
+        DataFrame: A data frame which contains the collection of records that
+            failed to be uploaded after the specified number of retries.
     """
-    failed_uploads = records
+    failed_uploads = data_frame.rdd
 
     for retry in range(num_retries + 1):
         num_records_per_upload = uploader.MaxBatchSize()
@@ -115,7 +117,7 @@ def UploadRecords(records: RDD[Row],
         num_partitions = ceil(failed_uploads.count()/num_records_per_partition)
 
         logging.info(
-            "UploadRecords(): retry={retry} num_partitions={num_partitions}".format(
+            "UploadDataFrame(): retry={retry} num_partitions={num_partitions}".format(
                 retry=retry, num_partitions=num_partitions))
 
         failed_uploads = failed_uploads.\
@@ -127,5 +129,5 @@ def UploadRecords(records: RDD[Row],
             break
 
     logging.info(
-        "UploadRecords(): upload finished. Returning failed records, if there is any.")
-    return failed_uploads
+        "UploadDataFrame(): upload finished. Returning failed records, if there is any.")
+    return failed_uploads.toDF(schema=data_frame.schema)
