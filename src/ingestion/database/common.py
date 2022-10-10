@@ -70,8 +70,8 @@ class ContentProfileEntity:
         self.genres = genres
         self.genome_scores = genome_scores
         self.tags = tags
-        self.imdb_id = imdb_id
-        self.tmdb_id = tmdb_id
+        self.imdb_id = None if imdb_id == 0 else imdb_id
+        self.tmdb_id = None if tmdb_id == 0 else tmdb_id
 
 
 class UserFeedbackEntity:
