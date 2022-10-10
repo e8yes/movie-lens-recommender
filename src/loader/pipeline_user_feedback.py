@@ -1,18 +1,22 @@
+from typing import Tuple
+
 from src.loader.reader_movie_lens import *
 from src.loader.uploader import UploadDataFrame
 from src.loader.uploader_user_feedback import UserFeedbackUploader
 
 
 def LoadMovieLensUserFeedbacks(data_set: MovieLensDataset,
-                               feedback_host: str) -> int:
-    """_summary_
+                               feedback_host: str) -> Tuple[int, int]:
+    """Gathers user-content rating feedback data and uploads them to the
+    feedback server.
 
     Args:
-        data_set (MovieLensDataset): _description_
-        feedback_host (str): _description_
+        data_set (MovieLensDataset): The Movie Lens data set.
+        feedback_host (str): The host address which points to the user feedback
+            server.
 
     Returns:
-        int: _description_
+        Tuple[int, int]: #rating feedbacks and #failed feedbacks.
     """
     data_set.df_ratings.cache()
 
