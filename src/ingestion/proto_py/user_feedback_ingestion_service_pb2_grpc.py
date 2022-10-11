@@ -31,7 +31,8 @@ class UserFeedbackIngestionServicer(object):
 
     def RecordRatingFeedbacks(self, request, context):
         """Records a list of user rating feedbacks to pieces of content. It
-        overwrites any existing entries keyed by (user_id, content_id).
+        overwrites any existing entries keyed by (user_id, content_id,
+        timestamp_secs).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -39,7 +40,7 @@ class UserFeedbackIngestionServicer(object):
 
     def RecordTaggingFeedbacks(self, request, context):
         """Records a list of user tagging feedbacks to pieces of content. It
-        overwrites any existing entries keyed by (user_id, content_id).
+        overwrites any existing entries keyed by (user_id, content_id, tag).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
