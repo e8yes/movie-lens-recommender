@@ -33,12 +33,12 @@ CONTENT_PROFILE_TABLE_IMDB_ID = "imdb_id"
 CONTENT_PROFILE_TABLE_TMDB_ID = "tmdb_id"
 CONTENT_PROFILE_TABLE_INGESTED_AT = "ingested_at"
 
-USER_FEEDBACK_TABLE = "user_feedback"
-USER_FEEDBACK_TABLE_USER_ID = "user_id"
-USER_FEEDBACK_TABLE_CONTENT_ID = "content_id"
-USER_FEEDBACK_TABLE_RATING = "rating"
-USER_FEEDBACK_TABLE_RATED_AT = "rated_at"
-USER_FEEDBACK_TABLE_INGESTED_AT = "ingested_at"
+USER_RATING_TABLE = "user_rating"
+USER_RATING_TABLE_USER_ID = "user_id"
+USER_RATING_TABLE_CONTENT_ID = "content_id"
+USER_RATING_TABLE_RATING = "rating"
+USER_RATING_TABLE_RATED_AT = "rated_at"
+USER_RATING_TABLE_INGESTED_AT = "ingested_at"
 
 
 # ORM entities.
@@ -74,7 +74,7 @@ class ContentProfileEntity:
         self.tmdb_id = None if tmdb_id == 0 else tmdb_id
 
 
-class UserFeedbackEntity:
+class UserRatingEntity:
     def __init__(self,
                  user_id: int,
                  content_id: int,

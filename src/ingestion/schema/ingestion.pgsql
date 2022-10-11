@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS content_profile (
     PRIMARY KEY (id)
 );
 
-/* User feedback */
-CREATE TABLE IF NOT EXISTS user_feedback (
+/* User rating */
+CREATE TABLE IF NOT EXISTS user_rating (
     user_id BIGINT NOT NULL,
     content_id BIGINT NOT NULL,
     rating FLOAT NOT NULL DEFAULT 0.0,
@@ -62,12 +62,12 @@ CREATE TABLE IF NOT EXISTS user_feedback (
     PRIMARY KEY (user_id, content_id)
 );
 
-/* User tag */
-CREATE TABLE IF NOT EXISTS user_tag (
+/* User tagging */
+CREATE TABLE IF NOT EXISTS user_tagging (
     user_id BIGINT NOT NULL,
     content_id BIGINT NOT NULL,
     tag CHARACTER VARYING NULL,
-    tag_at TIMESTAMP WITHOUT TIME ZONE NULL,
+    tagged_at TIMESTAMP WITHOUT TIME ZONE NULL,
     ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user_profile (id) ON DELETE CASCADE,
     FOREIGN KEY (content_id) REFERENCES content_profile (id) ON DELETE CASCADE,

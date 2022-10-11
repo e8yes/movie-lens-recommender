@@ -1,8 +1,8 @@
 import grpc
 from typing import Any
 
-from src.ingestion.database.common import UserFeedbackEntity
-from src.ingestion.database.writer import WriteUserFeedbacks
+from src.ingestion.database.common import UserRatingEntity
+from src.ingestion.database.writer import WriteUserRatings
 from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import RecordRatingFeedbacksRequest
 from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import RecordRatingFeedbacksResponse
 from src.ingestion.proto_py.user_feedback_ingestion_service_pb2_grpc import UserFeedbackIngestionServicer
@@ -38,14 +38,14 @@ class UserFeedbackIngestionService(UserFeedbackIngestionServicer):
         """
         to_be_written = list()
         for feedback in request.rating_feedbacks:
-            entity = UserFeedbackEntity(user_id=feedback.user_id,
-                                        content_id=feedback.content_id,
-                                        timestamp_secs=feedback.timestamp_secs,
-                                        rating=feedback.rating)
+            entity = UserRatingEntity(user_id=feedback.user_id,
+                                      content_id=feedback.content_id,
+                                      timestamp_secs=feedback.timestamp_secs,
+                                      rating=feedback.rating)
             to_be_written.append(entity)
 
-        if WriteUserFeedbacks(
-                user_feedbacks=to_be_written, conn=self.pg_conn):
+        if WriteUserRatings(user_ratings=to_be_written,
+                            conn=self.pg_conn):
             context.set_code(grpc.StatusCode.OK)
         else:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)

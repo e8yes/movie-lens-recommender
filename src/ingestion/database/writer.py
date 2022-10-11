@@ -55,7 +55,9 @@ def WriteUserProfiles(user_profiles: List[UserProfileEntity], conn) -> None:
     conn.commit()
 
 
-def WriteContentProfiles(content_profiles: List[ContentProfileEntity], conn) -> None:
+def WriteContentProfiles(
+        content_profiles: List[ContentProfileEntity],
+        conn) -> None:
     """Writes the specified list of content profiles to the content_profile
     table. It overwrites existing entries. For external references to IMDB or
     TMDB, it creates placeholder entries on those tables if they have not
@@ -131,15 +133,15 @@ def WriteContentProfiles(content_profiles: List[ContentProfileEntity], conn) -> 
     conn.commit()
 
 
-def WriteUserFeedbacks(user_feedbacks: List[UserFeedbackEntity], conn) -> bool:
-    """Writes the specified list of user feedbacks to the user_feedback table.
-    It overwrites existing entries. It assumes the referenced user_ids and
-    content_ids exist in their respective tables. Otherwise, it rejects the 
-    write and no change will be applied to the user_feedback table.
+def WriteUserRatings(user_ratings: List[UserRatingEntity], conn) -> bool:
+    """Writes the specified list of user rating feedbacks to the user_rating
+    table. It overwrites existing entries. It assumes the referenced user_ids
+    and content_ids exist in their respective tables. Otherwise, it rejects the
+    write and no change will be applied to the user_rating table.
 
     Args:
-        user_feedbacks (List[UserFeedbackEntity]):  The list of user feedbacks
-            to write to the database table.
+        user_ratings (List[UserRatingEntity]):  The list of user ratings to
+            write to the database table.
         conn (psycopg2.connection): A psycopg2 connection.
 
     Returns:
@@ -153,22 +155,22 @@ def WriteUserFeedbacks(user_feedbacks: List[UserFeedbackEntity], conn) -> bool:
              ON CONFLICT ({user_id}, {content_id})                  \
              DO UPDATE SET                                          \
                 {rating}=excluded.{rating},                         \
-                {rated_at}=excluded.{rated_at}".\
-        format(table_name=USER_FEEDBACK_TABLE,
-               user_id=USER_FEEDBACK_TABLE_USER_ID,
-               content_id=USER_FEEDBACK_TABLE_CONTENT_ID,
-               rating=USER_FEEDBACK_TABLE_RATING,
-               rated_at=USER_FEEDBACK_TABLE_RATED_AT)
+                {rated_at}=excluded.{rated_at}".                    \
+        format(table_name=USER_RATING_TABLE,
+               user_id=USER_RATING_TABLE_USER_ID,
+               content_id=USER_RATING_TABLE_CONTENT_ID,
+               rating=USER_RATING_TABLE_RATING,
+               rated_at=USER_RATING_TABLE_RATED_AT)
 
     cursor = conn.cursor()
 
     rows_to_insert = list()
-    for user_feedback in user_feedbacks:
+    for user_rating in user_ratings:
         rows_to_insert.append((
-            user_feedback.user_id,
-            user_feedback.content_id,
-            user_feedback.rating,
-            datetime.utcfromtimestamp(user_feedback.timestamp_secs),
+            user_rating.user_id,
+            user_rating.content_id,
+            user_rating.rating,
+            datetime.utcfromtimestamp(user_rating.timestamp_secs),
         ))
 
     try:
