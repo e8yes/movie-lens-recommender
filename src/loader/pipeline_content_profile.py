@@ -6,6 +6,8 @@ from src.loader.reader_movie_lens import *
 from src.loader.uploader import UploadDataFrame
 from src.loader.uploader_content_profile import ContentProfileUploader
 
+REPLACED_GENOME_SCORES_COLUMN = "genome_scores"
+
 
 def __MovieLensContentGenresToList(content_df: DataFrame) -> DataFrame:
     genre_splitter = functions.split(
@@ -30,7 +32,7 @@ def __MovieLensCollectGenomeScoresAsDict(
 
         genome_scores[tag_id] = relevance
 
-    ResultRow = Row(GENOME_SCORES_COL_MOVIE_ID, "genome_scores")
+    ResultRow = Row(GENOME_SCORES_COL_MOVIE_ID, REPLACED_GENOME_SCORES_COLUMN)
     return ResultRow(content_id, genome_scores)
 
 
@@ -44,7 +46,7 @@ def __MovieLensContentJoinGenomeScores(
 
     genome_score_schema = types.StructType([
         types.StructField(GENOME_SCORES_COL_MOVIE_ID, types.IntegerType()),
-        types.StructField("genome_scores",
+        types.StructField(REPLACED_GENOME_SCORES_COLUMN,
                           types.MapType(types.IntegerType(),
                                         types.FloatType()))
     ])
@@ -134,14 +136,15 @@ def LoadMovieLensContentProfiles(data_set: MovieLensDataset,
                                                   link_df=data_set.df_links)
     contents.cache()
 
-    uploader = ContentProfileUploader(host=ingestion_host,
-                                      col_name_content_id=MOVIES_COL_MOVIE_ID,
-                                      col_name_title=MOVIES_COL_TITLE,
-                                      col_name_genres=MOVIES_COL_GENRES,
-                                      col_name_genome_scores="genome_scores",
-                                      col_name_tags=TAGS_COL_TAG,
-                                      col_name_imdb_id=LINKS_COL_IMDB_ID,
-                                      col_name_tmdb_id=LINKS_COL_TMDB_ID)
+    uploader = ContentProfileUploader(
+        host=ingestion_host,
+        col_name_content_id=MOVIES_COL_MOVIE_ID,
+        col_name_title=MOVIES_COL_TITLE,
+        col_name_genres=MOVIES_COL_GENRES,
+        col_name_genome_scores=REPLACED_GENOME_SCORES_COLUMN,
+        col_name_tags=TAGS_COL_TAG,
+        col_name_imdb_id=LINKS_COL_IMDB_ID,
+        col_name_tmdb_id=LINKS_COL_TMDB_ID)
     failed_records = UploadDataFrame(data_frame=contents,
                                      uploader=uploader,
                                      num_retries=4)
