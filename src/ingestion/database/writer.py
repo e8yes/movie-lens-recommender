@@ -150,12 +150,11 @@ def WriteUserRatings(user_ratings: List[UserRatingEntity], conn) -> bool:
     """
     query = "INSERT INTO {table_name} ({user_id},                   \
                                        {content_id},                \
-                                       {rating},                    \
-                                       {rated_at}) VALUES %s        \
-             ON CONFLICT ({user_id}, {content_id})                  \
+                                       {rated_at},                  \
+                                       {rating}) VALUES %s          \
+             ON CONFLICT ({user_id}, {content_id}, {rated_at})      \
              DO UPDATE SET                                          \
-                {rating}=excluded.{rating},                         \
-                {rated_at}=excluded.{rated_at}".                    \
+                {rating}=excluded.{rating}".                        \
         format(table_name=USER_RATING_TABLE,
                user_id=USER_RATING_TABLE_USER_ID,
                content_id=USER_RATING_TABLE_CONTENT_ID,
@@ -169,8 +168,8 @@ def WriteUserRatings(user_ratings: List[UserRatingEntity], conn) -> bool:
         rows_to_insert.append((
             user_rating.user_id,
             user_rating.content_id,
-            user_rating.rating,
             datetime.utcfromtimestamp(user_rating.timestamp_secs),
+            user_rating.rating,
         ))
 
     try:
@@ -181,6 +180,57 @@ def WriteUserRatings(user_ratings: List[UserRatingEntity], conn) -> bool:
         conn.commit()
         return True
     except:
+        conn.rollback()
+        return False
+
+
+def WriteUserTaggings(user_taggings: List[UserTaggingEntity], conn) -> bool:
+    """Writes the specified list of user tagging feedbacks to the user_tagging
+    table. It overwrites existing entries. It assumes the referenced user_ids
+    and content_ids exist in their respective tables. Otherwise, it rejects the
+    write and no change will be applied to the user_tagging table.
+
+    Args:
+        user_taggings (List[UserTaggingEntity]):  The list of user tags to
+            write to the database table.
+        conn (psycopg2.connection): A psycopg2 connection.
+
+    Returns:
+        bool: It returns true when all the user_ids and content_ids are valid.
+            Otherwise, it returns false.
+    """
+    query = "INSERT INTO {table_name} ({user_id},                   \
+                                       {content_id},                \
+                                       {tag},                       \
+                                       {tagged_at}) VALUES %s       \
+             ON CONFLICT ({user_id}, {content_id}, {tag})           \
+             DO UPDATE SET                                          \
+                {tagged_at}=excluded.{tagged_at}".                  \
+        format(table_name=USER_TAGGING_TABLE,
+               user_id=USER_TAGGING_TABLE_USER_ID,
+               content_id=USER_TAGGING_TABLE_CONTENT_ID,
+               tag=USER_TAGGING_TABLE_TAG,
+               tagged_at=USER_TAGGING_TABLE_TAGGED_AT)
+
+    cursor = conn.cursor()
+
+    rows_to_insert = list()
+    for user_tagging in user_taggings:
+        rows_to_insert.append((
+            user_tagging.user_id,
+            user_tagging.content_id,
+            user_tagging.tag,
+            datetime.utcfromtimestamp(user_tagging.timestamp_secs),
+        ))
+
+    try:
+        pge.execute_values(cur=cursor,
+                           sql=query,
+                           argslist=rows_to_insert,
+                           template=None)
+        conn.commit()
+        return True
+    except Exception as e:
         conn.rollback()
         return False
 

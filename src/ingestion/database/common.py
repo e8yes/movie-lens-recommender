@@ -40,6 +40,12 @@ USER_RATING_TABLE_RATING = "rating"
 USER_RATING_TABLE_RATED_AT = "rated_at"
 USER_RATING_TABLE_INGESTED_AT = "ingested_at"
 
+USER_TAGGING_TABLE = "user_tagging"
+USER_TAGGING_TABLE_USER_ID = "user_id"
+USER_TAGGING_TABLE_CONTENT_ID = "content_id"
+USER_TAGGING_TABLE_TAG = "tag"
+USER_TAGGING_TABLE_TAGGED_AT = "tagged_at"
+USER_TAGGING_TABLE_INGESTED_AT = "ingested_at"
 
 # ORM entities.
 
@@ -84,6 +90,18 @@ class UserRatingEntity:
         self.content_id = content_id
         self.timestamp_secs = timestamp_secs
         self.rating = rating
+
+
+class UserTaggingEntity:
+    def __init__(self,
+                 user_id: int,
+                 content_id: int,
+                 tag: str,
+                 timestamp_secs: int) -> None:
+        self.user_id = user_id
+        self.content_id = content_id
+        self.tag = tag
+        self.timestamp_secs = timestamp_secs
 
 
 class ImdbContentProfileEntity:
