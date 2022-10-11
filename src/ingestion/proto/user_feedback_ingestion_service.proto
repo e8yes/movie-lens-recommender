@@ -17,14 +17,41 @@ message RatingFeedback {
 }
 
 message RecordRatingFeedbacksRequest {
+  // The list of rating feedbacks to be recorded.
   repeated RatingFeedback rating_feedbacks = 1;
 }
 
 message RecordRatingFeedbacksResponse {}
 
+message TaggingFeedback {
+  // ID of the user who sent the tagging feedback.
+  int64 user_id = 1;
+
+  // ID of the piece of content which was tagged on.
+  int64 content_id = 2;
+
+  // In unix timestamp.
+  int64 timestamp_secs = 3;
+
+  // Arbitrary text.
+  string tag = 4;
+}
+
+message RecordTaggingFeedbacksRequest {
+  // The list of tagging feedbacks to be recorded.
+  repeated TaggingFeedback tagging_feedbacks = 1;
+}
+
+message RecordTaggingFeedbacksResponse {}
+
 service UserFeedbackIngestion {
-  // Records a list of user feedbacks to pieces of content. It overwrites any
-  // existing entries keyed by (user_id, content_id).
+  // Records a list of user rating feedbacks to pieces of content. It
+  // overwrites any existing entries keyed by (user_id, content_id).
   rpc RecordRatingFeedbacks(RecordRatingFeedbacksRequest)
       returns (RecordRatingFeedbacksResponse);
+
+  // Records a list of user tagging feedbacks to pieces of content. It
+  // overwrites any existing entries keyed by (user_id, content_id).
+  rpc RecordTaggingFeedbacks(RecordTaggingFeedbacksRequest)
+      returns (RecordTaggingFeedbacksResponse);
 }

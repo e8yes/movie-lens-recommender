@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n%user_feedback_ingestion_service.proto\x12\x02\x65\x38\"]\n\x0eRatingFeedback\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\x12\x12\n\ncontent_id\x18\x02 \x01(\x03\x12\x16\n\x0etimestamp_secs\x18\x03 \x01(\x03\x12\x0e\n\x06rating\x18\x04 \x01(\x02\"L\n\x1cRecordRatingFeedbacksRequest\x12,\n\x10rating_feedbacks\x18\x01 \x03(\x0b\x32\x12.e8.RatingFeedback\"\x1f\n\x1dRecordRatingFeedbacksResponse2u\n\x15UserFeedbackIngestion\x12\\\n\x15RecordRatingFeedbacks\x12 .e8.RecordRatingFeedbacksRequest\x1a!.e8.RecordRatingFeedbacksResponseb\x06proto3'
+  serialized_pb=b'\n%user_feedback_ingestion_service.proto\x12\x02\x65\x38\"]\n\x0eRatingFeedback\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\x12\x12\n\ncontent_id\x18\x02 \x01(\x03\x12\x16\n\x0etimestamp_secs\x18\x03 \x01(\x03\x12\x0e\n\x06rating\x18\x04 \x01(\x02\"L\n\x1cRecordRatingFeedbacksRequest\x12,\n\x10rating_feedbacks\x18\x01 \x03(\x0b\x32\x12.e8.RatingFeedback\"\x1f\n\x1dRecordRatingFeedbacksResponse\"[\n\x0fTaggingFeedback\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\x12\x12\n\ncontent_id\x18\x02 \x01(\x03\x12\x16\n\x0etimestamp_secs\x18\x03 \x01(\x03\x12\x0b\n\x03tag\x18\x04 \x01(\t\"O\n\x1dRecordTaggingFeedbacksRequest\x12.\n\x11tagging_feedbacks\x18\x01 \x03(\x0b\x32\x13.e8.TaggingFeedback\" \n\x1eRecordTaggingFeedbacksResponse2\xd6\x01\n\x15UserFeedbackIngestion\x12\\\n\x15RecordRatingFeedbacks\x12 .e8.RecordRatingFeedbacksRequest\x1a!.e8.RecordRatingFeedbacksResponse\x12_\n\x16RecordTaggingFeedbacks\x12!.e8.RecordTaggingFeedbacksRequest\x1a\".e8.RecordTaggingFeedbacksResponseb\x06proto3'
 )
 
 
@@ -134,10 +134,124 @@ _RECORDRATINGFEEDBACKSRESPONSE = _descriptor.Descriptor(
   serialized_end=249,
 )
 
+
+_TAGGINGFEEDBACK = _descriptor.Descriptor(
+  name='TaggingFeedback',
+  full_name='e8.TaggingFeedback',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_id', full_name='e8.TaggingFeedback.user_id', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='content_id', full_name='e8.TaggingFeedback.content_id', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='timestamp_secs', full_name='e8.TaggingFeedback.timestamp_secs', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='tag', full_name='e8.TaggingFeedback.tag', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=251,
+  serialized_end=342,
+)
+
+
+_RECORDTAGGINGFEEDBACKSREQUEST = _descriptor.Descriptor(
+  name='RecordTaggingFeedbacksRequest',
+  full_name='e8.RecordTaggingFeedbacksRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='tagging_feedbacks', full_name='e8.RecordTaggingFeedbacksRequest.tagging_feedbacks', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=344,
+  serialized_end=423,
+)
+
+
+_RECORDTAGGINGFEEDBACKSRESPONSE = _descriptor.Descriptor(
+  name='RecordTaggingFeedbacksResponse',
+  full_name='e8.RecordTaggingFeedbacksResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=425,
+  serialized_end=457,
+)
+
 _RECORDRATINGFEEDBACKSREQUEST.fields_by_name['rating_feedbacks'].message_type = _RATINGFEEDBACK
+_RECORDTAGGINGFEEDBACKSREQUEST.fields_by_name['tagging_feedbacks'].message_type = _TAGGINGFEEDBACK
 DESCRIPTOR.message_types_by_name['RatingFeedback'] = _RATINGFEEDBACK
 DESCRIPTOR.message_types_by_name['RecordRatingFeedbacksRequest'] = _RECORDRATINGFEEDBACKSREQUEST
 DESCRIPTOR.message_types_by_name['RecordRatingFeedbacksResponse'] = _RECORDRATINGFEEDBACKSRESPONSE
+DESCRIPTOR.message_types_by_name['TaggingFeedback'] = _TAGGINGFEEDBACK
+DESCRIPTOR.message_types_by_name['RecordTaggingFeedbacksRequest'] = _RECORDTAGGINGFEEDBACKSREQUEST
+DESCRIPTOR.message_types_by_name['RecordTaggingFeedbacksResponse'] = _RECORDTAGGINGFEEDBACKSRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 RatingFeedback = _reflection.GeneratedProtocolMessageType('RatingFeedback', (_message.Message,), {
@@ -161,6 +275,27 @@ RecordRatingFeedbacksResponse = _reflection.GeneratedProtocolMessageType('Record
   })
 _sym_db.RegisterMessage(RecordRatingFeedbacksResponse)
 
+TaggingFeedback = _reflection.GeneratedProtocolMessageType('TaggingFeedback', (_message.Message,), {
+  'DESCRIPTOR' : _TAGGINGFEEDBACK,
+  '__module__' : 'user_feedback_ingestion_service_pb2'
+  # @@protoc_insertion_point(class_scope:e8.TaggingFeedback)
+  })
+_sym_db.RegisterMessage(TaggingFeedback)
+
+RecordTaggingFeedbacksRequest = _reflection.GeneratedProtocolMessageType('RecordTaggingFeedbacksRequest', (_message.Message,), {
+  'DESCRIPTOR' : _RECORDTAGGINGFEEDBACKSREQUEST,
+  '__module__' : 'user_feedback_ingestion_service_pb2'
+  # @@protoc_insertion_point(class_scope:e8.RecordTaggingFeedbacksRequest)
+  })
+_sym_db.RegisterMessage(RecordTaggingFeedbacksRequest)
+
+RecordTaggingFeedbacksResponse = _reflection.GeneratedProtocolMessageType('RecordTaggingFeedbacksResponse', (_message.Message,), {
+  'DESCRIPTOR' : _RECORDTAGGINGFEEDBACKSRESPONSE,
+  '__module__' : 'user_feedback_ingestion_service_pb2'
+  # @@protoc_insertion_point(class_scope:e8.RecordTaggingFeedbacksResponse)
+  })
+_sym_db.RegisterMessage(RecordTaggingFeedbacksResponse)
+
 
 
 _USERFEEDBACKINGESTION = _descriptor.ServiceDescriptor(
@@ -170,8 +305,8 @@ _USERFEEDBACKINGESTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=251,
-  serialized_end=368,
+  serialized_start=460,
+  serialized_end=674,
   methods=[
   _descriptor.MethodDescriptor(
     name='RecordRatingFeedbacks',
@@ -180,6 +315,16 @@ _USERFEEDBACKINGESTION = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_RECORDRATINGFEEDBACKSREQUEST,
     output_type=_RECORDRATINGFEEDBACKSRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='RecordTaggingFeedbacks',
+    full_name='e8.UserFeedbackIngestion.RecordTaggingFeedbacks',
+    index=1,
+    containing_service=None,
+    input_type=_RECORDTAGGINGFEEDBACKSREQUEST,
+    output_type=_RECORDTAGGINGFEEDBACKSRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

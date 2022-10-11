@@ -19,14 +19,27 @@ class UserFeedbackIngestionStub(object):
                 request_serializer=user__feedback__ingestion__service__pb2.RecordRatingFeedbacksRequest.SerializeToString,
                 response_deserializer=user__feedback__ingestion__service__pb2.RecordRatingFeedbacksResponse.FromString,
                 )
+        self.RecordTaggingFeedbacks = channel.unary_unary(
+                '/e8.UserFeedbackIngestion/RecordTaggingFeedbacks',
+                request_serializer=user__feedback__ingestion__service__pb2.RecordTaggingFeedbacksRequest.SerializeToString,
+                response_deserializer=user__feedback__ingestion__service__pb2.RecordTaggingFeedbacksResponse.FromString,
+                )
 
 
 class UserFeedbackIngestionServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def RecordRatingFeedbacks(self, request, context):
-        """Records a list of user feedbacks to pieces of content. It overwrites any
-        existing entries keyed by (user_id, content_id).
+        """Records a list of user rating feedbacks to pieces of content. It
+        overwrites any existing entries keyed by (user_id, content_id).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RecordTaggingFeedbacks(self, request, context):
+        """Records a list of user tagging feedbacks to pieces of content. It
+        overwrites any existing entries keyed by (user_id, content_id).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -39,6 +52,11 @@ def add_UserFeedbackIngestionServicer_to_server(servicer, server):
                     servicer.RecordRatingFeedbacks,
                     request_deserializer=user__feedback__ingestion__service__pb2.RecordRatingFeedbacksRequest.FromString,
                     response_serializer=user__feedback__ingestion__service__pb2.RecordRatingFeedbacksResponse.SerializeToString,
+            ),
+            'RecordTaggingFeedbacks': grpc.unary_unary_rpc_method_handler(
+                    servicer.RecordTaggingFeedbacks,
+                    request_deserializer=user__feedback__ingestion__service__pb2.RecordTaggingFeedbacksRequest.FromString,
+                    response_serializer=user__feedback__ingestion__service__pb2.RecordTaggingFeedbacksResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -63,5 +81,21 @@ class UserFeedbackIngestion(object):
         return grpc.experimental.unary_unary(request, target, '/e8.UserFeedbackIngestion/RecordRatingFeedbacks',
             user__feedback__ingestion__service__pb2.RecordRatingFeedbacksRequest.SerializeToString,
             user__feedback__ingestion__service__pb2.RecordRatingFeedbacksResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RecordTaggingFeedbacks(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/e8.UserFeedbackIngestion/RecordTaggingFeedbacks',
+            user__feedback__ingestion__service__pb2.RecordTaggingFeedbacksRequest.SerializeToString,
+            user__feedback__ingestion__service__pb2.RecordTaggingFeedbacksResponse.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)
