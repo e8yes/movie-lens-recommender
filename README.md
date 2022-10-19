@@ -1,4 +1,5 @@
 # Movie Lens Recommender
+This is a class project developed for a course from Simon Fraser University's master of professional computer science program.
 Like the original Movie Lens system developed by a research lab in the Department of Computer Science and Engineering at the University of Minnesota, this is a personalized recommender system aiming to deliver good UX when navigating through a large repository of contents (movies/videos).
 
 ## Problem definition
