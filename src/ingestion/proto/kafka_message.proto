@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package e8;
+
+// Information which provides to the TMDB crawler.
+message TmdbEntry { int64 tmdb_id = 1; }
+
+// Information which provides to the IMDB crawler.
+message ImdbEntry { int64 imdb_id = 1; }
