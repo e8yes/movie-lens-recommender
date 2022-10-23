@@ -8,7 +8,7 @@ from surfacereg.data_gen.generator import CreateSparkSession, GenerateDataSet
 def __Generate(surface_type: str,
                sample_count: int,
                noise_level: float,
-               output_path: str):
+               output_path: str) -> None:
     spark = CreateSparkSession()
 
     training_set = max(1, int(sample_count*0.8))

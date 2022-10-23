@@ -4,14 +4,14 @@ from math import sqrt
 import os
 import numpy as np
 import tensorflow as tf
-from typing import Dict
+from typing import Dict, Tuple
 from surfacereg.utils.plot import PlotSurfaceSamples, PlotTargetDistribution
 
 from surfacereg.utils.reader import ValidationSet
 from surfacereg.utils.reader import TestSet
 
 
-def __ToNumpy(data_set: tf.data.Dataset):
+def __ToNumpy(data_set: tf.data.Dataset) -> Tuple[np.ndarray, np.ndarray]:
     batch_xs = list()
     batch_zs = list()
     for batch_x, batch_z in data_set.batch(10000):
@@ -37,7 +37,6 @@ def __Evaluate(model: tf.keras.models.Model,
     return {
         "validation_mean_distance": sqrt(mse_valid),
         "test_mean_distance": sqrt(mse_test),
-        # "validation_hist_distance": 10.0,
     }
 
 

@@ -4,7 +4,7 @@ import tensorflow as tf
 
 
 def PlotTargetDistribution(z_true: np.ndarray,
-                           z_pred: np.ndarray):
+                           z_pred: np.ndarray) -> None:
     fig = plt.figure()
 
     axes = fig.subplots(nrows=1, ncols=2)
@@ -20,7 +20,7 @@ def PlotTargetDistribution(z_true: np.ndarray,
 
 def PlotSurfaceSamples(x: np.ndarray,
                        z_true: np.ndarray,
-                       z_pred: np.ndarray):
+                       z_pred: np.ndarray) -> None:
     fig = plt.figure()
     ax = fig.add_subplot(projection="3d")
 

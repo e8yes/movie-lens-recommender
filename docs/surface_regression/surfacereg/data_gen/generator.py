@@ -39,7 +39,7 @@ def GenerateDataSet(surface_type: str,
                     sample_count: int,
                     noise_level: float,
                     spark: SparkSession,
-                    output_path: str):
+                    output_path: str) -> None:
     """_summary_
 
     Args:
