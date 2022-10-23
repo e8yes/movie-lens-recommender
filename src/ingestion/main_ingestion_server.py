@@ -10,11 +10,12 @@ from src.ingestion.services.content_profile_service import ContentIngestionServi
 from src.ingestion.services.user_profile_service import UserIngestionService
 
 
-def __RunServer(grpc_port: int, pg_conn: Any):
+def __RunServer(grpc_port: int, pg_conn: Any, kafka_host: str):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
     user_ingestion_service = UserIngestionService(pg_conn=pg_conn)
-    content_ingestion_service = ContentIngestionService(pg_conn=pg_conn)
+    content_ingestion_service = ContentIngestionService(
+        pg_conn=pg_conn, kafka_host=kafka_host)
     add_UserIngestionServicer_to_server(
         servicer=user_ingestion_service, server=server)
     add_ContentIngestionServicer_to_server(
@@ -37,6 +38,9 @@ if __name__ == "__main__":
     parser.add_argument("--postgres_password",
                         type=str,
                         help="The password of the postgres database user.")
+    parser.add_argument(
+        "--kafka_host", type=str,
+        help="The host address (with port number) which points to the Kafka server.")
 
     args = parser.parse_args()
 
@@ -49,7 +53,11 @@ if __name__ == "__main__":
     if args.postgres_password is None:
         print("postgres_password is required.")
         exit(-1)
+    if args.kafka_host is None:
+        print("kafka_host is required.")
+        exit(-1)
 
     pg_conn = CreateConnection(host=args.postgres_host,
                                password=args.postgres_password)
-    __RunServer(grpc_port=args.grpc_port, pg_conn=pg_conn)
+    __RunServer(grpc_port=args.grpc_port,
+                pg_conn=pg_conn, kafka_host=args.kafka_host)
