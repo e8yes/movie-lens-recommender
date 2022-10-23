@@ -1,9 +1,10 @@
 from glob import glob
 import os
 import tensorflow as tf
+from typing import Tuple
 
 
-def DecodeFn(record_bytes):
+def DecodeFn(record_bytes: str) -> Tuple[tf.Tensor, tf.Tensor]:
     example = tf.io.parse_single_example(
         # Data
         record_bytes,
@@ -18,7 +19,7 @@ def DecodeFn(record_bytes):
     return example["X"], example["Z"]
 
 
-def __DataSet(pathname: str):
+def __DataSet(pathname: str) -> tf.data.Dataset:
     data_set = tf.data.TFRecordDataset(
         filenames=glob(pathname=pathname),
         compression_type="GZIP")
