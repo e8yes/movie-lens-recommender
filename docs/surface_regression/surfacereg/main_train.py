@@ -10,7 +10,7 @@ if __name__ == "__main__":
         help="Directory of the data set on which the model is going to train.")
     parser.add_argument(
         "--model_type", type=str,
-        help="The type of model to create.")
+        help="The type of model to create. Value can be chosen from {linear, nn_8, nn_32_32, nn_128_64_32_32}.")
     parser.add_argument(
         "--output_path", type=str,
         help="Directory to which the trained model is saved.")

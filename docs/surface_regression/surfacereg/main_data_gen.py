@@ -40,7 +40,7 @@ if __name__ == "__main__":
         description="Generates representative samples of a surface embedded in R^3.")
     parser.add_argument(
         "--surface_type", type=str,
-        help="The type of surface to generate. Value can be chosen from \{cloth, morbius_strip\}.")
+        help="The type of surface to generate. Value can be chosen from {cloth, morbius_strip}.")
     parser.add_argument(
         "--sample_count", type=int,
         help="The total number of samples to generate.")
