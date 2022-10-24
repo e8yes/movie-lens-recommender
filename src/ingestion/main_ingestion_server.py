@@ -23,7 +23,12 @@ def __RunServer(grpc_port: int, pg_conn: Any, kafka_host: str):
 
     server.add_insecure_port("[::]:{port}".format(port=grpc_port))
     server.start()
-    server.wait_for_termination()
+
+    try:
+        server.wait_for_termination()
+    except KeyboardInterrupt:
+        server.stop(grace=None)
+        server.wait_for_termination()
 
 
 if __name__ == "__main__":
