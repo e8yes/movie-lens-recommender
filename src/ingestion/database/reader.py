@@ -9,6 +9,8 @@ CONTENT_DF_TITLE = CONTENT_PROFILE_TABLE_TITLE
 CONTENT_DF_GENRES = CONTENT_PROFILE_TABLE_GENRES
 CONTENT_DF_GENOME_SCORES = CONTENT_PROFILE_TABLE_GENOME_SCORES
 CONTENT_DF_TAGS = CONTENT_PROFILE_TABLE_TAGS
+CONTENT_DF_IMDB_ID = CONTENT_PROFILE_TABLE_IMDB_ID
+CONTENT_DF_TMDB_ID = CONTENT_PROFILE_TABLE_TMDB_ID
 CONTENT_DF_IMDB_PRIMARY_INFO = "imdb_" + IMDB_TABLE_PRIMARY_INFO
 CONTENT_DF_TMDB_PRIMARY_INFO = "tmdb_" + TMDB_TABLE_PRIMARY_INFO
 CONTENT_DF_TMDB_CREDITS = "tmdb_" + TMDB_TABLE_CREDITS
@@ -32,20 +34,22 @@ class IngestionReader:
     ingestion database server through JDBC.
     """
 
-    def __init__(self,
-                 jdbc_driver_path: str,
-                 db_host: str,
-                 db_user: str,
-                 db_password: str) -> None:
+    def __init__(
+            self,
+            db_host: str,
+            db_user: str,
+            db_password: str,
+            jdbc_driver_path: str = "third_party/postgresql-42.5.0.jar") -> None:
         """Constructs an ingestion DB reader object.
 
         Args:
-            jdbc_driver_path (str): Path to the postgres JDBC driver binary.
             db_host (str): The IP address (with port number) which points to
                 the postgres server.
             db_user (str): The postgres user to use while accessing the
                 ingestion database.
             db_password (str): The password of the postgres user.
+            jdbc_driver_path (str): Path to the postgres JDBC driver binary.
+                Defaults to "third_party/postgresql-42.5.0.jar".
         """
         self.db_host = db_host
         self.db_user = db_user
@@ -95,6 +99,8 @@ def ReadContents(reader: IngestionReader) -> DataFrame:
                 |    |-- element: string (containsNull = false)
                 |-- genome_scores: json (nullable = true)
                 |-- tags: json (nullable = true)
+                |-- imdb_id: integer (nullable = true)
+                |-- tmdb_id: integer (nullable = true)
                 |-- imdb_primary_info: json (nullable = true)
                 |-- tmdb_primary_info: json (nullable = true)
                 |-- tmdb_credits: json (nullable = true)
@@ -113,7 +119,6 @@ def ReadContents(reader: IngestionReader) -> DataFrame:
              on=content[CONTENT_PROFILE_TABLE_IMDB_ID] ==
              imdb[IMDB_TABLE_ID],
              how="leftouter").\
-        drop(content[CONTENT_PROFILE_TABLE_IMDB_ID]).\
         drop(imdb[IMDB_TABLE_ID]).\
         withColumnRenamed(existing=IMDB_TABLE_PRIMARY_INFO,
                           new=CONTENT_DF_IMDB_PRIMARY_INFO)
@@ -123,7 +128,6 @@ def ReadContents(reader: IngestionReader) -> DataFrame:
              on=content[CONTENT_PROFILE_TABLE_TMDB_ID] ==
              tmdb[TMDB_TABLE_ID],
              how="leftouter").\
-        drop(content[CONTENT_PROFILE_TABLE_TMDB_ID]).\
         drop(tmdb[TMDB_TABLE_ID]).\
         withColumnRenamed(existing=TMDB_TABLE_PRIMARY_INFO,
                           new=CONTENT_DF_TMDB_PRIMARY_INFO).\
