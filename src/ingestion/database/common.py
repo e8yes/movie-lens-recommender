@@ -125,6 +125,12 @@ class TmdbContentProfileEntity:
         self.credits = credits
         self.ingested_at = ingested_at
 
+    def __repr__(self) -> str:
+        return "tmdb_id={tmdb_id} primary_info={primary_info} credits={credits}".\
+            format(tmdb_id=self.tmdb_id,
+                   primary_info=self.primary_info,
+                   credits=self.credits)
+
 # Util classes and functions
 
 
