@@ -59,6 +59,8 @@ class IngestionReader:
             .builder                                \
             .appName("Ingestion Reader")            \
             .config("spark.jars", jdbc_driver_path) \
+            .config("spark.executor.memory", "3g")  \
+            .config("spark.driver.memory", "3g")    \
             .getOrCreate()
 
     def ReadTable(self, table_name: str) -> DataFrame:
