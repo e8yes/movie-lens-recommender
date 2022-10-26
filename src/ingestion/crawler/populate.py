@@ -18,20 +18,25 @@ def __UnpopulatedXmdbEntries(postgres_host: str,
 
     id_column = str()
     primary_info_column = str()
+    secondary_info_column = str()
 
     if x == "imdb":
         id_column = CONTENT_DF_IMDB_ID
         primary_info_column = CONTENT_DF_IMDB_PRIMARY_INFO
+        secondary_info_column = primary_info_column
     elif x == "tmdb":
         id_column = CONTENT_DF_TMDB_ID
         primary_info_column = CONTENT_DF_TMDB_PRIMARY_INFO
+        secondary_info_column = CONTENT_DF_TMDB_CREDITS
     else:
         raise "Unkown db type."
 
-    return contents.\
-        filter(contents[primary_info_column].isNull()).\
-        filter(contents[id_column].isNotNull()).\
-        select([id_column]).\
+    return contents.                                                    \
+        filter(contents[primary_info_column].isNull() |
+               contents[secondary_info_column].isNull() |
+               (contents[primary_info_column] == "null") |
+               (contents[secondary_info_column] == "null")).            \
+        filter(contents[id_column].isNotNull()).select([id_column]).    \
         distinct()
 
 
