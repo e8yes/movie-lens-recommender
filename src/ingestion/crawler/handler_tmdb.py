@@ -11,7 +11,7 @@ from src.ingestion.proto_py.kafka_message_pb2 import TmdbEntry
 def GetTmdbProfile(tmdb_id: int,
                    tmdb_api_key: str) -> TmdbContentProfileEntity:
     tmdb.API_KEY = tmdb_api_key
-    tmdb.REQUESTS_TIMEOUT = 10
+    tmdb.REQUESTS_TIMEOUT = 30
 
     movie = tmdb.Movies(tmdb_id)
 
@@ -20,6 +20,10 @@ def GetTmdbProfile(tmdb_id: int,
 
     try:
         primary_info_response = movie.info()
+    except:
+        pass
+
+    try:
         credits_response = movie.credits()
     except:
         pass
