@@ -82,7 +82,7 @@ def VectorizeGenomeScores(content_genome_scores: DataFrame) -> DataFrame:
     pass
 
 
-def ComputeAndNormalizeAverageRating(
+def ComputeNormalizedAverageRating(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the average rating each piece of content receives. Then it
     applies the following transformation to the average ratings:
