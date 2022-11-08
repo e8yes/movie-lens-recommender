@@ -136,6 +136,62 @@ def ComputeNormalizedAverageRating(
     user_rating_feebacks.show()
 
 
+def ComputeNormalizedRatingCount(
+        user_rating_feebacks: DataFrame) -> DataFrame:
+    """Computes the number of ratings each piece of content receives. Then it
+    applies the following transformation to the counts:
+        normalized_count = 
+            (rating_count[content_id] - mean(rating_counts))/std(rating_counts)
+
+    Example input:
+    ------------------------
+    | content_id | rating  |
+    ------------------------
+    |  1         |  3      |
+    ------------------------
+    |  1         |  5      |
+    ------------------------
+    |  2         |  3      |
+    ------------------------
+    |  3         |  2      |
+    ------------------------
+    |  3         |  2      |
+    ------------------------
+    |  3         |  1      |
+    ------------------------
+
+    Rating count (intermediate result):
+    -----------------------------
+    | content_id | rating_count |
+    -----------------------------
+    |  1         |  2           |
+    -----------------------------
+    |  2         |  1           |
+    -----------------------------
+    |  3         |  3           |
+    -----------------------------
+    mean = 2, std = sqrt(2/3)
+
+    Example output:
+    -------------------
+    | id | avg_rating |
+    -------------------
+    |  1 |  0         |
+    -------------------
+    |  2 | -1.2247    |
+    -------------------
+    |  3 |  1.2247    |
+    -------------------
+
+    Args:
+        user_rating_feebacks (DataFrame): See the example input above.
+
+    Returns:
+        DataFrame: See the example output above.
+    """
+    user_rating_feebacks.show()
+
+
 def NormalizeBudget(content_budget: DataFrame) -> DataFrame:
     """Transforms all budgets, so they distribute in a unit normal.
 
@@ -346,6 +402,7 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |-- genome_scores: array (nullable = true)
                 |    |-- element: float (containsNull = false)
                 |-- avg_rating: float (nullable = true)
+                |-- rating_count: float (nullable = true)
                 |-- budget: float (nullable = true)
                 |-- release_year: float (nullable = true)
                 |-- tmdb_avg_rating: float (nullable = true)
