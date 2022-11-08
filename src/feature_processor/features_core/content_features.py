@@ -25,7 +25,7 @@ def VectorizeGenres(content_genres: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    content_genres.show()
 
 
 def VectorizeLanguages(content_languages: DataFrame) -> DataFrame:
@@ -52,7 +52,7 @@ def VectorizeLanguages(content_languages: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    content_languages.show()
 
 
 def VectorizeGenomeScores(content_genome_scores: DataFrame) -> DataFrame:
@@ -79,7 +79,7 @@ def VectorizeGenomeScores(content_genome_scores: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    content_genome_scores.show()
 
 
 def ComputeNormalizedAverageRating(
@@ -133,7 +133,7 @@ def ComputeNormalizedAverageRating(
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    user_rating_feebacks.show()
 
 
 def NormalizeBudget(content_budget: DataFrame) -> DataFrame:
@@ -164,7 +164,7 @@ def NormalizeBudget(content_budget: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    content_budget.show()
 
 
 def NormalizeReleaseYear(content_release_year: DataFrame) -> DataFrame:
@@ -199,7 +199,7 @@ def NormalizeReleaseYear(content_release_year: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    content_release_year.show()
 
 
 def NormalizeTmdbVoteCount(content_tmdb_vote_count: DataFrame) -> DataFrame:
@@ -234,7 +234,7 @@ def NormalizeTmdbVoteCount(content_tmdb_vote_count: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    content_tmdb_vote_count.show()
 
 
 def NormalizeTmdbAverageRating(content_tmdb_avg_rating: DataFrame) -> DataFrame:
@@ -269,7 +269,7 @@ def NormalizeTmdbAverageRating(content_tmdb_avg_rating: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    content_tmdb_avg_rating.show()
 
 
 def NormalizeTmdbPopularity(content_tmdb_popularity: DataFrame) -> DataFrame:
@@ -304,7 +304,7 @@ def NormalizeTmdbPopularity(content_tmdb_popularity: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    pass
+    content_tmdb_popularity.show()
 
 
 def ComputeCoreContentFeatures(contents: DataFrame,
@@ -352,4 +352,5 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |-- tmdb_vote_count: float (nullable = true)
                 |-- tmdb_popularity: float (nullable = true)
     """
-    pass
+    contents.show()
+    user_rating_feebacks.show()
