@@ -55,33 +55,6 @@ def VectorizeLanguages(content_languages: DataFrame) -> DataFrame:
     content_languages.show()
 
 
-def VectorizeGenomeScores(content_genome_scores: DataFrame) -> DataFrame:
-    """Turns a sparse representation (a dictionary of (tag_id, relevance)) of
-    the genome scores into a dense representation (a list of floats).
-
-    Example input:
-    ------------------------------------
-    | id | genome_scores               |
-    ------------------------------------
-    |  1 | {1: 0.1, 5: 0.2, 1103: 0.9} |
-    ------------------------------------
-
-    Example output:
-    ----------------------------------------------------
-    | id | genome_scores                               |
-    ----------------------------------------------------
-    |  1 | [0, 0.1, 0.0, ..., 0.5, ..., 0.9, 0.0, ...] |
-    ----------------------------------------------------
-
-    Args:
-        content_genome_scores (DataFrame): See the example input above.
-
-    Returns:
-        DataFrame: See the example output above.
-    """
-    content_genome_scores.show()
-
-
 def ComputeNormalizedAverageRating(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the average rating each piece of content receives. Then it
