@@ -372,8 +372,6 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |    |-- element: float (containsNull = false)
                 |-- languages: array (nullable = false)
                 |    |-- element: float (containsNull = false)
-                |-- genome_scores: array (nullable = true)
-                |    |-- element: float (containsNull = false)
                 |-- avg_rating: float (nullable = true)
                 |-- rating_count: float (nullable = true)
                 |-- budget: float (nullable = true)
