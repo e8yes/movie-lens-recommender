@@ -7,7 +7,7 @@ from src.ingestion.database.common import *
 CONTENT_DF_ID = CONTENT_PROFILE_TABLE_ID
 CONTENT_DF_TITLE = CONTENT_PROFILE_TABLE_TITLE
 CONTENT_DF_GENRES = CONTENT_PROFILE_TABLE_GENRES
-CONTENT_DF_GENOME_SCORES = CONTENT_PROFILE_TABLE_GENOME_SCORES
+CONTENT_DF_SCORED_TAGS = CONTENT_PROFILE_TABLE_SCORED_TAGS
 CONTENT_DF_TAGS = CONTENT_PROFILE_TABLE_TAGS
 CONTENT_DF_IMDB_ID = CONTENT_PROFILE_TABLE_IMDB_ID
 CONTENT_DF_TMDB_ID = CONTENT_PROFILE_TABLE_TMDB_ID
@@ -99,7 +99,7 @@ def ReadContents(reader: IngestionReader) -> DataFrame:
                 |-- title: string (nullable = true)
                 |-- genres: array (nullable = true)
                 |    |-- element: string (containsNull = false)
-                |-- genome_scores: json (nullable = true)
+                |-- scored_tags: json (nullable = true)
                 |-- tags: json (nullable = true)
                 |-- imdb_id: integer (nullable = true)
                 |-- tmdb_id: integer (nullable = true)

@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS content_profile (
     id BIGINT NOT NULL,
     title CHARACTER VARYING NULL,
     genres CHARACTER VARYING [] NULL,
-    genome_scores JSONB Null,
+    scored_tags JSONB NULL,
     tags JSONB NULL,
     imdb_id BIGINT NULL,
     tmdb_id BIGINT NULL,

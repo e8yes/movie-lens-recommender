@@ -91,7 +91,7 @@ def WriteContentProfiles(
     query = "INSERT INTO {table_name} ({id},                        \
                                        {title},                     \
                                        {genres},                    \
-                                       {genome_scores},             \
+                                       {scored_tags},               \
                                        {tags},                      \
                                        {imdb_id},                   \
                                        {tmdb_id}) VALUES %s         \
@@ -99,7 +99,7 @@ def WriteContentProfiles(
              DO UPDATE SET                                          \
                 {title}=excluded.{title},                           \
                 {genres}=excluded.{genres},                         \
-                {genome_scores}=excluded.{genome_scores},           \
+                {scored_tags}=excluded.{scored_tags},               \
                 {tags}=excluded.{tags},                             \
                 {imdb_id}=excluded.{imdb_id},                       \
                 {tmdb_id}=excluded.{tmdb_id}".                      \
@@ -107,7 +107,7 @@ def WriteContentProfiles(
                id=CONTENT_PROFILE_TABLE_ID,
                title=CONTENT_PROFILE_TABLE_TITLE,
                genres=CONTENT_PROFILE_TABLE_GENRES,
-               genome_scores=CONTENT_PROFILE_TABLE_GENOME_SCORES,
+               scored_tags=CONTENT_PROFILE_TABLE_SCORED_TAGS,
                tags=CONTENT_PROFILE_TABLE_TAGS,
                imdb_id=CONTENT_PROFILE_TABLE_IMDB_ID,
                tmdb_id=CONTENT_PROFILE_TABLE_TMDB_ID)
@@ -120,7 +120,7 @@ def WriteContentProfiles(
             content_profile.content_id,
             content_profile.title,
             content_profile.genres,
-            json.dumps(content_profile.genome_scores),
+            json.dumps(content_profile.scored_tags),
             json.dumps(content_profile.tags, cls=StatelessClassJsonEncoder),
             content_profile.imdb_id,
             content_profile.tmdb_id,
@@ -271,6 +271,36 @@ def WriteImdbContentProfiles(imdb_profiles: List[ImdbContentProfileEntity],
                        argslist=rows_to_insert,
                        template="(%s,%s,CURRENT_TIMESTAMP)")
     conn.commit()
+
+
+def TmdbContentProfileComplete(tmdb_id: int, conn) -> bool:
+    """Checks if all fields of TMDB content profile referred to by the tmdb_id
+    is complete filled. This requires all fields to be not null and not JSON
+    "null".
+
+    Args:
+        tmdb_id (int): ID of the TMDB profile that needs to be checked.
+        conn (psycopg2.connection): A psycopg2 connection.
+
+    Returns:
+        bool: True if the profile is completely filled.
+    """
+    query = "SELECT 1 FROM {table_name}         \
+             WHERE                              \
+                {id}={id_value} AND             \
+                {primary_info} IS NOT NULL AND  \
+                {primary_info} != 'null' AND    \
+                {credits} IS NOT NULL AND       \
+                {credits} != 'null'".           \
+        format(table_name=TMDB_TABLE,
+               id=TMDB_TABLE_ID,
+               primary_info=TMDB_TABLE_PRIMARY_INFO,
+               credits=TMDB_TABLE_CREDITS,
+               id_value=tmdb_id)
+
+    cursor = conn.cursor()
+    cursor.execute(query=query)
+    return len(cursor.fetchall()) > 0
 
 
 def WriteTmdbContentProfiles(tmdb_profiles: List[TmdbContentProfileEntity],

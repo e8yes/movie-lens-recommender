@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1f\x63ontent_ingestion_service.proto\x12\x02\x65\x38\"\xaa\x02\n\x0e\x43ontentProfile\x12\x12\n\ncontent_id\x18\x01 \x01(\x03\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0e\n\x06genres\x18\x03 \x03(\t\x12;\n\rgenome_scores\x18\x04 \x03(\x0b\x32$.e8.ContentProfile.GenomeScoresEntry\x12$\n\x04tags\x18\x05 \x03(\x0b\x32\x16.e8.ContentProfile.Tag\x12\x0f\n\x07imdb_id\x18\x06 \x01(\x03\x12\x0f\n\x07tmdb_id\x18\x07 \x01(\x03\x1a+\n\x03Tag\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x16\n\x0etimestamp_secs\x18\x02 \x01(\x03\x1a\x33\n\x11GenomeScoresEntry\x12\x0b\n\x03key\x18\x01 \x01(\x03\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"K\n\x1bWriteContentProfilesRequest\x12,\n\x10\x63ontent_profiles\x18\x01 \x03(\x0b\x32\x12.e8.ContentProfile\"\x1e\n\x1cWriteContentProfilesResponse2m\n\x10\x43ontentIngestion\x12Y\n\x14WriteContentProfiles\x12\x1f.e8.WriteContentProfilesRequest\x1a .e8.WriteContentProfilesResponseb\x06proto3'
+  serialized_pb=b'\n\x1f\x63ontent_ingestion_service.proto\x12\x02\x65\x38\"\xa4\x02\n\x0e\x43ontentProfile\x12\x12\n\ncontent_id\x18\x01 \x01(\x03\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0e\n\x06genres\x18\x03 \x03(\t\x12\x37\n\x0bscored_tags\x18\x04 \x03(\x0b\x32\".e8.ContentProfile.ScoredTagsEntry\x12$\n\x04tags\x18\x05 \x03(\x0b\x32\x16.e8.ContentProfile.Tag\x12\x0f\n\x07imdb_id\x18\x06 \x01(\x03\x12\x0f\n\x07tmdb_id\x18\x07 \x01(\x03\x1a+\n\x03Tag\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x16\n\x0etimestamp_secs\x18\x02 \x01(\x03\x1a\x31\n\x0fScoredTagsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"K\n\x1bWriteContentProfilesRequest\x12,\n\x10\x63ontent_profiles\x18\x01 \x03(\x0b\x32\x12.e8.ContentProfile\"\x1e\n\x1cWriteContentProfilesResponse2m\n\x10\x43ontentIngestion\x12Y\n\x14WriteContentProfiles\x12\x1f.e8.WriteContentProfilesRequest\x1a .e8.WriteContentProfilesResponseb\x06proto3'
 )
 
 
@@ -59,27 +59,27 @@ _CONTENTPROFILE_TAG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=242,
-  serialized_end=285,
+  serialized_start=238,
+  serialized_end=281,
 )
 
-_CONTENTPROFILE_GENOMESCORESENTRY = _descriptor.Descriptor(
-  name='GenomeScoresEntry',
-  full_name='e8.ContentProfile.GenomeScoresEntry',
+_CONTENTPROFILE_SCOREDTAGSENTRY = _descriptor.Descriptor(
+  name='ScoredTagsEntry',
+  full_name='e8.ContentProfile.ScoredTagsEntry',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='e8.ContentProfile.GenomeScoresEntry.key', index=0,
-      number=1, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
+      name='key', full_name='e8.ContentProfile.ScoredTagsEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='value', full_name='e8.ContentProfile.GenomeScoresEntry.value', index=1,
+      name='value', full_name='e8.ContentProfile.ScoredTagsEntry.value', index=1,
       number=2, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
@@ -97,8 +97,8 @@ _CONTENTPROFILE_GENOMESCORESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=287,
-  serialized_end=338,
+  serialized_start=283,
+  serialized_end=332,
 )
 
 _CONTENTPROFILE = _descriptor.Descriptor(
@@ -131,7 +131,7 @@ _CONTENTPROFILE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='genome_scores', full_name='e8.ContentProfile.genome_scores', index=3,
+      name='scored_tags', full_name='e8.ContentProfile.scored_tags', index=3,
       number=4, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -161,7 +161,7 @@ _CONTENTPROFILE = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_CONTENTPROFILE_TAG, _CONTENTPROFILE_GENOMESCORESENTRY, ],
+  nested_types=[_CONTENTPROFILE_TAG, _CONTENTPROFILE_SCOREDTAGSENTRY, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -171,7 +171,7 @@ _CONTENTPROFILE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=40,
-  serialized_end=338,
+  serialized_end=332,
 )
 
 
@@ -202,8 +202,8 @@ _WRITECONTENTPROFILESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=340,
-  serialized_end=415,
+  serialized_start=334,
+  serialized_end=409,
 )
 
 
@@ -227,13 +227,13 @@ _WRITECONTENTPROFILESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=417,
-  serialized_end=447,
+  serialized_start=411,
+  serialized_end=441,
 )
 
 _CONTENTPROFILE_TAG.containing_type = _CONTENTPROFILE
-_CONTENTPROFILE_GENOMESCORESENTRY.containing_type = _CONTENTPROFILE
-_CONTENTPROFILE.fields_by_name['genome_scores'].message_type = _CONTENTPROFILE_GENOMESCORESENTRY
+_CONTENTPROFILE_SCOREDTAGSENTRY.containing_type = _CONTENTPROFILE
+_CONTENTPROFILE.fields_by_name['scored_tags'].message_type = _CONTENTPROFILE_SCOREDTAGSENTRY
 _CONTENTPROFILE.fields_by_name['tags'].message_type = _CONTENTPROFILE_TAG
 _WRITECONTENTPROFILESREQUEST.fields_by_name['content_profiles'].message_type = _CONTENTPROFILE
 DESCRIPTOR.message_types_by_name['ContentProfile'] = _CONTENTPROFILE
@@ -250,10 +250,10 @@ ContentProfile = _reflection.GeneratedProtocolMessageType('ContentProfile', (_me
     })
   ,
 
-  'GenomeScoresEntry' : _reflection.GeneratedProtocolMessageType('GenomeScoresEntry', (_message.Message,), {
-    'DESCRIPTOR' : _CONTENTPROFILE_GENOMESCORESENTRY,
+  'ScoredTagsEntry' : _reflection.GeneratedProtocolMessageType('ScoredTagsEntry', (_message.Message,), {
+    'DESCRIPTOR' : _CONTENTPROFILE_SCOREDTAGSENTRY,
     '__module__' : 'content_ingestion_service_pb2'
-    # @@protoc_insertion_point(class_scope:e8.ContentProfile.GenomeScoresEntry)
+    # @@protoc_insertion_point(class_scope:e8.ContentProfile.ScoredTagsEntry)
     })
   ,
   'DESCRIPTOR' : _CONTENTPROFILE,
@@ -262,7 +262,7 @@ ContentProfile = _reflection.GeneratedProtocolMessageType('ContentProfile', (_me
   })
 _sym_db.RegisterMessage(ContentProfile)
 _sym_db.RegisterMessage(ContentProfile.Tag)
-_sym_db.RegisterMessage(ContentProfile.GenomeScoresEntry)
+_sym_db.RegisterMessage(ContentProfile.ScoredTagsEntry)
 
 WriteContentProfilesRequest = _reflection.GeneratedProtocolMessageType('WriteContentProfilesRequest', (_message.Message,), {
   'DESCRIPTOR' : _WRITECONTENTPROFILESREQUEST,
@@ -279,7 +279,7 @@ WriteContentProfilesResponse = _reflection.GeneratedProtocolMessageType('WriteCo
 _sym_db.RegisterMessage(WriteContentProfilesResponse)
 
 
-_CONTENTPROFILE_GENOMESCORESENTRY._options = None
+_CONTENTPROFILE_SCOREDTAGSENTRY._options = None
 
 _CONTENTINGESTION = _descriptor.ServiceDescriptor(
   name='ContentIngestion',
@@ -288,8 +288,8 @@ _CONTENTINGESTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=449,
-  serialized_end=558,
+  serialized_start=443,
+  serialized_end=552,
   methods=[
   _descriptor.MethodDescriptor(
     name='WriteContentProfiles',

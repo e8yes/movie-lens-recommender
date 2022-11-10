@@ -18,7 +18,7 @@ class ContentProfileUploader(RecordUploaderInterface):
                  col_name_content_id: str,
                  col_name_title: str,
                  col_name_genres: str,
-                 col_name_genome_scores: str,
+                 col_name_scored_genome_tags: str,
                  col_name_tags: str,
                  col_name_imdb_id: str,
                  col_name_tmdb_id: str) -> None:
@@ -36,7 +36,7 @@ class ContentProfileUploader(RecordUploaderInterface):
         self.col_name_content_id = col_name_content_id
         self.col_name_title = col_name_title
         self.col_name_genres = col_name_genres
-        self.col_name_genome_scores = col_name_genome_scores
+        self.col_name_scored_genome_tags = col_name_scored_genome_tags
         self.col_name_tags = col_name_tags
         self.col_name_imdb_id = col_name_imdb_id
         self.col_name_tmdb_id = col_name_tmdb_id
@@ -70,7 +70,7 @@ class ContentProfileUploader(RecordUploaderInterface):
                     content_id=row[self.col_name_content_id],
                     title=row[self.col_name_title],
                     genres=row[self.col_name_genres],
-                    genome_scores=row[self.col_name_genome_scores],
+                    scored_tags=row[self.col_name_scored_genome_tags],
                     tags=tags,
                     imdb_id=row[self.col_name_imdb_id],
                     tmdb_id=row[self.col_name_tmdb_id])

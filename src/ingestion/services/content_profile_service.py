@@ -75,9 +75,9 @@ class ContentIngestionService(ContentIngestionServicer):
             for genre in profile.genres:
                 genres.append(genre)
 
-            genome_scores = dict()
-            for k, v in profile.genome_scores.items():
-                genome_scores[k] = v
+            scored_tags = dict()
+            for k, v in profile.scored_tags.items():
+                scored_tags[k] = v
 
             tags = list()
             for tag in profile.tags:
@@ -88,7 +88,7 @@ class ContentIngestionService(ContentIngestionServicer):
             entity = ContentProfileEntity(content_id=profile.content_id,
                                           title=profile.title,
                                           genres=genres,
-                                          genome_scores=genome_scores,
+                                          scored_tags=scored_tags,
                                           tags=tags,
                                           imdb_id=profile.imdb_id,
                                           tmdb_id=profile.tmdb_id)
@@ -99,8 +99,8 @@ class ContentIngestionService(ContentIngestionServicer):
 
         # Sends the content pieces to the Kafka queue to signal the crawler to
         # retrieve external metadata.
-        SignalMetadataCrawler(content_profiles=to_be_written,
-                              producer=self.kafka_producer)
+        # SignalMetadataCrawler(content_profiles=to_be_written,
+        #                       producer=self.kafka_producer)
 
         context.set_code(grpc.StatusCode.OK)
         return WriteContentProfilesResponse()

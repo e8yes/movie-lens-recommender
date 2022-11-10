@@ -27,7 +27,7 @@ CONTENT_PROFILE_TABLE = "content_profile"
 CONTENT_PROFILE_TABLE_ID = "id"
 CONTENT_PROFILE_TABLE_TITLE = "title"
 CONTENT_PROFILE_TABLE_GENRES = "genres"
-CONTENT_PROFILE_TABLE_GENOME_SCORES = "genome_scores"
+CONTENT_PROFILE_TABLE_SCORED_TAGS = "scored_tags"
 CONTENT_PROFILE_TABLE_TAGS = "tags"
 CONTENT_PROFILE_TABLE_IMDB_ID = "imdb_id"
 CONTENT_PROFILE_TABLE_TMDB_ID = "tmdb_id"
@@ -67,14 +67,14 @@ class ContentProfileEntity:
                  content_id: int,
                  title: str,
                  genres: List[str],
-                 genome_scores: Dict[str, float],
+                 scored_tags: Dict[str, float],
                  tags: List[ContentTag],
                  imdb_id: int,
                  tmdb_id: int) -> None:
         self.content_id = content_id
         self.title = title
         self.genres = genres
-        self.genome_scores = genome_scores
+        self.scored_tags = scored_tags
         self.tags = tags
         self.imdb_id = None if imdb_id == 0 else imdb_id
         self.tmdb_id = None if tmdb_id == 0 else tmdb_id

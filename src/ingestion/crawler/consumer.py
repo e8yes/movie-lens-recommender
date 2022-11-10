@@ -40,10 +40,12 @@ class XmdbEntryHandlerInterface:
                 the postgres ingestion database server.
 
         Returns:
-            str: A representative string of the processed entry, for logging
-                purposes.
+            str: When an external RPC was conducted, it should return a
+                representative string of the processed entry, for logging
+                purposes. If an external RPC was not necessary, it should
+                return None.
         """
-        return str()
+        return None
 
 
 class XmdbEntryConsumer:
@@ -84,9 +86,11 @@ class XmdbEntryConsumer:
             entry = message.value
             repr = self.handler.ProcessEntry(entry=entry, pg_conn=pg_conn)
 
-            # TODO: Implement proper rate limiting.
-            logging.info("XmdbEntryConsumer.__Consume() repr={0}".format(repr))
-            sleep(1)
+            if repr is not None:
+                # TODO: Implement proper rate limiting.
+                logging.info(
+                    "XmdbEntryConsumer.__Consume() repr={0}".format(repr))
+                sleep(1)
 
     def Run(self) -> None:
         """Polls and consumes from the Kafka queue. This function blocks and

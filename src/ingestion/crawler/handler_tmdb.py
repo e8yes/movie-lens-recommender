@@ -4,6 +4,7 @@ import tmdbsimple as tmdb
 from src.ingestion.crawler.common import KAFKA_TOPIC_TMDB
 from src.ingestion.crawler.consumer import XmdbEntryHandlerInterface
 from src.ingestion.database.common import TmdbContentProfileEntity
+from src.ingestion.database.writer import TmdbContentProfileComplete
 from src.ingestion.database.writer import WriteTmdbContentProfiles
 from src.ingestion.proto_py.kafka_message_pb2 import TmdbEntry
 
@@ -51,6 +52,9 @@ class TmdbEntryHandler(XmdbEntryHandlerInterface):
         return entry
 
     def ProcessEntry(self, entry: TmdbEntry, pg_conn: Any) -> str:
+        if TmdbContentProfileComplete(tmdb_id=entry.tmdb_id, conn=pg_conn):
+            return None
+
         profile = GetTmdbProfile(tmdb_id=entry.tmdb_id,
                                  tmdb_api_key=self.tmdb_api_key)
         WriteTmdbContentProfiles(tmdb_profiles=[profile], conn=pg_conn)

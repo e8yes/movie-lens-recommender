@@ -6,10 +6,10 @@ from src.loader.reader_movie_lens import *
 from src.loader.uploader import UploadDataFrame
 from src.loader.uploader_content_profile import ContentProfileUploader
 
-REPLACED_GENOME_SCORES_COLUMN = "genome_scores"
+SCORED_GENOME_TAGS_COLUMN = "scored_genome_tags"
 
 
-def __MovieLensContentGenresToList(content_df: DataFrame) -> DataFrame:
+def _ConvertGenresToList(content_df: DataFrame) -> DataFrame:
     genre_splitter = functions.split(
         str=content_df[MOVIES_COL_GENRES], pattern="\|")
 
@@ -21,37 +21,48 @@ def __MovieLensContentGenresToList(content_df: DataFrame) -> DataFrame:
                           new=MOVIES_COL_GENRES)
 
 
-def __MovieLensCollectGenomeScoresAsDict(
+def _ScoredGenomeTagsAsDict(
         entry: Tuple[int, Iterable[Row]]) -> Row:
-    content_id, genome_score_kvs = entry
+    content_id, scored_genome_tag_kvs = entry
 
-    genome_scores = dict()
-    for row in genome_score_kvs:
-        tag_id = row[GENOME_SCORES_COL_TAG_ID]
+    scored_genome_tags = dict()
+    for row in scored_genome_tag_kvs:
+        tag = row[GENOME_TAG_COL_TAG]
         relevance = row[GENOME_SCORES_COL_RELEVANCE]
 
-        genome_scores[tag_id] = relevance
+        scored_genome_tags[tag] = relevance
 
-    ResultRow = Row(GENOME_SCORES_COL_MOVIE_ID, REPLACED_GENOME_SCORES_COLUMN)
-    return ResultRow(content_id, genome_scores)
+    ResultRow = Row(GENOME_SCORES_COL_MOVIE_ID, SCORED_GENOME_TAGS_COLUMN)
+    return ResultRow(content_id, scored_genome_tags)
 
 
-def __MovieLensContentJoinGenomeScores(
-        content_df: DataFrame, genome_score_df: DataFrame) -> DataFrame:
-    # Collapes each piece of content's tag-relevance pairs into a sing row of
-    # dictionary.
-    genome_score_rdd = genome_score_df.rdd.                         \
-        groupBy(lambda row: row[GENOME_SCORES_COL_MOVIE_ID]).       \
-        map(__MovieLensCollectGenomeScoresAsDict)
+def _JoinGenomeTags(
+        content_df: DataFrame,
+        genome_score_df: DataFrame,
+        genome_tag_df: DataFrame) -> DataFrame:
+    # Replaces genome tag ID with the actual genome tag string
+    # (denormalization).
+    scored_genome_tags = genome_score_df.                       \
+        join(other=genome_tag_df,
+             on=genome_score_df[GENOME_SCORES_COL_TAG_ID] ==
+             genome_tag_df[GENOME_TAG_COL_TAG_ID]).             \
+        drop(genome_score_df[GENOME_SCORES_COL_TAG_ID]).        \
+        drop(genome_tag_df[GENOME_TAG_COL_TAG_ID])
+
+    # Groups multiple rows of tag-relevance pairs for each piece of content
+    # into a single dictionary containing all the pairs.
+    scored_genome_tag_rdd = scored_genome_tags.rdd.             \
+        groupBy(lambda row: row[GENOME_SCORES_COL_MOVIE_ID]).   \
+        map(_ScoredGenomeTagsAsDict)
 
     genome_score_schema = types.StructType([
         types.StructField(GENOME_SCORES_COL_MOVIE_ID, types.IntegerType()),
-        types.StructField(REPLACED_GENOME_SCORES_COLUMN,
-                          types.MapType(types.IntegerType(),
+        types.StructField(SCORED_GENOME_TAGS_COLUMN,
+                          types.MapType(types.StringType(),
                                         types.FloatType()))
     ])
 
-    genome_score_df = genome_score_rdd.toDF(schema=genome_score_schema)
+    genome_score_df = scored_genome_tag_rdd.toDF(schema=genome_score_schema)
 
     # Joins content with the genome scores.
     return content_df.                                              \
@@ -62,7 +73,7 @@ def __MovieLensContentJoinGenomeScores(
         drop(genome_score_df[GENOME_SCORES_COL_MOVIE_ID])
 
 
-def __MovieLensCollectTagsAsList(entry: Tuple[int, Iterable[Row]]) -> Row:
+def _UserTagsAsList(entry: Tuple[int, Iterable[Row]]) -> Row:
     content_id, tag_kvs = entry
 
     tags = dict()
@@ -76,8 +87,8 @@ def __MovieLensCollectTagsAsList(entry: Tuple[int, Iterable[Row]]) -> Row:
     return ResultRow(content_id, tags)
 
 
-def __MovieLensContentJoinTags(content_df: DataFrame,
-                               tag_df: DataFrame) -> DataFrame:
+def _JoinUserTags(content_df: DataFrame,
+                  tag_df: DataFrame) -> DataFrame:
     # Collapes each piece of content's tag-timestamp pairs into a sing row of
     # dictionary.
     tag_rdd = tag_df.select([TAGS_COL_MOVIE_ID,
@@ -85,7 +96,7 @@ def __MovieLensContentJoinTags(content_df: DataFrame,
                             TAGS_COL_TIMESTAMP]).                   \
         rdd.                                                        \
         groupBy(lambda row: row[TAGS_COL_MOVIE_ID]).                \
-        map(__MovieLensCollectTagsAsList)
+        map(_UserTagsAsList)
 
     tag_schema = types.StructType([
         types.StructField(TAGS_COL_MOVIE_ID, types.IntegerType()),
@@ -104,8 +115,8 @@ def __MovieLensContentJoinTags(content_df: DataFrame,
         drop(tag_df[TAGS_COL_MOVIE_ID])
 
 
-def __MovieLensContentJoinExternalLink(content_df: DataFrame,
-                                       link_df: DataFrame) -> DataFrame:
+def _JoinExternalLink(content_df: DataFrame,
+                      link_df: DataFrame) -> DataFrame:
     return content_df.                                              \
         join(
             other=link_df, on=content_df[MOVIES_COL_MOVIE_ID] ==
@@ -127,13 +138,12 @@ def LoadMovieLensContentProfiles(data_set: MovieLensDataset,
     Returns:
         Tuple[int, int]: #content profiles and #failed profiles.
     """
-    contents = __MovieLensContentGenresToList(content_df=data_set.df_movies)
-    contents = __MovieLensContentJoinGenomeScores(
-        content_df=contents, genome_score_df=data_set.df_genome_scores)
-    contents = __MovieLensContentJoinTags(content_df=contents,
-                                          tag_df=data_set.df_tags)
-    contents = __MovieLensContentJoinExternalLink(content_df=contents,
-                                                  link_df=data_set.df_links)
+    contents = _ConvertGenresToList(content_df=data_set.df_movies)
+    contents = _JoinGenomeTags(content_df=contents,
+                               genome_score_df=data_set.df_genome_scores,
+                               genome_tag_df=data_set.df_genome_tags)
+    contents = _JoinUserTags(content_df=contents, tag_df=data_set.df_tags)
+    contents = _JoinExternalLink(content_df=contents, link_df=data_set.df_links)
     contents.cache()
 
     uploader = ContentProfileUploader(
@@ -141,7 +151,7 @@ def LoadMovieLensContentProfiles(data_set: MovieLensDataset,
         col_name_content_id=MOVIES_COL_MOVIE_ID,
         col_name_title=MOVIES_COL_TITLE,
         col_name_genres=MOVIES_COL_GENRES,
-        col_name_genome_scores=REPLACED_GENOME_SCORES_COLUMN,
+        col_name_scored_genome_tags=SCORED_GENOME_TAGS_COLUMN,
         col_name_tags=TAGS_COL_TAG,
         col_name_imdb_id=LINKS_COL_IMDB_ID,
         col_name_tmdb_id=LINKS_COL_TMDB_ID)

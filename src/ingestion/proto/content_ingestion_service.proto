@@ -20,10 +20,9 @@ message ContentProfile {
   // Zero of more genres referred to using structured strings.
   repeated string genres = 3;
 
-  // Stores a map of <tag ID, relevance> pairs. The relevance scores sum to 1.
-  // Note, the tag ID key has nothing to do with the list of Tags in the field
-  // below.
-  map<int64, float> genome_scores = 4;
+  // Stores a map of <tag, relevance> pairs. Note, the tag string key has
+  // nothing to do with the list of Tags in the field below.
+  map<string, float> scored_tags = 4;
 
   // Zero or more user defined tags. See the Tag message for what it is.
   repeated Tag tags = 5;
