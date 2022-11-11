@@ -71,20 +71,44 @@ def VectorizeContentTokens(content_tokens: DataFrame,
     pass
 
 
-def VectorizeContentGenomeScores(content_tokens: DataFrame,
-                                 term_idf: DataFrame,
-                                 glove: DataFrame) -> DataFrame:
-    """_summary_
+def VectorizeContentScoredTags(content_scored_tags: DataFrame,
+                               glove: DataFrame) -> DataFrame:
+    """Turns scored tags into a vector by summing word embeddings of each tag
+    and weighing each term by the tag's relevance score.
+
+    Example inputs:
+    scored tags:
+    -----------------------------------
+    | id | scored_tags                |
+    -----------------------------------
+    | 1  | {"Good": 0.9, "Bad": 0.1}  |
+    -----------------------------------
+
+    glove:
+    -------------------------
+    | word   | embedding    |
+    -------------------------
+    | "good" | [1, 2, 3]    |
+    -------------------------
+    | "bad"  | [-1, -2, -3] |
+    -------------------------
+
+    Example output:
+    ------------------------
+    | id | scored_tags     |
+    ------------------------
+    | 1  | [0.8, 1.6, 2.4] |
+    ------------------------
 
     Args:
-        content_tokens (DataFrame): _description_
-        term_idf (DataFrame): _description_
-        glove (DataFrame): _description_
+        content_scored_tags (DataFrame): See the example inputs above.
+        glove (DataFrame): See the example inputs above.
 
     Returns:
-        DataFrame: _description_
+        DataFrame: See the example output above.
     """
-    pass
+    content_scored_tags.show()
+    glove.show()
 
 
 def VectorizeUserTokens(user_tag_tokens: DataFrame,
