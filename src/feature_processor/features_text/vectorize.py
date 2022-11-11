@@ -55,20 +55,60 @@ def LoadGloveDefinitions(path: str,
         toDF(schema=schema)
 
 
-def VectorizeContentTokens(content_tokens: DataFrame,
-                           term_idf: DataFrame,
+def VectorizeContentTokens(content_tokens_idf: DataFrame,
                            glove: DataFrame) -> DataFrame:
-    """_summary_
+    """Turns word tokens into a vector by summing word embeddings of each token
+    and weighing each by the token's IDF.
+
+    Example inputs:
+    content_tokens_idf
+    ------------------------------
+    | id | token           | idf |
+    ------------------------------
+    | 1  | "anna"          | 0   |
+    ------------------------------
+    | 1  | ","             | 0   |
+    ------------------------------
+    | 1  | "an"            | 0   |
+    ------------------------------
+    | 1  | "oh-my-god"     | 1.2 |
+    ------------------------------
+    | 1  | "moment"        | 0.8 |
+    ------------------------------
+    | 1  | "."             | 0   |
+    ------------------------------
+
+    glove
+    ----------------------------------
+    | word            | embedding    |
+    ----------------------------------
+    | "anna"          | [1, 2, 3]    |
+    ----------------------------------
+    | ","             | [4, 5, 6]    |
+    ----------------------------------
+    | "an"            | [7, 8, 9]    |
+    ----------------------------------
+    | "oh-my-god"     | [-1, -2, -3] |
+    ----------------------------------
+    | "moment"        | [0, 1, 2]    |
+    ----------------------------------
+
+    Example output:
+    -------------------------
+    | id | embedding        |
+    -------------------------
+    | 1  | [-1.2, -1.6, -2] |
+    -------------------------
 
     Args:
-        content_tokens (DataFrame): _description_
-        term_idf (DataFrame): _description_
-        glove (DataFrame): _description_
+        content_tokens_idf (DataFrame): See the example inputs above.
+        glove (DataFrame): See the example inputs above.
 
     Returns:
-        DataFrame: _description_
+        DataFrame: See the example output above.
     """
-    pass
+    content_tokens_idf.show()
+    glove.show()
 
 
 def VectorizeContentScoredTags(content_scored_tags: DataFrame,
