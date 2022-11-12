@@ -196,6 +196,37 @@ def NormalizeBudget(content_budget: DataFrame) -> DataFrame:
     content_budget.show()
 
 
+def NormalizeRuntime(content_runtime: DataFrame) -> DataFrame:
+    """Transforms all runtimes, so they distribute in a unit normal.
+
+    Example input:
+    -------------------
+    | id | runtime    |
+    -------------------
+    |  1 |  115       |
+    -------------------
+    |  3 |  75        |
+    -------------------
+    mean = 95, std = 1,000,000
+
+    Example output:
+    ----------------
+    | id | runtime |
+    ----------------
+    |  1 |   1     |
+    ----------------
+    |  3 |  -1     |
+    ----------------
+
+    Args:
+        content_runtime (DataFrame): See the example input above.
+
+    Returns:
+        DataFrame: See the example output above.
+    """
+    content_runtime.show()
+
+
 def NormalizeReleaseYear(content_release_year: DataFrame) -> DataFrame:
     """Transform all the release years, so they distribute in a unit normal.
 
@@ -378,6 +409,7 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |-- avg_rating: float (nullable = true)
                 |-- rating_count: float (nullable = true)
                 |-- budget: float (nullable = true)
+                |-- runtime: float (nullable = true)
                 |-- release_year: float (nullable = true)
                 |-- tmdb_avg_rating: float (nullable = true)
                 |-- tmdb_vote_count: float (nullable = true)
