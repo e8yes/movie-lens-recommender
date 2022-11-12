@@ -55,8 +55,8 @@ def LoadGloveDefinitions(path: str,
         toDF(schema=schema)
 
 
-def VectorizeContentTokens(content_tokens_idf: DataFrame,
-                           glove: DataFrame) -> DataFrame:
+def VectorizeContentSummaryTokens(content_tokens_idf: DataFrame,
+                                  glove: DataFrame) -> DataFrame:
     """Turns word tokens into a vector by summing word embeddings of each token
     and weighing each by the token's IDF.
 
@@ -71,9 +71,9 @@ def VectorizeContentTokens(content_tokens_idf: DataFrame,
     ------------------------------
     | 1  | "an"            | 0   |
     ------------------------------
-    | 1  | "oh-my-god"     | 1.2 |
+    | 1  | "oh-my-god"     | 0.8 |
     ------------------------------
-    | 1  | "moment"        | 0.8 |
+    | 1  | "moment"        | 0.2 |
     ------------------------------
     | 1  | "."             | 0   |
     ------------------------------
@@ -82,23 +82,23 @@ def VectorizeContentTokens(content_tokens_idf: DataFrame,
     ----------------------------------
     | word            | embedding    |
     ----------------------------------
-    | "anna"          | [1, 2, 3]    |
+    | "anna"          | [0, 1, 2]    |
     ----------------------------------
-    | ","             | [4, 5, 6]    |
+    | ","             | [2, 3, 4]    |
     ----------------------------------
-    | "an"            | [7, 8, 9]    |
+    | "an"            | [5, 6, 7]    |
     ----------------------------------
     | "oh-my-god"     | [-1, -2, -3] |
     ----------------------------------
-    | "moment"        | [0, 1, 2]    |
+    | "moment"        | [1, 2, 3]    |
     ----------------------------------
 
     Example output:
-    -------------------------
-    | id | embedding        |
-    -------------------------
-    | 1  | [-1.2, -1.6, -2] |
-    -------------------------
+    ---------------------------
+    | id | summary            |
+    ---------------------------
+    | 1  | [-0.6, -1.2, -1.8] |
+    ---------------------------
 
     Args:
         content_tokens_idf (DataFrame): See the example inputs above.
@@ -114,14 +114,14 @@ def VectorizeContentTokens(content_tokens_idf: DataFrame,
 def VectorizeContentScoredTags(content_scored_tags: DataFrame,
                                glove: DataFrame) -> DataFrame:
     """Turns scored tags into a vector by summing word embeddings of each tag
-    and weighing each term by the tag's relevance score.
+    and weighing each entry by the tag's normalized relevance score.
 
     Example inputs:
     scored tags:
     -----------------------------------
     | id | scored_tags                |
     -----------------------------------
-    | 1  | {"Good": 0.9, "Bad": 0.1}  |
+    | 1  | {"Good": 0.9, "Bad": 0.2}  |
     -----------------------------------
 
     glove:
@@ -133,12 +133,19 @@ def VectorizeContentScoredTags(content_scored_tags: DataFrame,
     | "bad"  | [-1, -2, -3] |
     -------------------------
 
+    Intermediate result (normalized relevance):
+    ------------------------------------
+    | id | scored_tags                 |
+    ------------------------------------
+    | 1  | {"Good": 0.82, "Bad": 0.18} |
+    ------------------------------------
+
     Example output:
-    ------------------------
-    | id | scored_tags     |
-    ------------------------
-    | 1  | [0.8, 1.6, 2.4] |
-    ------------------------
+    ---------------------------
+    | id | scored_tags        |
+    ---------------------------
+    | 1  | [0.64, 1.28, 1.92] |
+    ---------------------------
 
     Args:
         content_scored_tags (DataFrame): See the example inputs above.
@@ -153,13 +160,49 @@ def VectorizeContentScoredTags(content_scored_tags: DataFrame,
 
 def VectorizeUserTokens(user_tag_tokens: DataFrame,
                         glove: DataFrame) -> DataFrame:
-    """_summary_
+    """Turns user tags into a vector by averaging the word embeddings of each
+    tag token.
+
+    Example inputs:
+    user_tag_tokens
+    -------------------------------
+    | id | token                  |
+    -------------------------------
+    | 1  | "unlikely-friendships" |
+    -------------------------------
+    | 1  | ","                    |
+    -------------------------------
+    | 1  | "buzz"                 |
+    -------------------------------
+    | 1  | "lightyear"            |
+    -------------------------------
+
+    glove:
+    -----------------------------------------
+    | word                   | embedding    |
+    -----------------------------------------
+    | "unlikely-friendships" | [1, 2, 3]    |
+    -----------------------------------------
+    | ","                    | [4, 5, 6]    |
+    -----------------------------------------
+    | "buzz"                 | [7, 8, 9]    |
+    -----------------------------------------
+    | "lightyear"            | [10, 11, 12] |
+    -----------------------------------------
+
+    Example output:
+    ------------------------
+    | id | tags            |
+    ------------------------
+    | 1  | [5.5, 6.5, 7.5] |
+    ------------------------
 
     Args:
-        user_tag_tokens (DataFrame): _description_
-        glove (DataFrame): _description_
+        user_tag_tokens (DataFrame): See the example inputs above.
+        glove (DataFrame): See the example inputs above.
 
     Returns:
-        DataFrame: _description_
+        DataFrame: See the example output above.
     """
-    pass
+    user_tag_tokens.show()
+    glove.show()
