@@ -5,7 +5,7 @@ def ComputeNormalizedAverageRating(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the average rating each user gives. Then it applies the
     following transformation to the average ratings:
-        normalized_avg_ratings = 
+        normalized_avg_ratings =
             (avg_ratings[user_id] - mean(avg_ratings))/std(avg_ratings)
 
     Example input:
@@ -59,7 +59,7 @@ def ComputeNormalizedRatingFeedbackCount(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the number of ratings each user gives. Then it applies the
     following transformation to the counts:
-        normalized_count = 
+        normalized_count =
             (rating_count[user_id] - mean(rating_counts))/std(rating_counts)
 
     Example input:
@@ -115,7 +115,7 @@ def ComputeNormalizedTaggingFeedbackCount(
         user_tagging_feebacks: DataFrame) -> DataFrame:
     """Computes the number of tags each user gives. Then it applies the
     following transformation to the counts:
-        normalized_count = 
+        normalized_count =
             (rating_count[user_id] - mean(rating_counts))/std(rating_counts)
 
     Example input:

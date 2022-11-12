@@ -2,10 +2,13 @@ import argparse
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Reads from the raw ingestion data set then partitions the data records into training, validation and test sets. The data sets are then written out as tf-record data sets.")
+        description="Reads from the raw ingestion data set then partitions \
+the data records into training, validation and test sets. The data sets are \
+then written out as tf-record data sets.")
     parser.add_argument(
         name_or_flags="--postgres_host", type=str,
-        help="The IP address which points to the postgres database server which stores the raw ingestion data set.")
+        help="The IP address which points to the postgres database server \
+which stores the raw ingestion data set.")
     parser.add_argument(
         name_or_flags="--postgres_user",
         type=str,
@@ -16,7 +19,8 @@ if __name__ == "__main__":
         help="The password of the postgres user.")
     parser.add_argument(
         name_or_flags="--output_path", type=str, nargs="+",
-        help="Path where the training, validation and test data sets are going to be created.")
+        help="Path where the training, validation and test data sets are \
+going to be created.")
 
     args = parser.parse_args()
 

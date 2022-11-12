@@ -2,8 +2,10 @@ import argparse
 from os import path
 
 from src.feature_processor.pipelines.writer import WriteAsTfRecordDataSet
-from src.feature_processor.pipelines.assemble_features import AssembleContentFeatures
-from src.feature_processor.pipelines.assemble_features import AssembleUserFeatures
+from src.feature_processor.pipelines.assemble_features \
+    import AssembleContentFeatures
+from src.feature_processor.pipelines.assemble_features \
+    import AssembleUserFeatures
 from src.ingestion.database.reader import IngestionReader
 
 
@@ -28,10 +30,12 @@ def Main(postgres_host: str,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Extracts and transforms information drawn from the raw data set to create user and content features for modeling.")
+        description="Extracts and transforms information drawn from the raw \
+data set to create user and content features for modeling.")
     parser.add_argument(
         name_or_flags="--postgres_host", type=str,
-        help="The IP address which points to the postgres database server which stores the raw ingestion data set.")
+        help="The IP address which points to the postgres database server \
+which stores the raw ingestion data set.")
     parser.add_argument(
         name_or_flags="--postgres_user",
         type=str,
@@ -42,7 +46,8 @@ if __name__ == "__main__":
         help="The password of the postgres user.")
     parser.add_argument(
         name_or_flags="--output_path", type=str, nargs="+",
-        help="Path where the user and content features are going to be written.")
+        help="Path where the user and content features are going to be written\
+.")
 
     args = parser.parse_args()
 

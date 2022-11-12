@@ -59,7 +59,7 @@ def ComputeNormalizedAverageRating(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the average rating each piece of content receives. Then it
     applies the following transformation to the average ratings:
-        normalized_avg_ratings = 
+        normalized_avg_ratings =
             (avg_ratings[content_id] - mean(avg_ratings))/std(avg_ratings)
 
     Example input:
@@ -113,7 +113,7 @@ def ComputeNormalizedRatingCount(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the number of ratings each piece of content receives. Then it
     applies the following transformation to the counts:
-        normalized_count = 
+        normalized_count =
             (rating_count[content_id] - mean(rating_counts))/std(rating_counts)
 
     Example input:
@@ -266,8 +266,10 @@ def NormalizeTmdbVoteCount(content_tmdb_vote_count: DataFrame) -> DataFrame:
     content_tmdb_vote_count.show()
 
 
-def NormalizeTmdbAverageRating(content_tmdb_avg_rating: DataFrame) -> DataFrame:
-    """Transform all the TMDB average ratings, so they distribute in a unit normal.
+def NormalizeTmdbAverageRating(
+        content_tmdb_avg_rating: DataFrame) -> DataFrame:
+    """Transform all the TMDB average ratings, so they distribute in a unit
+    normal.
 
     Example input:
     --------------------------
@@ -302,7 +304,8 @@ def NormalizeTmdbAverageRating(content_tmdb_avg_rating: DataFrame) -> DataFrame:
 
 
 def NormalizeTmdbPopularity(content_tmdb_popularity: DataFrame) -> DataFrame:
-    """Transform all the TMDB popularity scores, so they distribute in a unit normal.
+    """Transform all the TMDB popularity scores, so they distribute in a unit
+    normal.
 
     Example input:
     ------------------------

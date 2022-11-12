@@ -1,5 +1,4 @@
 from pyspark.sql import DataFrame
-from typing import Tuple
 
 
 def CollectContentText(contents: DataFrame,
@@ -27,7 +26,8 @@ def CollectContentText(contents: DataFrame,
 
     Args:
         contents (DataFrame): See the example input above.
-        spell_correction (bool): Whether to perform spell correction to the text.
+        spell_correction (bool): Whether to perform spell correction to the
+            text.
 
     Returns:
         DataFrame: See the example output above.
@@ -66,7 +66,8 @@ def CollectContentTags(contents: DataFrame,
 
     Args:
         contents (DataFrame): See the example input above.
-        spell_correction (bool): Whether to perform spell correction to the text.
+        spell_correction (bool): Whether to perform spell correction to the
+            text.
 
     Returns:
         DataFrame: See the example output above.
@@ -155,9 +156,14 @@ def CollectTerms(content_tokens: DataFrame) -> DataFrame:
     content_tokens.show()
 
 
-def ComputeIdf(content_terms: DataFrame) -> DataFrame:
-    """Computes the inverse document frequency for the terms in each piece of
+def ComputeIdf(content_tokens_terms: DataFrame) -> DataFrame:
+    """Computes the inverse document frequency for the tokens in each piece of
     content.
+
+    A token's IDF is determined by the maximum IDF of its composition term. For
+    example, a word token "oh-my-god" consists of 2 terms: oh and god.
+    The IDF of the word token is therefore:
+        word_idf("oh-my-god") = max(term_idf("oh"), term_idf("god"))
 
     Example input:
     -----------------------------------
@@ -178,7 +184,7 @@ def ComputeIdf(content_terms: DataFrame) -> DataFrame:
     | 1  | "."             | NULL     |
     -----------------------------------
 
-    Example output:
+    Intermediate result (term IDF):
     -----------------------------------------
     | id | token           | term     | idf |
     -----------------------------------------
@@ -197,10 +203,28 @@ def ComputeIdf(content_terms: DataFrame) -> DataFrame:
     | 1  | "."             | NULL     | 0   |
     -----------------------------------------
 
+    Example output:
+    ------------------------------
+    | id | token           | idf |
+    ------------------------------
+    | 1  | "anna"          | 0   |
+    ------------------------------
+    | 1  | ","             | 0   |
+    ------------------------------
+    | 1  | "an"            | 0   |
+    ------------------------------
+    | 1  | "oh-my-god"     | 1.2 |
+    ------------------------------
+    | 1  | "moment"        | 0.8 |
+    ------------------------------
+    | 1  | "."             | 0   |
+    ------------------------------
+
+
     Args:
-        content_terms (DataFrame): See the example input above.
+        content_tokens_terms (DataFrame): See the example input above.
 
     Returns:
         DataFrame: See the example output above.
     """
-    content_terms.show()
+    content_tokens_terms.show()

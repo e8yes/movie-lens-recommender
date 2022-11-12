@@ -2,9 +2,10 @@ from pyspark.sql import DataFrame
 
 
 def ComputeContentTextFeatures(contents: DataFrame) -> DataFrame:
-    pass
+    contents.show()
 
 
 def ComputeUserTextFeatures(
+        users: DataFrame,
         user_tagging_feedbacks: DataFrame) -> DataFrame:
-    pass
+    user_tagging_feedbacks.show()
