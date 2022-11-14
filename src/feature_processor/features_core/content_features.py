@@ -262,6 +262,86 @@ def NormalizeReleaseYear(content_release_year: DataFrame) -> DataFrame:
     content_release_year.show()
 
 
+def ComputeTeamComposition(
+        content_credits: DataFrame) -> DataFrame:
+    """Finds the composition of the content creation team. It first computes
+    the absolute count for the number of people in each department, then it
+    normalizes the count based on the mean and the standard deviation.
+
+    Example input:
+    --------------------------------------------------
+    | id | tmdb_credits                              |
+    --------------------------------------------------
+    | 1  | '"cast": [                                |
+    |    |  { "known_for_department": "Acting" },    |
+    |    |  { "known_for_department": "Acting" }     |
+    |    | ],                                        |
+    |    | "crew": [                                 |
+    |    |  { "known_for_department": "Directing" }, |
+    |    |  { "known_for_department": "Writing" }    |
+    |    | ]'                                        |
+    --------------------------------------------------
+    | 2  | '"cast": [                                |
+    |    |  { "known_for_department": "Acting" }     |
+    |    | ],                                        |
+    |    | "crew": [                                 |
+    |    |  { "known_for_department": "Directing" }, |
+    |    |  { "known_for_department": "Sound" }      |
+    |    | ]'                                        |
+    --------------------------------------------------
+
+    Intermediate result (count by department):
+    -------------------------------------------
+    | id | department          | cast | count |
+    -------------------------------------------
+    | 1  | "Acting"            | true | 2     |
+    -------------------------------------------
+    | 1  | "Directing"         | true | 0     |
+    -------------------------------------------
+    | 1  | "Writing"           | true | 0     |
+    -------------------------------------------
+    | 1  | "Production"        | true | 0     |
+    -------------------------------------------
+    | 1  | "Crew"              | true | 0     |
+    -------------------------------------------
+    | 1  | "Sound"             | true | 0     |
+    -------------------------------------------
+    | 1  | "Camera"            | true | 0     |
+    -------------------------------------------
+    | 1  | "Art"               | true | 0     |
+    -------------------------------------------
+    | 1  | "Costume & Make-Up" | true | 0     |
+    -------------------------------------------
+    | 1  | "Editing"           | true | 0     |
+    -------------------------------------------
+    | 1  | "Visual Effects"    | true | 0     |
+    -------------------------------------------
+    | 1  | "Lighting"          | true | 0     |
+    -------------------------------------------
+    | 1  | "Creator"           | true | 0     |
+    -------------------------------------------
+
+    ... ...
+
+
+    Example output:
+     ------------------------------------------------
+    | id | cast_composition | crew_composition      |
+    -------------------------------------------------
+    | 1  | [1.0, 0.0, ...]  | [0.0, ..., -1.0, ...] |
+    -------------------------------------------------
+    | 2  | [-1.0, 0.0, ...] | [0.0, ..., 1.0, ...]  |
+    -------------------------------------------------
+
+    Args:
+        content_credits (DataFrame): See the example input above.
+
+    Returns:
+        DataFrame: See the example output above.
+    """
+    content_credits.show()
+
+
 def NormalizeTmdbVoteCount(content_tmdb_vote_count: DataFrame) -> DataFrame:
     """Transform all the TMDB vote counts, so they distribute in a unit normal.
 
@@ -334,42 +414,6 @@ def NormalizeTmdbAverageRating(
     content_tmdb_avg_rating.show()
 
 
-def NormalizeTmdbPopularity(content_tmdb_popularity: DataFrame) -> DataFrame:
-    """Transform all the TMDB popularity scores, so they distribute in a unit
-    normal.
-
-    Example input:
-    ------------------------
-    | id | tmdb_popularity |
-    ------------------------
-    |  1 |  9.5            |
-    ------------------------
-    |  2 |  7              |
-    ------------------------
-    |  3 |  2              |
-    ------------------------
-    mean = 6.2, std = 3.5
-
-    Example output:
-    ------------------------
-    | id | tmdb_popularity |
-    ------------------------
-    |  1 |   0.94          |
-    ------------------------
-    |  2 |   0.23          |
-    ------------------------
-    |  3 |  -1.2           |
-    ------------------------
-
-    Args:
-        content_tmdb_popularity (DataFrame): See the example input above.
-
-    Returns:
-        DataFrame: See the example output above.
-    """
-    content_tmdb_popularity.show()
-
-
 def ComputeCoreContentFeatures(contents: DataFrame,
                                user_rating_feebacks: DataFrame) -> DataFrame:
     """Extracts core features from the content dataframe as well as from the
@@ -411,9 +455,12 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |-- budget: float (nullable = true)
                 |-- runtime: float (nullable = true)
                 |-- release_year: float (nullable = true)
+                |-- cast_composition: array (nullable = true)
+                |    |-- element: float (containsNull = false)
+                |-- crew_composition: array (nullable = true)
+                |    |-- element: float (containsNull = false)
                 |-- tmdb_avg_rating: float (nullable = true)
                 |-- tmdb_vote_count: float (nullable = true)
-                |-- tmdb_popularity: float (nullable = true)
     """
     contents.show()
     user_rating_feebacks.show()
