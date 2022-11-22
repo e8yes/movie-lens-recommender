@@ -3,7 +3,13 @@ syntax = "proto3";
 package e8;
 
 // Information which provides to the TMDB crawler.
-message TmdbEntry { int64 tmdb_id = 1; }
+message TmdbEntry {
+  int64 content_id = 1;
+  int64 tmdb_id = 2;
+}
 
 // Information which provides to the IMDB crawler.
-message ImdbEntry { int64 imdb_id = 1; }
+message ImdbEntry {
+  int64 content_id = 1;
+  int64 imdb_id = 2;
+}

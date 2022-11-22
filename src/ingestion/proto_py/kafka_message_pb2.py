@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x13kafka_message.proto\x12\x02\x65\x38\"\x1c\n\tTmdbEntry\x12\x0f\n\x07tmdb_id\x18\x01 \x01(\x03\"\x1c\n\tImdbEntry\x12\x0f\n\x07imdb_id\x18\x01 \x01(\x03\x62\x06proto3'
+  serialized_pb=b'\n\x13kafka_message.proto\x12\x02\x65\x38\"0\n\tTmdbEntry\x12\x12\n\ncontent_id\x18\x01 \x01(\x03\x12\x0f\n\x07tmdb_id\x18\x02 \x01(\x03\"0\n\tImdbEntry\x12\x12\n\ncontent_id\x18\x01 \x01(\x03\x12\x0f\n\x07imdb_id\x18\x02 \x01(\x03\x62\x06proto3'
 )
 
 
@@ -34,8 +34,15 @@ _TMDBENTRY = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='tmdb_id', full_name='e8.TmdbEntry.tmdb_id', index=0,
+      name='content_id', full_name='e8.TmdbEntry.content_id', index=0,
       number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='tmdb_id', full_name='e8.TmdbEntry.tmdb_id', index=1,
+      number=2, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -53,7 +60,7 @@ _TMDBENTRY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=27,
-  serialized_end=55,
+  serialized_end=75,
 )
 
 
@@ -66,8 +73,15 @@ _IMDBENTRY = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='imdb_id', full_name='e8.ImdbEntry.imdb_id', index=0,
+      name='content_id', full_name='e8.ImdbEntry.content_id', index=0,
       number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='imdb_id', full_name='e8.ImdbEntry.imdb_id', index=1,
+      number=2, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -84,8 +98,8 @@ _IMDBENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=57,
-  serialized_end=85,
+  serialized_start=77,
+  serialized_end=125,
 )
 
 DESCRIPTOR.message_types_by_name['TmdbEntry'] = _TMDBENTRY
