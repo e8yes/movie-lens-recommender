@@ -1,21 +1,26 @@
 import argparse
 import grpc
 from concurrent import futures
-from typing import Any
 
-from src.ingestion.database.common import CreateConnection
-from src.ingestion.proto_py.content_ingestion_service_pb2_grpc import add_ContentIngestionServicer_to_server
-from src.ingestion.proto_py.user_ingestion_service_pb2_grpc import add_UserIngestionServicer_to_server
-from src.ingestion.services.content_profile_service import ContentIngestionService
+from src.ingestion.database.writer import IngestionWriterInterface
+from src.ingestion.database.writer_psql import PostgresIngestionWriter
+from src.ingestion.proto_py.content_ingestion_service_pb2_grpc import \
+    add_ContentIngestionServicer_to_server
+from src.ingestion.proto_py.user_ingestion_service_pb2_grpc import \
+    add_UserIngestionServicer_to_server
+from src.ingestion.services.content_profile_service import \
+    ContentIngestionService
 from src.ingestion.services.user_profile_service import UserIngestionService
 
 
-def __RunServer(grpc_port: int, pg_conn: Any, kafka_host: str):
+def __RunServer(grpc_port: int,
+                ingestion_writer: IngestionWriterInterface,
+                kafka_host: str):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
-    user_ingestion_service = UserIngestionService(pg_conn=pg_conn)
+    user_ingestion_service = UserIngestionService(writer=ingestion_writer)
     content_ingestion_service = ContentIngestionService(
-        pg_conn=pg_conn, kafka_host=kafka_host)
+        writer=ingestion_writer, kafka_host=kafka_host)
     add_UserIngestionServicer_to_server(
         servicer=user_ingestion_service, server=server)
     add_ContentIngestionServicer_to_server(
@@ -33,7 +38,8 @@ def __RunServer(grpc_port: int, pg_conn: Any, kafka_host: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Launches a gRPC server which serves the ingestion services.")
+        description="Launches a gRPC server which serves the ingestion \
+services.")
     parser.add_argument("--grpc_port",
                         type=int,
                         help="The port number on which the gRPC server runs.")
@@ -45,7 +51,8 @@ if __name__ == "__main__":
                         help="The password of the postgres database user.")
     parser.add_argument(
         "--kafka_host", type=str,
-        help="The host address (with port number) which points to the Kafka server.")
+        help="The host address (with port number) which points to the Kafka \
+server.")
 
     args = parser.parse_args()
 
@@ -62,7 +69,8 @@ if __name__ == "__main__":
         print("kafka_host is required.")
         exit(-1)
 
-    pg_conn = CreateConnection(host=args.postgres_host,
-                               password=args.postgres_password)
+    ingestion_writer = PostgresIngestionWriter(host=args.postgres_host,
+                                               password=args.postgres_password)
     __RunServer(grpc_port=args.grpc_port,
-                pg_conn=pg_conn, kafka_host=args.kafka_host)
+                ingestion_writer=ingestion_writer,
+                kafka_host=args.kafka_host)

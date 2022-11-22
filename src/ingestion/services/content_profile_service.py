@@ -1,13 +1,17 @@
 import grpc
 from kafka import KafkaProducer
-from typing import Any, List
+from typing import List
 
-from src.ingestion.crawler.common import *
+from src.ingestion.crawler.common import KAFKA_TOPIC_IMDB
+from src.ingestion.crawler.common import KAFKA_TOPIC_TMDB
 from src.ingestion.database.common import ContentProfileEntity, ContentTag
-from src.ingestion.database.writer import WriteContentProfiles
-from src.ingestion.proto_py.content_ingestion_service_pb2 import WriteContentProfilesRequest
-from src.ingestion.proto_py.content_ingestion_service_pb2 import WriteContentProfilesResponse
-from src.ingestion.proto_py.content_ingestion_service_pb2_grpc import ContentIngestionServicer
+from src.ingestion.database.writer import IngestionWriterInterface
+from src.ingestion.proto_py.content_ingestion_service_pb2 import \
+    WriteContentProfilesRequest
+from src.ingestion.proto_py.content_ingestion_service_pb2 import \
+    WriteContentProfilesResponse
+from src.ingestion.proto_py.content_ingestion_service_pb2_grpc import \
+    ContentIngestionServicer
 from src.ingestion.proto_py.kafka_message_pb2 import TmdbEntry
 from src.ingestion.proto_py.kafka_message_pb2 import ImdbEntry
 
@@ -39,16 +43,16 @@ class ContentIngestionService(ContentIngestionServicer):
     """A service to support the recording of content metadata to the database.
     """
 
-    def __init__(self, pg_conn: Any, kafka_host: str) -> None:
+    def __init__(
+            self, writer: IngestionWriterInterface, kafka_host: str) -> None:
         """Constructs a content ingestion service.
 
         Args:
-            pg_conn (psycopg2.connection): A psycopg2 connection which connects
-                to the ingestion database.
+            writer (IngestionWriterInterface): An ingestion database writer.
             kafka_host (str): The address which points to the Kafka server.
         """
         super().__init__()
-        self.pg_conn = pg_conn
+        self.writer = writer
         self.kafka_producer = KafkaProducer(
             bootstrap_servers=[kafka_host],
             value_serializer=lambda x: x.SerializeToString())
@@ -57,7 +61,7 @@ class ContentIngestionService(ContentIngestionServicer):
                              request: WriteContentProfilesRequest,
                              context: grpc.ServicerContext) -> \
             WriteContentProfilesResponse:
-        """It creates/updates a list of new content profiles, keyed by the 
+        """It creates/updates a list of new content profiles, keyed by the
         content IDs. The call overwrites the profiles if the they have already
         been created in the system.
 
@@ -75,10 +79,6 @@ class ContentIngestionService(ContentIngestionServicer):
             for genre in profile.genres:
                 genres.append(genre)
 
-            scored_tags = dict()
-            for k, v in profile.scored_tags.items():
-                scored_tags[k] = v
-
             tags = list()
             for tag in profile.tags:
                 tags.append(ContentTag(tag=tag.text,
@@ -88,14 +88,13 @@ class ContentIngestionService(ContentIngestionServicer):
             entity = ContentProfileEntity(content_id=profile.content_id,
                                           title=profile.title,
                                           genres=genres,
-                                          scored_tags=scored_tags,
                                           tags=tags,
                                           imdb_id=profile.imdb_id,
                                           tmdb_id=profile.tmdb_id)
             to_be_written.append(entity)
 
         # Stores content profiles into the database.
-        WriteContentProfiles(content_profiles=to_be_written, conn=self.pg_conn)
+        self.writer.WriteContentProfiles(contents=to_be_written)
 
         # Sends the content pieces to the Kafka queue to signal the crawler to
         # retrieve external metadata.
