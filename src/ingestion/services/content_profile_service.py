@@ -27,13 +27,15 @@ def SignalMetadataCrawler(
         imdb_id = content_profile.imdb_id
 
         if tmdb_id is not None and tmdb_id not in tmdb_ids:
-            entry = TmdbEntry(tmdb_id=tmdb_id)
+            entry = TmdbEntry(
+                content_id=content_profile.content_id, tmdb_id=tmdb_id)
             producer.send(topic=KAFKA_TOPIC_TMDB, value=entry)
 
             tmdb_ids.add(tmdb_id)
 
         if imdb_id is not None and imdb_id not in imdb_ids:
-            entry = ImdbEntry(imdb_id=imdb_id)
+            entry = ImdbEntry(
+                content_id=content_profile.content_id, imdb_id=imdb_id)
             producer.send(topic=KAFKA_TOPIC_IMDB, value=entry)
 
             imdb_ids.add(imdb_id)
@@ -98,8 +100,8 @@ class ContentIngestionService(ContentIngestionServicer):
 
         # Sends the content pieces to the Kafka queue to signal the crawler to
         # retrieve external metadata.
-        # SignalMetadataCrawler(content_profiles=to_be_written,
-        #                       producer=self.kafka_producer)
+        SignalMetadataCrawler(content_profiles=to_be_written,
+                              producer=self.kafka_producer)
 
         context.set_code(grpc.StatusCode.OK)
         return WriteContentProfilesResponse()
