@@ -4,12 +4,10 @@ from typing import Iterable
 
 from src.ingestion.crawler.common import KAFKA_TOPIC_IMDB
 from src.ingestion.crawler.common import KAFKA_TOPIC_TMDB
+from src.ingestion.crawler.handler_tmdb import StaleRow as StaleRowTmdb
+from src.ingestion.database.reader import CONTENT_DF_ID
 from src.ingestion.database.reader import CONTENT_DF_IMDB_ID
-from src.ingestion.database.reader import CONTENT_DF_IMDB_PRIMARY_INFO
 from src.ingestion.database.reader import CONTENT_DF_TMDB_ID
-from src.ingestion.database.reader import CONTENT_DF_TMDB_PRIMARY_INFO
-from src.ingestion.database.reader import CONTENT_DF_TMDB_CREDITS
-from src.ingestion.database.reader import CONTENT_DF_TMDB_KEYWORDS
 from src.ingestion.database.reader import IngestionReaderInterface
 from src.ingestion.database.reader import ReadContents
 from src.ingestion.database.reader_psql import ConfigurePostgresSparkSession
@@ -29,28 +27,21 @@ def _UnpopulatedXmdbEntries(
     contents = ReadContents(reader)
 
     id_column = str()
-    data_columns = (None, None, None)
+    stale_row_fn = None
 
     if x == "imdb":
         id_column = CONTENT_DF_IMDB_ID
-        data_columns = (CONTENT_DF_IMDB_PRIMARY_INFO,
-                        CONTENT_DF_IMDB_PRIMARY_INFO,
-                        CONTENT_DF_IMDB_PRIMARY_INFO)
     elif x == "tmdb":
         id_column = CONTENT_DF_TMDB_ID
-        data_columns = (CONTENT_DF_TMDB_PRIMARY_INFO,
-                        CONTENT_DF_TMDB_CREDITS,
-                        CONTENT_DF_TMDB_KEYWORDS)
+        stale_row_fn = StaleRowTmdb
     else:
         raise "Unkown db type."
 
-    return contents.                                                    \
-        filter(contents[data_columns[0]].isNull() |
-               contents[data_columns[1]].isNull() |
-               contents[data_columns[2]].isNull() |
-               (contents[data_columns[0]] == "null") |
-               (contents[data_columns[1]] == "null")).                  \
-        filter(contents[id_column].isNotNull()).select([id_column]).    \
+    return contents.                    \
+        rdd.                            \
+        filter(stale_row_fn).           \
+        toDF(schema=contents.schema).   \
+        select([CONTENT_DF_ID, id_column]).            \
         distinct()
 
 
@@ -67,11 +58,15 @@ def _EnqueueXmdbEntries(entries: Iterable[Row],
         if x == "imdb":
             kafka_producer.send(
                 topic=KAFKA_TOPIC_IMDB,
-                value=ImdbEntry(imdb_id=entry[CONTENT_DF_IMDB_ID]))
+                value=ImdbEntry(
+                    content_id=entry[CONTENT_DF_ID],
+                    imdb_id=entry[CONTENT_DF_IMDB_ID]))
         elif x == "tmdb":
             kafka_producer.send(
                 topic=KAFKA_TOPIC_TMDB,
-                value=TmdbEntry(tmdb_id=entry[CONTENT_DF_TMDB_ID]))
+                value=TmdbEntry(
+                    content_id=entry[CONTENT_DF_ID],
+                    tmdb_id=entry[CONTENT_DF_TMDB_ID]))
         else:
             raise "Unkown db type."
 
@@ -107,7 +102,8 @@ def PopulateXmdbEntries(postgres_host: str,
                                                spark=spark)
     xmdb_ids = _UnpopulatedXmdbEntries(reader=ingestion_reader, x=x)
 
-    num_entries_scheduled = xmdb_ids.rdd. mapPartitions(
-        lambda entries: _EnqueueXmdbEntries(entries, kafka_host, x)).   \
+    num_entries_scheduled = xmdb_ids.rdd.                                   \
+        mapPartitions(
+            lambda entries: _EnqueueXmdbEntries(entries, kafka_host, x)).   \
         sum()
     return num_entries_scheduled

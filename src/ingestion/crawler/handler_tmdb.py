@@ -1,18 +1,59 @@
+import json
 import tmdbsimple as tmdb
+from pyspark.sql import Row
+from typing import Dict
 
 from src.ingestion.crawler.common import KAFKA_TOPIC_TMDB
 from src.ingestion.crawler.consumer import XmdbEntryHandlerInterface
 from src.ingestion.database.common import TmdbContentProfileEntity
+from src.ingestion.database.reader import CONTENT_DF_TMDB_ID
+from src.ingestion.database.reader import CONTENT_DF_TMDB_PRIMARY_INFO
+from src.ingestion.database.reader import CONTENT_DF_TMDB_CREDITS
+from src.ingestion.database.reader import CONTENT_DF_TMDB_KEYWORDS
 from src.ingestion.database.reader import IngestionReaderInterface
 from src.ingestion.database.writer import IngestionWriterInterface
 from src.ingestion.proto_py.kafka_message_pb2 import TmdbEntry
 
 
-def Stale(field: str, current_tmdb_id: int):
+def Stale(field: Dict[str, any], current_tmdb_id: int):
     # Needs to check if the the field is up-to-date because TMDB ID might
     # change for the content, but the TMDB fields were filled using the old
     # TMDB ID.
-    return field is None or int(field["id"]) != current_tmdb_id
+    return field is None or field["id"] != current_tmdb_id
+
+
+def StaleRow(row: Row) -> bool:
+    """Checks if the TMDB fields in a content row is stale. A TMDB field is
+    stale either if it's null, or its JSON content doesn't match to that
+    referred to by the TMDB ID.
+
+    Args:
+        row (Row): A row read from the content_profile table.
+
+    Returns:
+        bool: Returns true if any of the TMDB fields are stale.
+    """
+    if row[CONTENT_DF_TMDB_ID] is None:
+        return False
+
+    current_tmdb_id = row[CONTENT_DF_TMDB_ID]
+
+    if row[CONTENT_DF_TMDB_PRIMARY_INFO] is None or \
+        Stale(field=json.loads(row[CONTENT_DF_TMDB_PRIMARY_INFO]),
+              current_tmdb_id=current_tmdb_id):
+        return True
+
+    if row[CONTENT_DF_TMDB_CREDITS] is None or \
+        Stale(field=json.loads(row[CONTENT_DF_TMDB_CREDITS]),
+              current_tmdb_id=current_tmdb_id):
+        return True
+
+    if row[CONTENT_DF_TMDB_KEYWORDS] is None or \
+        Stale(field=json.loads(row[CONTENT_DF_TMDB_KEYWORDS]),
+              current_tmdb_id=current_tmdb_id):
+        return True
+
+    return False
 
 
 def UpdateTmdbProfile(old_profile: TmdbContentProfileEntity,
