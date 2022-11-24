@@ -227,9 +227,9 @@ class PostgresIngestionWriter(IngestionWriterInterface):
             (
                 content_id,
                 tmdb.tmdb_id,
-                tmdb.primary_info,
-                tmdb.credits,
-                tmdb.keywords,
+                json.dumps(tmdb.primary_info),
+                json.dumps(tmdb.credits),
+                json.dumps(tmdb.keywords),
             )
         ]
 
@@ -259,7 +259,7 @@ class PostgresIngestionWriter(IngestionWriterInterface):
             (
                 content_id,
                 imdb.imdb_id,
-                imdb.primary_info,
+                json.dumps(imdb.primary_info),
             )
         ]
 

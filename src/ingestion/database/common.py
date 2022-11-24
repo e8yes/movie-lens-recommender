@@ -1,4 +1,5 @@
 from json import JSONEncoder
+from typing import Dict
 from typing import List
 
 
@@ -98,7 +99,7 @@ class UserTaggingEntity:
 class ImdbContentProfileEntity:
     def __init__(self,
                  imdb_id: int,
-                 primary_info: str) -> None:
+                 primary_info: Dict[str, any]) -> None:
         self.imdb_id = imdb_id
         self.primary_info = primary_info
 
@@ -113,9 +114,9 @@ primary_info={primary_info}".\
 class TmdbContentProfileEntity:
     def __init__(self,
                  tmdb_id: int,
-                 primary_info: str,
-                 credits: str,
-                 keywords: List[str]) -> None:
+                 primary_info: Dict[str, any],
+                 credits: Dict[str, any],
+                 keywords: Dict[str, any]) -> None:
         self.tmdb_id = tmdb_id
         self.primary_info = primary_info
         self.credits = credits
