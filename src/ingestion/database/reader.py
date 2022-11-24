@@ -1,4 +1,4 @@
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 
 from src.ingestion.database.common import CONTENT_PROFILE_TABLE
 from src.ingestion.database.common import CONTENT_PROFILE_TABLE_ID
@@ -65,16 +65,13 @@ class IngestionReaderInterface:
     database.
     """
 
-    def __init__(self, spark: SparkSession, reader_name: str) -> None:
+    def __init__(self, reader_name: str) -> None:
         """Constructs an ingestion DB reader object.
 
         Args:
-            spark (SparkSession): A spark session which is configured with a
-                connection to the ingestion database.
             reader_name (str): A human readable name of the reader
                 implementation for debugging purposes.
         """
-        self.spark = spark
         self.reader_name = reader_name
 
     def ReadTable(self, table_name: str) -> DataFrame:

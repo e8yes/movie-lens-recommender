@@ -60,7 +60,9 @@ class PostgresIngestionReader(IngestionReaderInterface):
             spark (str): A spark session configured with
                 ConfigurePostgresSparkSession().
         """
-        super().__init__(spark=spark, reader_name="PostgreSQL")
+        super().__init__(reader_name="PostgreSQL")
+
+        self.spark = spark
 
         self.db_host = db_host
         self.db_user = db_user
@@ -81,7 +83,7 @@ class PostgresIngestionReader(IngestionReaderInterface):
         psql_url = "jdbc:postgresql://{host}/{db_name}".format(
             host=self.db_host, db_name=INGESTION_DATABASE)
 
-        return super().spark.read                       \
+        return self.spark.read                       \
             .format("jdbc")                             \
             .option("url", psql_url)                    \
             .option("dbtable", table_name)              \
