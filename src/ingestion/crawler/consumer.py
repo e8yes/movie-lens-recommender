@@ -106,7 +106,6 @@ class XmdbEntryConsumer:
                 # TODO: Implement proper rate limiting.
                 logging.info(
                     "XmdbEntryConsumer.__Consume() repr={0}".format(repr))
-                sleep(1)
 
     def Run(self) -> None:
         """Polls and consumes from the Kafka queue. This function blocks and
@@ -122,7 +121,7 @@ class XmdbEntryConsumer:
                 self.__Consume()
             except KeyboardInterrupt:
                 return
-            except Exception:
-                pass
+            except Exception as e:
+                logging.error(e)
 
             sleep(1)
