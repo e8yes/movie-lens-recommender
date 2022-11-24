@@ -1,19 +1,50 @@
-from asyncio import DatagramTransport
 from pyspark.sql import DataFrame, SparkSession
 
-from src.ingestion.database.common import *
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_ID
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_TITLE
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_GENRES
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_TAGS
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_IMDB_ID
+from src.ingestion.database.common import \
+    CONTENT_PROFILE_TABLE_IMDB_PRIMARY_INFO
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_TMDB_ID
+from src.ingestion.database.common import \
+    CONTENT_PROFILE_TABLE_TMDB_PRIMARY_INFO
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_TMDB_CREDITS
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_TMDB_KEYWORDS
+from src.ingestion.database.common import CONTENT_PROFILE_TABLE_INGESTED_AT
+from src.ingestion.database.common import USER_PROFILE_TABLE
+from src.ingestion.database.common import USER_PROFILE_TABLE_ID
+from src.ingestion.database.common import USER_PROFILE_TABLE_INGESTED_AT
+from src.ingestion.database.common import USER_RATING_TABLE
+from src.ingestion.database.common import USER_RATING_TABLE_USER_ID
+from src.ingestion.database.common import USER_RATING_TABLE_CONTENT_ID
+from src.ingestion.database.common import USER_RATING_TABLE_RATED_AT
+from src.ingestion.database.common import USER_RATING_TABLE_RATING
+from src.ingestion.database.common import USER_RATING_TABLE_INGESTED_AT
+from src.ingestion.database.common import USER_TAGGING_TABLE
+from src.ingestion.database.common import USER_TAGGING_TABLE_USER_ID
+from src.ingestion.database.common import USER_TAGGING_TABLE_CONTENT_ID
+from src.ingestion.database.common import USER_TAGGING_TABLE_TAGGED_AT
+from src.ingestion.database.common import USER_TAGGING_TABLE_TAG
+from src.ingestion.database.common import USER_TAGGING_TABLE_RELEVANCE
+from src.ingestion.database.common import USER_TAGGING_TABLE_INGESTED_AT
+from src.ingestion.database.common import ImdbContentProfileEntity
+from src.ingestion.database.common import TmdbContentProfileEntity
+
 
 # Dataframe column names
 CONTENT_DF_ID = CONTENT_PROFILE_TABLE_ID
 CONTENT_DF_TITLE = CONTENT_PROFILE_TABLE_TITLE
 CONTENT_DF_GENRES = CONTENT_PROFILE_TABLE_GENRES
-CONTENT_DF_SCORED_TAGS = CONTENT_PROFILE_TABLE_SCORED_TAGS
 CONTENT_DF_TAGS = CONTENT_PROFILE_TABLE_TAGS
 CONTENT_DF_IMDB_ID = CONTENT_PROFILE_TABLE_IMDB_ID
+CONTENT_DF_IMDB_PRIMARY_INFO = CONTENT_PROFILE_TABLE_IMDB_PRIMARY_INFO
 CONTENT_DF_TMDB_ID = CONTENT_PROFILE_TABLE_TMDB_ID
-CONTENT_DF_IMDB_PRIMARY_INFO = "imdb_" + IMDB_TABLE_PRIMARY_INFO
-CONTENT_DF_TMDB_PRIMARY_INFO = "tmdb_" + TMDB_TABLE_PRIMARY_INFO
-CONTENT_DF_TMDB_CREDITS = "tmdb_" + TMDB_TABLE_CREDITS
+CONTENT_DF_TMDB_PRIMARY_INFO = CONTENT_PROFILE_TABLE_TMDB_PRIMARY_INFO
+CONTENT_DF_TMDB_CREDITS = CONTENT_PROFILE_TABLE_TMDB_CREDITS
+CONTENT_DF_TMDB_KEYWORDS = CONTENT_PROFILE_TABLE_TMDB_KEYWORDS
 
 USER_DF_ID = USER_PROFILE_TABLE_ID
 
@@ -26,45 +57,29 @@ TAGGING_FEEDBACK_DF_USER_ID = USER_TAGGING_TABLE_USER_ID
 TAGGING_FEEDBACK_DF_CONTENT_ID = USER_TAGGING_TABLE_CONTENT_ID
 TAGGING_FEEDBACK_DF_TAGGED_AT = USER_TAGGING_TABLE_TAGGED_AT
 TAGGING_FEEDBACK_DF_TAG = USER_TAGGING_TABLE_TAG
+TAGGING_FEEDBACK_DF_RELEVANCE = USER_TAGGING_TABLE_RELEVANCE
 
 
-class IngestionReader:
-    """A reader object which provides means to read data from the ingestion
-    database. It maintains a Spark session which connects to the postgres
-    ingestion database server through JDBC.
+class IngestionReaderInterface:
+    """A reader object which provides means to access data in the ingestion
+    database.
     """
 
-    def __init__(
-            self,
-            db_host: str,
-            db_user: str,
-            db_password: str,
-            jdbc_driver_path: str = "third_party/postgresql-42.5.0.jar") -> None:
+    def __init__(self, spark: SparkSession, reader_name: str) -> None:
         """Constructs an ingestion DB reader object.
 
         Args:
-            db_host (str): The IP address (with port number) which points to
-                the postgres server.
-            db_user (str): The postgres user to use while accessing the
-                ingestion database.
-            db_password (str): The password of the postgres user.
-            jdbc_driver_path (str): Path to the postgres JDBC driver binary.
-                Defaults to "third_party/postgresql-42.5.0.jar".
+            spark (SparkSession): A spark session which is configured with a
+                connection to the ingestion database.
+            reader_name (str): A human readable name of the reader
+                implementation for debugging purposes.
         """
-        self.db_host = db_host
-        self.db_user = db_user
-        self.db_password = db_password
-
-        self.spark_session = SparkSession           \
-            .builder                                \
-            .appName("Ingestion Reader")            \
-            .config("spark.jars", jdbc_driver_path) \
-            .config("spark.executor.memory", "3g")  \
-            .config("spark.driver.memory", "3g")    \
-            .getOrCreate()
+        self.spark = spark
+        self.reader_name = reader_name
 
     def ReadTable(self, table_name: str) -> DataFrame:
-        """Reads an ingestion table as a Spark dataframe.
+        """Reads an ingestion table specified by the table_name as a Spark
+        data frame.
 
         Args:
             table_name (str): The name of the table in the ingestion database.
@@ -73,24 +88,42 @@ class IngestionReader:
             DataFrame: A Spark Dataframe where it contains all the data records
                 from the specified ingestion table.
         """
-        psql_url = "jdbc:postgresql://{host}/{db_name}".format(
-            host=self.db_host, db_name=INGESTION_DATABASE)
+        pass
 
-        return self.spark_session.read                  \
-            .format("jdbc")                             \
-            .option("url", psql_url)                    \
-            .option("dbtable", table_name)              \
-            .option("user", self.db_user)               \
-            .option("password", self.db_password)       \
-            .option("driver", "org.postgresql.Driver")  \
-            .load()
+    def ReadContentTmdbFields(
+            self, content_id: int) -> TmdbContentProfileEntity:
+        """Retrieves TMDB fields of the piece of content specified by the
+        content_id.
+
+        Args:
+            content_id (int): The piece of content where TMDB fields need to
+                be retrieved.
+
+        Returns:
+            TmdbContentProfileEntity: TMDB Fields.
+        """
+        pass
+
+    def ReadContentImdbFields(
+            self, content_id: int) -> ImdbContentProfileEntity:
+        """Retrieves IMDB fields of the piece of content specified by the
+        content_id.
+
+        Args:
+            content_id (int): The piece of content where IMDB fields need to
+                be retrieved.
+
+        Returns:
+            ImdbContentProfileEntity: IMDB Fields.
+        """
+        pass
 
 
-def ReadContents(reader: IngestionReader) -> DataFrame:
+def ReadContents(reader: IngestionReaderInterface) -> DataFrame:
     """Reads data records from content profile related ingestion tables.
 
     Args:
-        reader (IngestionReader): An ingestion DB reader.
+        reader (IngestionReaderInterface): An ingestion DB reader.
 
     Returns:
         DataFrame: The schema is as follows,
@@ -99,51 +132,26 @@ def ReadContents(reader: IngestionReader) -> DataFrame:
                 |-- title: string (nullable = true)
                 |-- genres: array (nullable = true)
                 |    |-- element: string (containsNull = false)
-                |-- scored_tags: json (nullable = true)
                 |-- tags: json (nullable = true)
                 |-- imdb_id: integer (nullable = true)
                 |-- tmdb_id: integer (nullable = true)
                 |-- imdb_primary_info: json (nullable = true)
                 |-- tmdb_primary_info: json (nullable = true)
                 |-- tmdb_credits: json (nullable = true)
+                |-- tmdb_keywords: array (nullable = true)
+                |    |-- element: string (containsNull = false)
     """
     content = reader.ReadTable(
         table_name=CONTENT_PROFILE_TABLE)
-    imdb = reader.ReadTable(table_name=IMDB_TABLE)
-    tmdb = reader.ReadTable(table_name=TMDB_TABLE)
-
-    content = content.drop(CONTENT_PROFILE_TABLE_INGESTED_AT)
-    imdb = imdb.drop(IMDB_TABLE_INGESTED_AT)
-    tmdb = tmdb.drop(TMDB_TABLE_INGESTED_AT)
-
-    content = content.\
-        join(other=imdb,
-             on=content[CONTENT_PROFILE_TABLE_IMDB_ID] ==
-             imdb[IMDB_TABLE_ID],
-             how="leftouter").\
-        drop(imdb[IMDB_TABLE_ID]).\
-        withColumnRenamed(existing=IMDB_TABLE_PRIMARY_INFO,
-                          new=CONTENT_DF_IMDB_PRIMARY_INFO)
-
-    content = content.\
-        join(other=tmdb,
-             on=content[CONTENT_PROFILE_TABLE_TMDB_ID] ==
-             tmdb[TMDB_TABLE_ID],
-             how="leftouter").\
-        drop(tmdb[TMDB_TABLE_ID]).\
-        withColumnRenamed(existing=TMDB_TABLE_PRIMARY_INFO,
-                          new=CONTENT_DF_TMDB_PRIMARY_INFO).\
-        withColumnRenamed(existing=TMDB_TABLE_CREDITS,
-                          new=CONTENT_DF_TMDB_CREDITS)
-
+    content.drop(CONTENT_PROFILE_TABLE_INGESTED_AT)
     return content
 
 
-def ReadUsers(reader: IngestionReader) -> DataFrame:
+def ReadUsers(reader: IngestionReaderInterface) -> DataFrame:
     """Reads data records from user profile related ingestion tables.
 
     Args:
-        reader (IngestionReader): An ingestion DB reader.
+        reader (IngestionReaderInterface): An ingestion DB reader.
 
     Returns:
         DataFrame: The schema is as follows,
@@ -155,11 +163,11 @@ def ReadUsers(reader: IngestionReader) -> DataFrame:
     return user
 
 
-def ReadRatingFeedbacks(reader: IngestionReader) -> DataFrame:
+def ReadRatingFeedbacks(reader: IngestionReaderInterface) -> DataFrame:
     """Reads data records from user rating related ingestion tables.
 
     Args:
-        reader (IngestionReader): An ingestion DB reader.
+        reader (IngestionReaderInterface): An ingestion DB reader.
 
     Returns:
         DataFrame: The schema is as follows,
@@ -174,11 +182,11 @@ def ReadRatingFeedbacks(reader: IngestionReader) -> DataFrame:
     return rating
 
 
-def ReadTaggingFeedbacks(reader: IngestionReader) -> DataFrame:
+def ReadTaggingFeedbacks(reader: IngestionReaderInterface) -> DataFrame:
     """Reads data records from user tagging related ingestion tables.
 
     Args:
-        reader (IngestionReader): An ingestion DB reader.
+        reader (IngestionReaderInterface): An ingestion DB reader.
 
     Returns:
         DataFrame: The schema is as follows,

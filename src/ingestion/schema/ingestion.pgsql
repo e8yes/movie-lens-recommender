@@ -11,23 +11,6 @@ SET search_path = public, pg_catalog;
 SET default_tablespace = '';
 SET default_with_oids = false;
 
-/* IMDB */
-CREATE TABLE IF NOT EXISTS imdb (
-    id BIGINT NOT NULL,
-    primary_info JSONB NULL,
-    ingested_at TIMESTAMP WITHOUT TIME ZONE NULL,
-    PRIMARY KEY (id)
-);
-
-/* TMDB */
-CREATE TABLE IF NOT EXISTS tmdb (
-    id BIGINT NOT NULL,
-    primary_info JSONB NULL,
-    credits JSONB NULL,
-    ingested_at TIMESTAMP WITHOUT TIME ZONE NULL,
-    PRIMARY KEY (id)
-);
-
 /* User profile */
 CREATE TABLE IF NOT EXISTS user_profile (
     id BIGINT NOT NULL,
@@ -40,13 +23,14 @@ CREATE TABLE IF NOT EXISTS content_profile (
     id BIGINT NOT NULL,
     title CHARACTER VARYING NULL,
     genres CHARACTER VARYING [] NULL,
-    scored_tags JSONB NULL,
     tags JSONB NULL,
-    imdb_id BIGINT NULL,
     tmdb_id BIGINT NULL,
+    tmdb_primary_info JSONB NULL,
+    tmdb_credits JSONB NULL,
+    tmdb_keywords JSONB NULL,
+    imdb_id BIGINT NULL,
+    imdb_primary_info JSONB NULL,
     ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (imdb_id) REFERENCES imdb (id) ON DELETE SET NULL,
-    FOREIGN KEY (tmdb_id) REFERENCES tmdb (id) ON DELETE SET NULL,
     PRIMARY KEY (id)
 );
 
@@ -67,6 +51,7 @@ CREATE TABLE IF NOT EXISTS user_tagging (
     user_id BIGINT NOT NULL,
     content_id BIGINT NOT NULL,
     tag CHARACTER VARYING NOT NULL,
+    relevance FLOAT NULL,
     tagged_at TIMESTAMP WITHOUT TIME ZONE NULL,
     ingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user_profile (id) ON DELETE CASCADE,

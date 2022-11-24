@@ -1,37 +1,50 @@
-from typing import Any
 import tmdbsimple as tmdb
 
 from src.ingestion.crawler.common import KAFKA_TOPIC_TMDB
 from src.ingestion.crawler.consumer import XmdbEntryHandlerInterface
 from src.ingestion.database.common import TmdbContentProfileEntity
-from src.ingestion.database.writer import TmdbContentProfileComplete
-from src.ingestion.database.writer import WriteTmdbContentProfiles
+from src.ingestion.database.reader import IngestionReaderInterface
+from src.ingestion.database.writer import IngestionWriterInterface
 from src.ingestion.proto_py.kafka_message_pb2 import TmdbEntry
 
 
-def GetTmdbProfile(tmdb_id: int,
-                   tmdb_api_key: str) -> TmdbContentProfileEntity:
+def Stale(field: str, current_tmdb_id: int):
+    # Needs to check if the the field is up-to-date because TMDB ID might
+    # change for the content, but the TMDB fields were filled using the old
+    # TMDB ID.
+    return field is None or int(field["id"]) != current_tmdb_id
+
+
+def UpdateTmdbProfile(old_profile: TmdbContentProfileEntity,
+                      tmdb_api_key: str) -> TmdbContentProfileEntity:
     tmdb.API_KEY = tmdb_api_key
     tmdb.REQUESTS_TIMEOUT = 30
 
-    movie = tmdb.Movies(tmdb_id)
+    movie = tmdb.Movies(old_profile.tmdb_id)
 
-    primary_info_response = None
-    credits_response = None
+    if Stale(field=old_profile.primary_info,
+             current_tmdb_id=old_profile.tmdb_id):
+        try:
+            old_profile.primary_info = movie.info()
+        except Exception:
+            pass
 
-    try:
-        primary_info_response = movie.info()
-    except:
-        pass
+    if Stale(field=old_profile.credits,
+             current_tmdb_id=old_profile.tmdb_id):
+        try:
+            old_profile.credits = movie.credits()
+        except Exception:
+            pass
 
-    try:
-        credits_response = movie.credits()
-    except:
-        pass
+    if Stale(field=old_profile.keywords,
+             current_tmdb_id=old_profile.tmdb_id):
+        try:
+            old_profile.keywords = movie.keywords()
+        except Exception:
+            pass
 
-    return TmdbContentProfileEntity(tmdb_id=tmdb_id,
-                                    primary_info=primary_info_response,
-                                    credits=credits_response)
+    new_profile = old_profile
+    return new_profile
 
 
 class TmdbEntryHandler(XmdbEntryHandlerInterface):
@@ -51,11 +64,16 @@ class TmdbEntryHandler(XmdbEntryHandlerInterface):
         entry.ParseFromString(x)
         return entry
 
-    def ProcessEntry(self, entry: TmdbEntry, pg_conn: Any) -> str:
-        if TmdbContentProfileComplete(tmdb_id=entry.tmdb_id, conn=pg_conn):
-            return None
+    def ProcessEntry(self, entry: TmdbEntry,
+                     ingestion_reader: IngestionReaderInterface,
+                     ingestion_writer: IngestionWriterInterface) -> str:
+        old_profile = ingestion_reader.ReadContentTmdbFields(
+            content_id=entry.content_id)
 
-        profile = GetTmdbProfile(tmdb_id=entry.tmdb_id,
-                                 tmdb_api_key=self.tmdb_api_key)
-        WriteTmdbContentProfiles(tmdb_profiles=[profile], conn=pg_conn)
-        return profile.__repr__()[:50]
+        new_profile = UpdateTmdbProfile(old_profile=old_profile,
+                                        tmdb_api_key=self.tmdb_api_key)
+
+        ingestion_writer.WriteContentTmdbFields(
+            content_id=entry.content_id, tmdb=new_profile)
+
+        return new_profile.__repr__()[:50]

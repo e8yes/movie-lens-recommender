@@ -1,23 +1,12 @@
-import psycopg2 as pg
 from json import JSONEncoder
-from typing import Any, Dict, List
+from typing import Dict
+from typing import List
 
 
 # Database, table and column names.
 
 
 INGESTION_DATABASE = "ingestion"
-
-IMDB_TABLE = "imdb"
-IMDB_TABLE_ID = "id"
-IMDB_TABLE_PRIMARY_INFO = "primary_info"
-IMDB_TABLE_INGESTED_AT = "ingested_at"
-
-TMDB_TABLE = "tmdb"
-TMDB_TABLE_ID = "id"
-TMDB_TABLE_PRIMARY_INFO = "primary_info"
-TMDB_TABLE_CREDITS = "credits"
-TMDB_TABLE_INGESTED_AT = "ingested_at"
 
 USER_PROFILE_TABLE = "user_profile"
 USER_PROFILE_TABLE_ID = "id"
@@ -30,7 +19,11 @@ CONTENT_PROFILE_TABLE_GENRES = "genres"
 CONTENT_PROFILE_TABLE_SCORED_TAGS = "scored_tags"
 CONTENT_PROFILE_TABLE_TAGS = "tags"
 CONTENT_PROFILE_TABLE_IMDB_ID = "imdb_id"
+CONTENT_PROFILE_TABLE_IMDB_PRIMARY_INFO = "imdb_primary_info"
 CONTENT_PROFILE_TABLE_TMDB_ID = "tmdb_id"
+CONTENT_PROFILE_TABLE_TMDB_PRIMARY_INFO = "tmdb_primary_info"
+CONTENT_PROFILE_TABLE_TMDB_CREDITS = "tmdb_credits"
+CONTENT_PROFILE_TABLE_TMDB_KEYWORDS = "tmdb_keywords"
 CONTENT_PROFILE_TABLE_INGESTED_AT = "ingested_at"
 
 USER_RATING_TABLE = "user_rating"
@@ -44,6 +37,7 @@ USER_TAGGING_TABLE = "user_tagging"
 USER_TAGGING_TABLE_USER_ID = "user_id"
 USER_TAGGING_TABLE_CONTENT_ID = "content_id"
 USER_TAGGING_TABLE_TAG = "tag"
+USER_TAGGING_TABLE_RELEVANCE = "relevance"
 USER_TAGGING_TABLE_TAGGED_AT = "tagged_at"
 USER_TAGGING_TABLE_INGESTED_AT = "ingested_at"
 
@@ -67,14 +61,12 @@ class ContentProfileEntity:
                  content_id: int,
                  title: str,
                  genres: List[str],
-                 scored_tags: Dict[str, float],
                  tags: List[ContentTag],
                  imdb_id: int,
                  tmdb_id: int) -> None:
         self.content_id = content_id
         self.title = title
         self.genres = genres
-        self.scored_tags = scored_tags
         self.tags = tags
         self.imdb_id = None if imdb_id == 0 else imdb_id
         self.tmdb_id = None if tmdb_id == 0 else tmdb_id
@@ -107,29 +99,39 @@ class UserTaggingEntity:
 class ImdbContentProfileEntity:
     def __init__(self,
                  imdb_id: int,
-                 primary_info: Any,
-                 ingested_at: int = None) -> None:
+                 primary_info: Dict[str, any]) -> None:
         self.imdb_id = imdb_id
         self.primary_info = primary_info
-        self.ingested_at = ingested_at
+
+    def __repr__(self) -> str:
+        return "\
+imdb_id={imdb_id} \
+primary_info={primary_info}".\
+            format(imdb_id=self.imdb_id,
+                   primary_info=self.primary_info)
 
 
 class TmdbContentProfileEntity:
     def __init__(self,
                  tmdb_id: int,
-                 primary_info: Any,
-                 credits: Any,
-                 ingested_at: int = None) -> None:
+                 primary_info: Dict[str, any],
+                 credits: Dict[str, any],
+                 keywords: Dict[str, any]) -> None:
         self.tmdb_id = tmdb_id
         self.primary_info = primary_info
         self.credits = credits
-        self.ingested_at = ingested_at
+        self.keywords = keywords
 
     def __repr__(self) -> str:
-        return "tmdb_id={tmdb_id} primary_info={primary_info} credits={credits}".\
+        return "\
+tmdb_id={tmdb_id} \
+primary_info={primary_info} \
+credits={credits} \
+keywords={keywords}".\
             format(tmdb_id=self.tmdb_id,
                    primary_info=self.primary_info,
-                   credits=self.credits)
+                   credits=self.credits,
+                   keywords=self.keywords)
 
 # Util classes and functions
 
@@ -140,24 +142,3 @@ class StatelessClassJsonEncoder(JSONEncoder):
 
     def default(self, obj):
         return obj.__dict__
-
-
-def CreateConnection(host: str, password: str):
-    """Creates a postgresql connection to the ingestion database.
-
-    Args:
-        host (str): IP address of the database server.
-        password (str): Password of the postgres user.
-
-    Returns:
-        pg.connection: A postgresql connection.
-    """
-    conn_params = "host='{host}' dbname='{dbname}'          \
-                   user='postgres' password='{password}'".  \
-        format(
-            host=host,
-            dbname=INGESTION_DATABASE,
-            password=password
-        )
-
-    return pg.connect(conn_params)

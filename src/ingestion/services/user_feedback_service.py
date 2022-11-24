@@ -1,30 +1,32 @@
 import grpc
-from typing import Any
 
 from src.ingestion.database.common import UserRatingEntity
 from src.ingestion.database.common import UserTaggingEntity
-from src.ingestion.database.writer import WriteUserRatings
-from src.ingestion.database.writer import WriteUserTaggings
-from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import RecordRatingFeedbacksRequest
-from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import RecordRatingFeedbacksResponse
-from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import RecordTaggingFeedbacksRequest
-from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import RecordTaggingFeedbacksResponse
-from src.ingestion.proto_py.user_feedback_ingestion_service_pb2_grpc import UserFeedbackIngestionServicer
+from src.ingestion.database.writer import IngestionWriterInterface
+from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import \
+    RecordRatingFeedbacksRequest
+from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import \
+    RecordRatingFeedbacksResponse
+from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import \
+    RecordTaggingFeedbacksRequest
+from src.ingestion.proto_py.user_feedback_ingestion_service_pb2 import \
+    RecordTaggingFeedbacksResponse
+from src.ingestion.proto_py.user_feedback_ingestion_service_pb2_grpc import \
+    UserFeedbackIngestionServicer
 
 
 class UserFeedbackIngestionService(UserFeedbackIngestionServicer):
     """A service to support the recording of user feedback to the database.
     """
 
-    def __init__(self, pg_conn: Any) -> None:
+    def __init__(self, writer: IngestionWriterInterface) -> None:
         """Constructs a user feedback ingestion service.
 
         Args:
-            pg_conn (psycopg2.connection): A psycopg2 connection which connects
-                to the ingestion database.
+            writer (IngestionWriterInterface): An ingestion database writer.
         """
         super().__init__()
-        self.pg_conn = pg_conn
+        self.writer = writer
 
     def RecordRatingFeedbacks(
             self, request: RecordRatingFeedbacksRequest,
@@ -49,8 +51,7 @@ class UserFeedbackIngestionService(UserFeedbackIngestionServicer):
                                       rating=feedback.rating)
             to_be_written.append(entity)
 
-        if WriteUserRatings(user_ratings=to_be_written,
-                            conn=self.pg_conn):
+        if self.writer.WriteUserRatings(ratings=to_be_written):
             context.set_code(grpc.StatusCode.OK)
         else:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
@@ -80,8 +81,7 @@ class UserFeedbackIngestionService(UserFeedbackIngestionServicer):
                                        timestamp_secs=feedback.timestamp_secs)
             to_be_written.append(entity)
 
-        if WriteUserTaggings(
-                user_taggings=to_be_written, conn=self.pg_conn):
+        if self.writer.WriteUserTaggings(tags=to_be_written):
             context.set_code(grpc.StatusCode.OK)
         else:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
