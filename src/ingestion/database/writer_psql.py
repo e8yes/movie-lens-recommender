@@ -42,10 +42,8 @@ from src.ingestion.database.writer import IngestionWriterInterface
 
 
 class PostgresIngestionWriter(IngestionWriterInterface):
-    """_summary_
-
-    Args:
-        IngestionWriterInterface (_type_): _description_
+    """It encapsulates the writer operations over the PostgreSQL ingestion
+    database.
     """
 
     def __init__(self, host: str, password: str) -> None:

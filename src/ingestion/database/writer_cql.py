@@ -46,13 +46,20 @@ from src.ingestion.database.writer import IngestionWriterInterface
 
 
 class CassandraIngestionWriter(IngestionWriterInterface):
-    """_summary_
-
-    Args:
-        IngestionWriterInterface (_type_): _description_
+    """It encapsulates the writer operations over the Cassandra ingestion
+    database.
     """
 
     def __init__(self, contact_points: List[str]) -> None:
+        """Creates a writer with a connection to the Cassandra ingestion
+        database.
+
+        Args:
+            contact_points (List[str]): The list of contact points to try
+                connecting for cluster discovery. A contact point can be a
+                string (ip or hostname), a tuple (ip/hostname, port) or a
+                :class:`.connection.EndPoint` instance.
+        """
         super().__init__(writer_name="Cassandra")
 
         self.cluster = Cluster(contact_points=contact_points)

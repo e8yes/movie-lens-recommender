@@ -9,10 +9,17 @@ from src.ingestion.database.common import UserTaggingEntity
 
 
 class IngestionWriterInterface:
-    """_summary_
+    """A writer interface which makes abstractions over the ingestion database
+    write operations.
     """
 
     def __init__(self, writer_name: str) -> None:
+        """Constructs an ingestion DB writer object.
+
+        Args:
+            writer_name (str): A human readable name of the writer
+                implementation for debugging purposes.
+        """
         self.writer_name = writer_name
 
     def WriteUserProfiles(self, users: List[UserProfileEntity]) -> None:
