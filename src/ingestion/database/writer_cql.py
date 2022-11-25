@@ -4,6 +4,7 @@ from cassandra.cluster import Cluster
 from datetime import datetime
 from typing import List
 
+
 from src.ingestion.database.common import INGESTION_DATABASE
 from src.ingestion.database.common import CONTENT_PROFILE_TABLE
 from src.ingestion.database.common import CONTENT_PROFILE_TABLE_ID
@@ -40,6 +41,7 @@ from src.ingestion.database.common import TmdbContentProfileEntity
 from src.ingestion.database.common import UserProfileEntity
 from src.ingestion.database.common import UserRatingEntity
 from src.ingestion.database.common import UserTaggingEntity
+from src.ingestion.database.common import StatelessClassJsonEncoder
 from src.ingestion.database.writer import IngestionWriterInterface
 
 
@@ -67,7 +69,10 @@ class CassandraIngestionWriter(IngestionWriterInterface):
 
         batch = BatchStatement()
         for user in users:
-            batch.add(statement=stmt, parameters=(user.user_id))
+            batch.add(statement=stmt,
+                      parameters=(
+                          user.user_id,
+                      ))
 
         self.session.execute(batch)
 
@@ -96,12 +101,15 @@ class CassandraIngestionWriter(IngestionWriterInterface):
         for content in contents:
             batch.add(
                 statement=stmt,
-                parameters=(content.content_id,
-                            content.title,
-                            content.genres,
-                            content.tags,
-                            content.imdb_id,
-                            content.tmdb_id))
+                parameters=(
+                    content.content_id,
+                    content.title,
+                    content.genres,
+                    json.dumps(content.tags, cls=StatelessClassJsonEncoder)
+                    if content.tags is not None else None,
+                    content.imdb_id,
+                    content.tmdb_id,
+                ))
 
         self.session.execute(batch)
 
@@ -125,10 +133,12 @@ class CassandraIngestionWriter(IngestionWriterInterface):
         for rating in ratings:
             batch.add(
                 statement=stmt,
-                parameters=(rating.user_id,
-                            rating.content_id,
-                            datetime.utcfromtimestamp(rating.timestamp_secs),
-                            rating.rating))
+                parameters=(
+                    rating.user_id,
+                    rating.content_id,
+                    datetime.utcfromtimestamp(rating.timestamp_secs),
+                    rating.rating,
+                ))
 
         self.session.execute(batch)
 
@@ -154,10 +164,12 @@ class CassandraIngestionWriter(IngestionWriterInterface):
         for tag in tags:
             batch.add(
                 statement=stmt,
-                parameters=(tag.user_id,
-                            tag.content_id,
-                            datetime.utcfromtimestamp(tag.timestamp_secs),
-                            tag.tag))
+                parameters=(
+                    tag.user_id,
+                    tag.content_id,
+                    tag.tag,
+                    datetime.utcfromtimestamp(tag.timestamp_secs),
+                ))
 
         self.session.execute(batch)
 
@@ -170,7 +182,7 @@ class CassandraIngestionWriter(IngestionWriterInterface):
                                            {primary_info},  \
                                            {credits},       \
                                            {keywords})"     \
-                "VALUES (?,?,?,?,?)".                       \
+                "VALUES (%s,%s,%s,%s,%s)".                  \
                 format(table_name=CONTENT_PROFILE_TABLE,
                        id=CONTENT_PROFILE_TABLE_ID,
                        tmdb_id=CONTENT_PROFILE_TABLE_TMDB_ID,
@@ -180,18 +192,23 @@ class CassandraIngestionWriter(IngestionWriterInterface):
 
         self.session.execute(
             query=query,
-            parameters=(content_id,
-                        tmdb.tmdb_id,
-                        json.dumps(tmdb.primary_info),
-                        json.dumps(tmdb.credits),
-                        json.dumps(tmdb.keywords)))
+            parameters=(
+                content_id,
+                tmdb.tmdb_id,
+                json.dumps(tmdb.primary_info)
+                if tmdb.primary_info is not None else None,
+                json.dumps(tmdb.credits)
+                if tmdb.credits is not None else None,
+                json.dumps(tmdb.keywords)
+                if tmdb.keywords is not None else None,
+            ))
 
     def WriteContentImdbFields(
             self, content_id: int, imdb: ImdbContentProfileEntity) -> None:
         query = "INSERT INTO {table_name} ({id},            \
                                            {imdb_id},       \
                                            {primary_info})" \
-                "VALUES (?,?,?)".                           \
+                "VALUES (%s,%s,%s)".                        \
                 format(table_name=CONTENT_PROFILE_TABLE,
                        id=CONTENT_PROFILE_TABLE_ID,
                        imdb_id=CONTENT_PROFILE_TABLE_IMDB_ID,
@@ -199,6 +216,9 @@ class CassandraIngestionWriter(IngestionWriterInterface):
 
         self.session.execute(
             query=query,
-            parameters=(content_id,
-                        imdb.imdb_id,
-                        json.dumps(imdb.primary_info)))
+            parameters=(
+                content_id,
+                imdb.imdb_id,
+                json.dumps(imdb.primary_info)
+                if imdb.primary_info is not None else None,
+            ))
