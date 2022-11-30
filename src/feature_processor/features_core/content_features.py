@@ -462,5 +462,6 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |-- tmdb_avg_rating: float (nullable = true)
                 |-- tmdb_vote_count: float (nullable = true)
     """
+    content_genres = VectorizeGenres(content_genres=contents.select(["id", "genres"]))
     contents.show()
     user_rating_feebacks.show()
