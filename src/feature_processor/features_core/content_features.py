@@ -4,15 +4,15 @@ from pyspark.sql.functions import array_contains, col, explode
 from src.ingestion.database.reader import IngestionReaderInterface
 from src.ingestion.database.reader_psql import ConfigurePostgresSparkSession
 from src.ingestion.database.reader_psql import PostgresIngestionReader
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, get_json_object, expr
+from pyspark.sql import SparkSession, Window
+from pyspark.sql.functions import col, get_json_object, expr, avg, count
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 from src.ingestion.database.reader import ReadContents
 from src.ingestion.database.reader import ReadUsers
 from src.ingestion.database.reader import ReadRatingFeedbacks
-from pyspark.sql.functions import array_contains, col, explode
-from pyspark.ml.feature import StringIndexer, VectorAssembler
+from pyspark.sql.functions import array_contains, col, explode,  mean, stddev
+from pyspark.ml.feature import StringIndexer, VectorAssembler,StandardScaler
 from pyspark.ml.linalg import SparseVector, DenseVector
 def VectorizeGenres(content_genres: DataFrame) -> DataFrame:
     """Encodes a list of genre strings into a multi-hot vector (a list of
@@ -136,7 +136,7 @@ def VectorizeLanguages(spoken_languages: DataFrame) -> DataFrame:
         return new_array
     sparse_to_array_udf = F.udf(sparse_to_array, T.ArrayType(T.FloatType()))
     res = df_sep1.withColumn('languages', sparse_to_array_udf('sparse_languages')).select('id','languages')
-    
+    return res
 def ComputeNormalizedAverageRating(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the average rating each piece of content receives. Then it
@@ -188,9 +188,12 @@ def ComputeNormalizedAverageRating(
     Returns:
         DataFrame: See the example output above.
     """
-    user_rating_feebacks.show()
-
-
+    
+    content_rating = user_rating_feebacks.select('content_id', 'rating')
+    content_rating = content_rating.groupBy('content_id').agg(avg("rating").alias("avg_rating_unscaled"))
+    summary = content_rating.select([mean('avg_rating_unscaled').alias('mu'), stddev('avg_rating_unscaled').alias('sigma')]).collect().pop()
+    dft = content_rating.withColumn('avg_rating', (content_rating['avg_rating_unscaled']-summary.mu)/summary.sigma)
+    return dft
 def ComputeNormalizedRatingCount(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the number of ratings each piece of content receives. Then it
@@ -244,7 +247,12 @@ def ComputeNormalizedRatingCount(
     Returns:
         DataFrame: See the example output above.
     """
-    user_rating_feebacks.show()
+    
+    content_rating = user_rating_feebacks.select('user_id', 'rating')
+    content_rating = content_rating.groupBy('user_id').agg(count("*").alias("count_unscaled"))
+    summary = content_rating.select([mean('count_unscaled').alias('mu'), stddev('count_unscaled').alias('sigma')]).collect().pop()
+    dft = content_rating.withColumn('rating_count', (content_rating['count_unscaled']-summary.mu)/summary.sigma)
+    return dft
 
 
 def NormalizeBudget(content_budget: DataFrame) -> DataFrame:
@@ -544,6 +552,7 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |-- tmdb_avg_rating: float (nullable = true)
                 |-- tmdb_vote_count: float (nullable = true)
     """
+    
     content_genres = VectorizeGenres(content_genres=contents.select(["id", "genres"]))
     contents.show()
     user_rating_feebacks.show()
