@@ -52,7 +52,6 @@ def VectorizeGenres(content_genres: DataFrame) -> DataFrame:
         v = DenseVector(v)
         new_array = list([float(x) for x in v])
         return new_array
-
     sparse_to_array_udf = F.udf(sparse_to_array, T.ArrayType(T.FloatType()))
     res = df_sep.withColumn('genres', sparse_to_array_udf('sparse_genres')).select('id','genres')
     res.show()
@@ -137,12 +136,7 @@ def VectorizeLanguages(spoken_languages: DataFrame) -> DataFrame:
         return new_array
     sparse_to_array_udf = F.udf(sparse_to_array, T.ArrayType(T.FloatType()))
     res = df_sep1.withColumn('languages', sparse_to_array_udf('sparse_languages')).select('id','languages')
-    #res.filter(res['id'] ==  147752) 
-
-
-
-
-
+    
 def ComputeNormalizedAverageRating(
         user_rating_feebacks: DataFrame) -> DataFrame:
     """Computes the average rating each piece of content receives. Then it
