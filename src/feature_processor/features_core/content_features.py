@@ -1,6 +1,19 @@
 from pyspark.sql import DataFrame
 
-
+from pyspark.sql.functions import array_contains, col, explode
+from src.ingestion.database.reader import IngestionReaderInterface
+from src.ingestion.database.reader_psql import ConfigurePostgresSparkSession
+from src.ingestion.database.reader_psql import PostgresIngestionReader
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, get_json_object, expr
+from pyspark.sql import functions as F
+from pyspark.sql import types as T
+from src.ingestion.database.reader import ReadContents
+from src.ingestion.database.reader import ReadUsers
+from src.ingestion.database.reader import ReadRatingFeedbacks
+from pyspark.sql.functions import array_contains, col, explode
+from pyspark.ml.feature import StringIndexer, VectorAssembler
+from pyspark.ml.linalg import SparseVector, DenseVector
 def VectorizeGenres(content_genres: DataFrame) -> DataFrame:
     """Encodes a list of genre strings into a multi-hot vector (a list of
     floats).
@@ -25,14 +38,71 @@ def VectorizeGenres(content_genres: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    content_genres.show()
+    df1 = content_genres.select('id','genres')
+    # df1.first()['genres'] ##2 7 8
+    genres_list = [x[0] for x in df1.select(explode("genres").alias("genres")).distinct().orderBy("genres").collect()]
+    df_sep = df1.select("*" ,*[
+        array_contains("genres", g).alias("g_{}".format(g)).cast("integer")
+        for g in genres_list]
+    ).drop('genres')
+    selected_columns = [column for column in df_sep.columns if column.startswith("g_")] 
+    assembler = VectorAssembler(inputCols=selected_columns, outputCol='sparse_genres')
+    df_sep = assembler.transform(df_sep).select('id','sparse_genres')
+    def sparse_to_array(v):
+        v = DenseVector(v)
+        new_array = list([float(x) for x in v])
+        return new_array
 
+    sparse_to_array_udf = F.udf(sparse_to_array, T.ArrayType(T.FloatType()))
+    res = df_sep.withColumn('genres', sparse_to_array_udf('sparse_genres')).select('id','genres')
+    res.show()
 
-def VectorizeLanguages(content_languages: DataFrame) -> DataFrame:
+def GetSpokenLanguages(content: DataFrame) -> DataFrame:
+    """Extract list of languages strings from the column 'tmdb_primary_info', which is json object, 
+        under 'spoken_languages' key
+
+     Example input:
+    -------------------------------
+    | id | tmdb_primary_info      |
+    -------------------------------
+    |  1 | '{"id": 399168, "adult": false, "title": "The Mathematician and the Devil", "video":
+             false, "budget": 0, "genres": [{"id": 35, "name": "Comedy"}, {"id": 18, "name": "Drama"}, 
+             {"id": 14, "name": "Fantasy"}], "status": "Released", "imdb_id": "tt3154916", "revenue": 0, "runtime": 21, "tagline": "", "homepage": "", 
+             "overview": "A mathematician offers to sell his soul to the devil for a proof or disproof of Fermat\'s Last Theorem. Based on \\"The Devil and Simon Flagg\\" by Arthur Porges.", "popularity": 0.6, 
+             "vote_count": 6, "poster_path": "/5JCaWtCySRPy2JbHwgUAmYJBM8b.jpg", "release_date": "1972-06-06", "vote_average": 8.3,
+             "backdrop_path": null, "original_title": "Математик и чёрт", 
+             "spoken_languages": [{"name": "Pусский", "iso_639_1": "ru", "english_name": "Russian"}], 
+             "original_language": "ru", "production_companies": [{"id": 88367, "name": "Centrnauchfilm", 
+             "logo_path": "/8BGGqyuaxijzhqzmrgdCINWbPhj.png", "origin_country": "SU"}],
+            "production_countries": [{"name": "Soviet Union", "iso_3166_1": "SU"}], "belongs_to_collection": null}') |
+    -------------------------------
+
+        Example output:
+    -------------------------------
+    | id | languages              |
+    -------------------------------
+    |  1 | ["English", "Spanish"] |
+    -------------------------------
+    """
+    tmdb = content.select(["id","tmdb_primary_info"])
+    lan = tmdb.withColumn('languages',get_json_object('tmdb_primary_info', '$.spoken_languages'))
+    newdf= lan.withColumn('spoken_languages_all', F.from_json(
+            F.col('languages'),
+            T.ArrayType(T.StructType([
+                T.StructField('name', T.StringType()),
+                T.StructField('iso_639_1', T.StringType()),
+                T.StructField('english_name', T.StringType()),
+            ]))
+        ))
+    newdf = newdf.select('id','spoken_languages_all')
+    spoken_languages = newdf.withColumn('languages' , expr("transform(spoken_languages_all, x -> x['english_name'])"))
+    return spoken_languages.select('id','languages')
+
+def VectorizeLanguages(spoken_languages: DataFrame) -> DataFrame:
     """Encodes a list of language strings into a multi-hot vector (a list of
     floats).
 
-    Example input:
+    Example input: (take input from GetSpokenLanguages)
     -------------------------------
     | id | languages              |
     -------------------------------
@@ -52,7 +122,25 @@ def VectorizeLanguages(content_languages: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    content_languages.show()
+    df1 = spoken_languages.select('id','languages')
+    languages_list = [x[0] for x in df1.select(explode("languages").alias("languages")).distinct().orderBy("languages").collect()]
+    df_sep = df1.select("*" ,*[
+        array_contains("languages", lan).alias("l_{}".format(lan)).cast("integer")
+        for lan in languages_list]
+    ).drop('languages')
+    selected_columns = [column for column in df_sep.columns if column.startswith("l_")] 
+    assembler = VectorAssembler(inputCols=selected_columns, outputCol='sparse_languages',handleInvalid="skip")
+    df_sep1 = assembler.transform(df_sep).select('id','sparse_languages').na.fill(value = 0, subset=["sparse_languages"])
+    def sparse_to_array(v):
+        v = DenseVector(v)
+        new_array = list([float(x) for x in v])
+        return new_array
+    sparse_to_array_udf = F.udf(sparse_to_array, T.ArrayType(T.FloatType()))
+    res = df_sep1.withColumn('languages', sparse_to_array_udf('sparse_languages')).select('id','languages')
+    #res.filter(res['id'] ==  147752) 
+
+
+
 
 
 def ComputeNormalizedAverageRating(
