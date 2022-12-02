@@ -697,8 +697,13 @@ def ComputeCoreContentFeatures(contents: DataFrame,
     genres = VectorizeGenres(contents)
     spoken_language = GetSpokenLanguages(contents)
     languages = VectorizeLanguages(spoken_language)
-    avg_rating = ComputeNormalizedAverageRating(user_rating_feebacks)
-    rating_count = ComputeNormalizedRatingCount(user_rating_feebacks)
+    
+    avg_rating_nonNull = ComputeNormalizedAverageRating(user_rating_feebacks)
+    avg_rating = contents.select('id').join(avg_rating_nonNull,  ['id'], 'left')
+    
+    rating_count_nonNull = ComputeNormalizedRatingCount(user_rating_feebacks)
+    rating_count = contents.select('id').join(rating_count_nonNull, ['id'], 'left').show()
+    
     dollar_budget =GetBuget(contents)
     budget = NormalizeBudget(dollar_budget)
     unscaled_runtime = GetRuntime(contents)
