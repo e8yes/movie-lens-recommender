@@ -54,7 +54,7 @@ def VectorizeGenres(content_genres: DataFrame) -> DataFrame:
         return new_array
     sparse_to_array_udf = F.udf(sparse_to_array, T.ArrayType(T.FloatType()))
     res = df_sep.withColumn('genres', sparse_to_array_udf('sparse_genres')).select('id','genres')
-    res.show()
+    return res
 
 def GetSpokenLanguages(content: DataFrame) -> DataFrame:
     """Extract list of languages strings from the column 'tmdb_primary_info', which is json object, 
@@ -192,7 +192,7 @@ def ComputeNormalizedAverageRating(
     content_rating = user_rating_feebacks.select('content_id', 'rating')
     content_rating = content_rating.groupBy('content_id').agg(avg("rating").alias("avg_rating_unscaled"))
     summary = content_rating.select([mean('avg_rating_unscaled').alias('mu'), stddev('avg_rating_unscaled').alias('sigma')]).collect().pop()
-    dft = content_rating.withColumn('avg_rating', (content_rating['avg_rating_unscaled']-summary.mu)/summary.sigma)
+    dft = content_rating.withColumn('avg_rating', (content_rating['avg_rating_unscaled']-summary.mu)/summary.sigma).select(col("content_id").alias("id"), 'avg_rating')
     return dft
 def ComputeNormalizedRatingCount(
         user_rating_feebacks: DataFrame) -> DataFrame:
@@ -248,18 +248,18 @@ def ComputeNormalizedRatingCount(
         DataFrame: See the example output above.
     """
     
-    content_rating = user_rating_feebacks.select('user_id', 'rating')
-    content_rating = content_rating.groupBy('user_id').agg(count("*").alias("count_unscaled"))
+    content_rating = user_rating_feebacks.select('content_id', 'rating')
+    content_rating = content_rating.groupBy('content_id').agg(count("*").alias("count_unscaled"))
     summary = content_rating.select([mean('count_unscaled').alias('mu'), stddev('count_unscaled').alias('sigma')]).collect().pop()
-    rating_count_scaled = content_rating.withColumn('rating_count', (content_rating['count_unscaled']-summary.mu)/summary.sigma)
+    rating_count_scaled = content_rating.withColumn('rating_count', (content_rating['count_unscaled']-summary.mu)/summary.sigma).select(col('content_id').alias('id'), 'rating_count')
     return rating_count_scaled
 
 def GetBuget(content: DataFrame) -> DataFrame:
     """
     Extract budget from tmdb json column
     """
-    content_budget = content.withColumn('budget',
-                   get_json_object('tmdb_primary_info', '$.budget')).select('id','budget')
+    content_budget = content.withColumn('budget_unscaled',
+                   get_json_object('tmdb_primary_info', '$.budget')).select('id','budget_unscaled')
     
     return content_budget #some values are null
 def NormalizeBudget(content_budget: DataFrame) -> DataFrame:
@@ -267,7 +267,7 @@ def NormalizeBudget(content_budget: DataFrame) -> DataFrame:
 
     Example input:
     -------------------
-    | id | budget     |
+    | id | budget_unscaled |
     -------------------
     |  1 |  1,000,000 |
     -------------------
@@ -299,14 +299,14 @@ def GetRuntime(content: DataFrame) -> DataFrame:
     """
     Extract runtime from tmdb json column
     """
-    content_runtime = content.withColumn('runtime',get_json_object('tmdb_primary_info', '$.runtime')).select('id','runtime')
+    content_runtime = content.withColumn('runtime_unscaled',get_json_object('tmdb_primary_info', '$.runtime')).select('id','runtime_unscaled')
     return content_runtime
 def NormalizeRuntime(content_runtime: DataFrame) -> DataFrame:
     """Transforms all runtimes, so they distribute in a unit normal.
 
     Example input:
     -------------------
-    | id | runtime    |
+    | id | runtime_unscaled    |
     -------------------
     |  1 |  115       |
     -------------------
@@ -333,7 +333,7 @@ def NormalizeRuntime(content_runtime: DataFrame) -> DataFrame:
     summary = runtime_non0.select([mean('runtime_unscaled').alias('mu'), stddev('runtime_unscaled').alias('sigma')]).collect().pop()
     runtime_scaled = runtime_non0.withColumn('runtime', (runtime_non0['runtime_unscaled']-summary.mu)/summary.sigma).select('id', 'runtime')
     res = content_runtime.join(runtime_scaled, ['id'], 'leftouter').select('id','runtime')
-    res.show()
+    return res
 
 def GetReleaseYear(content: DataFrame) -> DataFrame:
     """
@@ -694,6 +694,24 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |-- tmdb_vote_count: float (nullable = true)
     """
     
-    content_genres = VectorizeGenres(content_genres=contents.select(["id", "genres"]))
-    contents.show()
-    user_rating_feebacks.show()
+    genres = VectorizeGenres(contents)
+    spoken_language = GetSpokenLanguages(contents)
+    languages = VectorizeLanguages(spoken_language)
+    avg_rating = ComputeNormalizedAverageRating(user_rating_feebacks)
+    rating_count = ComputeNormalizedRatingCount(user_rating_feebacks)
+    dollar_budget =GetBuget(contents)
+    budget = NormalizeBudget(dollar_budget)
+    unscaled_runtime = GetRuntime(contents)
+    runtime = NormalizeRuntime(unscaled_runtime)
+    release_year_unscaled = GetReleaseYear(contents)
+    release_year  = NormalizeReleaseYear(release_year_unscaled)
+    cast_composition = ComputeCasts(contents)
+    crew_composition = ComputeCrews(contents)
+    vote_count_unscaled = GetVoteCount(contents) 
+    tmdb_vote_count = NormalizeTmdbVoteCount(vote_count_unscaled)
+    tmdb_avg_rating = GetTmdbAverageRating(contents)
+    tmdb_avg_rating = NormalizeTmdbAverageRating(tmdb_avg_rating)
+    return genres.join(languages, ['id'], 'outer').join(avg_rating, ['id'], 'outer').join(rating_count, ['id'], 'outer').take(1)\
+    .join(budget, ['id'], 'outer').join(runtime,['id'], 'outer').join(release_year, ['id'], 'outer')\
+        .join(cast_composition,['id'], 'outer' ).join(crew_composition,['id'], 'outer' ).join(tmdb_avg_rating,['id'], 'outer' )\
+            .join(tmdb_avg_rating, ['id'], 'outer' ).join(tmdb_vote_count,  ['id'], 'outer' )
