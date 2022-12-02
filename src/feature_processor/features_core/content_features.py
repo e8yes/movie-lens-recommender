@@ -711,7 +711,7 @@ def ComputeCoreContentFeatures(contents: DataFrame,
     tmdb_vote_count = NormalizeTmdbVoteCount(vote_count_unscaled)
     tmdb_avg_rating = GetTmdbAverageRating(contents)
     tmdb_avg_rating = NormalizeTmdbAverageRating(tmdb_avg_rating)
-    return genres.join(languages, ['id'], 'outer').join(avg_rating, ['id'], 'outer').join(rating_count, ['id'], 'outer').take(1)\
+    return contents.select('id').join(genres, ['id'], 'outer').genres.join(languages, ['id'], 'outer').join(avg_rating, ['id'], 'outer').join(rating_count, ['id'], 'outer').take(1)\
     .join(budget, ['id'], 'outer').join(runtime,['id'], 'outer').join(release_year, ['id'], 'outer')\
         .join(cast_composition,['id'], 'outer' ).join(crew_composition,['id'], 'outer' ).join(tmdb_avg_rating,['id'], 'outer' )\
             .join(tmdb_avg_rating, ['id'], 'outer' ).join(tmdb_vote_count,  ['id'], 'outer' )

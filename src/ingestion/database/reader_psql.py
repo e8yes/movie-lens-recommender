@@ -32,8 +32,8 @@ def ConfigurePostgresSparkSession(
     """
     return builder                                      \
         .config("spark.jars", PSQL_JDBC_DRIVER_PATH)    \
-        .config("spark.executor.memory", "4g")          \
-        .config("spark.driver.memory", "4g")            \
+        .config("spark.executor.memory", "8g")          \
+        .config("spark.driver.memory", "8g")            \
 
 
 
