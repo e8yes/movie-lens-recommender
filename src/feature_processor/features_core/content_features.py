@@ -13,7 +13,7 @@ from src.ingestion.database.reader import ReadRatingFeedbacks
 from pyspark.sql.functions import array_contains, col, explode,  mean, stddev, substring,split,stddev_pop, avg, broadcast,regexp_replace
 from pyspark.ml.feature import StringIndexer, VectorAssembler,StandardScaler
 from pyspark.ml.linalg import SparseVector, DenseVector
-
+import json
 def VectorizeGenres(content_genres: DataFrame) -> DataFrame:
     """Encodes a list of genre strings into a multi-hot vector (a list of
     floats).
