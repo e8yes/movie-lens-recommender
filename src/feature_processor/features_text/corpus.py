@@ -1,36 +1,19 @@
 from pyspark.sql import DataFrame
-from src.ingestion.database.reader import IngestionReaderInterface
-from src.ingestion.database.reader_psql import ConfigurePostgresSparkSession
-from src.ingestion.database.reader_psql import PostgresIngestionReader
-from pyspark.sql import SparkSession,Window
-from pyspark.sql.functions import from_json, col, schema_of_json, get_json_object
+from pyspark.sql.functions import col
 from pyspark.sql import functions as F
-from pyspark.sql import types as T
-from src.ingestion.database.reader import ReadContents
-from src.ingestion.database.reader import ReadUsers
-from src.ingestion.database.reader import ReadRatingFeedbacks, ReadTaggingFeedbacks
 from pyspark.sql.functions import *
-from pyspark.ml.feature import StringIndexer, VectorAssembler, StandardScaler
-from pyspark.ml.linalg import SparseVector, DenseVector
-
 import json
-import numpy as np
 import json
-import matplotlib.pyplot as plt
 import nltk
-import numpy as np
 import re
 import string
-import sys
 import ast
-#import tensorflow as tf
 from autocorrect import Speller
 from nltk.tokenize import word_tokenize
 from nltk.stem.porter import PorterStemmer
 from nltk.corpus import stopwords
-from pyspark.sql import Row, functions, types
-from sklearn.manifold import TSNE
-from typing import Dict, List, Iterable, Tuple
+from pyspark.sql import Row
+from typing import Iterable
 
 
 def CollectContentText(contents: DataFrame,
@@ -349,5 +332,5 @@ def ComputeIdf(content_tokens_terms: DataFrame) -> DataFrame:
     interm4 = interm3.groupBy('id').agg(F.sum('idf').alias('doc_total_idf'))
     interm5 = interm3.join(interm4, ['id'], 'left')
     interm5 = interm5.withColumn('idf_scaled', col('idf')/col('doc_total_idf')).select('id', 'token', 'idf_scaled')
-    res  = interm5.withColumnRenamed('idf_scaled', 'idf')
+    res  = interm5.withColumnRenamed('idf_scaled', 'idf').na.fill(0 , ['idf'])
     return res
