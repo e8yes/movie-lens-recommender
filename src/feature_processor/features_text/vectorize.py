@@ -1,5 +1,9 @@
 import os
 from pyspark.sql import DataFrame, Row, SparkSession, types
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+from pyspark.sql.functions import *
+from pyspark.sql import Row, types
 
 
 def _ParseLine(line: str) -> Row:
@@ -107,9 +111,12 @@ def VectorizeContentSummaryTokens(content_tokens_idf: DataFrame,
     Returns:
         DataFrame: See the example output above.
     """
-    content_tokens_idf.show()
-    glove.show()
-
+    interm1 = content_tokens_idf.join(glove ,content_tokens_idf['token'] == glove['word'], 'left' )\
+            .withColumn('weighted_embedding' , expr("""transform(embedding,x -> x*idf)"""))
+    n = len(interm1.select("weighted_embedding").first()[0]) #dimension of the embedding
+    res = interm1.groupBy("id").agg(
+        array(*[sum(col("weighted_embedding")[i]) for i in range(n)]).alias("summary"))
+    return res
 
 # def VectorizeContentScoredTags(content_scored_tags: DataFrame,
 #                                glove: DataFrame) -> DataFrame:
@@ -164,7 +171,7 @@ def VectorizeUserTokens(user_tag_tokens: DataFrame,
     tag token.
 
     Example inputs:
-    user_tag_tokens
+    user_tags
     -------------------------------
     | id | token                  |
     -------------------------------
@@ -204,5 +211,10 @@ def VectorizeUserTokens(user_tag_tokens: DataFrame,
     Returns:
         DataFrame: See the example output above.
     """
-    user_tag_tokens.show()
-    glove.show()
+
+    interm1 = user_tag_tokens.withColumnRenamed('token', 'word').join(glove, ['word'], 'left')
+
+    n = len(interm1.select("embedding").first()[0]) #dimension of the embedding
+    res = interm1.groupBy("id").agg(
+            array(*[sum(col("embedding")[i]) for i in range(n)]).alias("summary")).show()
+    return res
