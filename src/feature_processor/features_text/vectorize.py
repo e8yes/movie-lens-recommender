@@ -111,51 +111,51 @@ def VectorizeContentSummaryTokens(content_tokens_idf: DataFrame,
     glove.show()
 
 
-def VectorizeContentScoredTags(content_scored_tags: DataFrame,
-                               glove: DataFrame) -> DataFrame:
-    """Turns scored tags into a vector by summing word embeddings of each tag
-    and weighing each entry by the tag's normalized relevance score.
+# def VectorizeContentScoredTags(content_scored_tags: DataFrame,
+#                                glove: DataFrame) -> DataFrame:
+#     """Turns scored tags into a vector by summing word embeddings of each tag
+#     and weighing each entry by the tag's normalized relevance score.
 
-    Example inputs:
-    scored tags:
-    -----------------------------------
-    | id | scored_tags                |
-    -----------------------------------
-    | 1  | {"Good": 0.9, "Bad": 0.2}  |
-    -----------------------------------
+#     Example inputs:
+#     scored tags:
+#     -----------------------------------
+#     | id | scored_tags                |
+#     -----------------------------------
+#     | 1  | {"Good": 0.9, "Bad": 0.2}  |
+#     -----------------------------------
 
-    glove:
-    -------------------------
-    | word   | embedding    |
-    -------------------------
-    | "good" | [1, 2, 3]    |
-    -------------------------
-    | "bad"  | [-1, -2, -3] |
-    -------------------------
+#     glove:
+#     -------------------------
+#     | word   | embedding    |
+#     -------------------------
+#     | "good" | [1, 2, 3]    |
+#     -------------------------
+#     | "bad"  | [-1, -2, -3] |
+#     -------------------------
 
-    Intermediate result (normalized relevance):
-    ------------------------------------
-    | id | scored_tags                 |
-    ------------------------------------
-    | 1  | {"Good": 0.82, "Bad": 0.18} |
-    ------------------------------------
+#     Intermediate result (normalized relevance):
+#     ------------------------------------
+#     | id | scored_tags                 |
+#     ------------------------------------
+#     | 1  | {"Good": 0.82, "Bad": 0.18} |
+#     ------------------------------------
 
-    Example output:
-    ---------------------------
-    | id | scored_tags        |
-    ---------------------------
-    | 1  | [0.64, 1.28, 1.92] |
-    ---------------------------
+#     Example output:
+#     ---------------------------
+#     | id | scored_tags        |
+#     ---------------------------
+#     | 1  | [0.64, 1.28, 1.92] |
+#     ---------------------------
 
-    Args:
-        content_scored_tags (DataFrame): See the example inputs above.
-        glove (DataFrame): See the example inputs above.
+#     Args:
+#         content_scored_tags (DataFrame): See the example inputs above.
+#         glove (DataFrame): See the example inputs above.
 
-    Returns:
-        DataFrame: See the example output above.
-    """
-    content_scored_tags.show()
-    glove.show()
+#     Returns:
+#         DataFrame: See the example output above.
+#     """
+#     content_scored_tags.show()
+#     glove.show()
 
 
 def VectorizeUserTokens(user_tag_tokens: DataFrame,

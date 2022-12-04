@@ -67,7 +67,6 @@ def AssembleContentFeatures(reader: IngestionReader) -> DataFrame:
         user_tagging_feedbacks=tagging_feedbacks)
 
     profile_features = CollectUserFeaturesFromProfile(user_ids=users)
-
     all_features = core_features.                       \
         join(other=text_features,
              on=core_features.id == text_features.id,
