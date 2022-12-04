@@ -1,4 +1,36 @@
 from pyspark.sql import DataFrame
+from src.ingestion.database.reader import IngestionReaderInterface
+from src.ingestion.database.reader_psql import ConfigurePostgresSparkSession
+from src.ingestion.database.reader_psql import PostgresIngestionReader
+from pyspark.sql import SparkSession,Window
+from pyspark.sql.functions import from_json, col, schema_of_json, get_json_object
+from pyspark.sql import functions as F
+from pyspark.sql import types as T
+from src.ingestion.database.reader import ReadContents
+from src.ingestion.database.reader import ReadUsers
+from src.ingestion.database.reader import ReadRatingFeedbacks, ReadTaggingFeedbacks
+from pyspark.sql.functions import *
+from pyspark.ml.feature import StringIndexer, VectorAssembler, StandardScaler
+from pyspark.ml.linalg import SparseVector, DenseVector
+
+import json
+import numpy as np
+import json
+import matplotlib.pyplot as plt
+import nltk
+import numpy as np
+import re
+import string
+import sys
+import ast
+#import tensorflow as tf
+from autocorrect import Speller
+from nltk.tokenize import word_tokenize
+from nltk.stem.porter import PorterStemmer
+from nltk.corpus import stopwords
+from pyspark.sql import Row, functions, types
+from sklearn.manifold import TSNE
+from typing import Dict, List, Iterable, Tuple
 
 
 def CollectContentText(contents: DataFrame,
@@ -37,7 +69,34 @@ def CollectContentText(contents: DataFrame,
     Returns:
         DataFrame: See the example output above.
     """
-    contents.show()
+    if "../../third_party/nltk_data" not in nltk.data.path:
+        nltk.data.path.append("../../third_party/nltk_data")
+    usable_content = contents.\
+        filter(contents["tmdb_id"].isNotNull()).\
+        filter(contents["tmdb_primary_info"] != "null").\
+        select(["id","title", "tmdb_primary_info"])
+    speller = Speller()
+    
+    def GetText(row: Row, correction: bool) ->  Iterable[Row]:
+        primary_info = json.loads(row["tmdb_primary_info"])
+        if primary_info["overview"] is not None and primary_info["overview"] != "":
+            title = row['title']
+            title = re.sub(r'\(\d+\)', '', title)    
+            overview = primary_info['overview']      
+            tagline = primary_info['tagline']   
+            if spell_correction:
+                title = speller.autocorrect_sentence(title)
+                overview = speller.autocorrect_sentence(overview)
+                tagline = speller.autocorrect_sentence(tagline)
+            text = title + overview  + " " +tagline
+            yield Row(id=row["id"], text=text)
+    res = usable_content.\
+        rdd.\
+        flatMap(lambda x: GetText(x, correction =  spell_correction)).\
+        toDF()
+    return res
+    
+
 
 
 def CollectContentTags(contents: DataFrame,
@@ -77,7 +136,28 @@ def CollectContentTags(contents: DataFrame,
     Returns:
         DataFrame: See the example output above.
     """
-    contents.show()
+    if "../../third_party/nltk_data" not in nltk.data.path:
+        nltk.data.path.append("../../third_party/nltk_data")
+    usable_content = contents.\
+        filter(contents["tags"] != "null").\
+        select(["id","tags" ])
+    speller = Speller()
+    def GetTags(row: Row, correction: bool) ->  Iterable[Row]:
+        tags = ast.literal_eval(row["tags"]) 
+        all_tags = ""
+        for i in tags:
+            if "tag" in i:
+                tag_info = i['tag']
+                if  correction:
+                    tag_info = speller.autocorrect_word(tag_info)
+                all_tags+= tag_info+","
+        all_tags = all_tags[:-1]
+        yield Row(id=row["id"], text= all_tags)
+    res = usable_content.\
+        rdd.\
+        flatMap(lambda x: GetTags(x, correction = spell_correction)).\
+        toDF()
+    return res
 
 
 def TokenizeText(content_text: DataFrame) -> DataFrame:
@@ -107,7 +187,20 @@ def TokenizeText(content_text: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    content_text.show()
+    if "../../third_party/nltk_data" not in nltk.data.path:
+        nltk.data.path.append("../../third_party/nltk_data")
+    def TokenizeText(row: Row) ->  Iterable[Row]:
+        texts = row['text']
+        counter = -1
+        for  word in word_tokenize(texts):
+            word = word.lower()
+            counter +=1
+            yield Row(id=row["id"], index=counter, token= word)
+    res = content_text.\
+        rdd.\
+        flatMap(TokenizeText).\
+        toDF()
+    return res
 
 
 def CollectTerms(content_tokens: DataFrame) -> DataFrame:
@@ -158,8 +251,23 @@ def CollectTerms(content_tokens: DataFrame) -> DataFrame:
     Returns:
         Tuple[DataFrame, DataFrame]: See the example output above.
     """
-    content_tokens.show()
-
+    if "../../third_party/nltk_data" not in nltk.data.path:
+        nltk.data.path.append("../../third_party/nltk_data")
+    PUNCT = re.compile(r'[%s\s‐‘’“”–—…]+' % re.escape(string.punctuation))
+    stemmer = PorterStemmer()
+    STOP_WORDS = set(stopwords.words("english"))
+    def GetTerm(row: Row) ->  Iterable[Row]:
+        words = PUNCT.split(row["token"])
+        for word in words:
+            word = word.lower()
+            if (word != "") and (word not in STOP_WORDS) and (word not in string.punctuation):
+                yield Row(id=row["id"], token = row['token'], term= stemmer.stem(word))
+    res1 = content_tokens.\
+        rdd.\
+        flatMap(lambda x: GetTerm(x)).\
+        toDF()
+    res = content_tokens.join(res1, ['id', 'token'], 'leftouter').select('id', 'token', 'term')
+    return res
 
 def ComputeIdf(content_tokens_terms: DataFrame) -> DataFrame:
     """Computes the inverse document frequency for the tokens in each piece of
@@ -232,4 +340,14 @@ def ComputeIdf(content_tokens_terms: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    content_tokens_terms.show()
+    N = content_tokens_terms.select(countDistinct('id')).collect()[0][0]
+    interm =content_tokens_terms.join(content_tokens_terms.groupby('term').agg(countDistinct('id')), ['term'], 'left') #get term frequency
+    interm2 = interm.withColumn('idf', log(N/col('count(id)'))).select('id', 'token', 'term', 'count(id)', 'idf') #get idf for each term
+    interm3 = interm2.groupBy('id','token').agg(F.max("idf").alias('idf'))#get idf for each token
+    interm3.cache()
+    #normalize idf for each document so that the sum of idf for each doc is 1.
+    interm4 = interm3.groupBy('id').agg(F.sum('idf').alias('doc_total_idf'))
+    interm5 = interm3.join(interm4, ['id'], 'left')
+    interm5 = interm5.withColumn('idf_scaled', col('idf')/col('doc_total_idf')).select('id', 'token', 'idf_scaled')
+    res  = interm5.withColumnRenamed('idf_scaled', 'idf')
+    return res
