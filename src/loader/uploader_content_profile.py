@@ -3,8 +3,10 @@ from typing import List
 from pyspark import Row
 
 from src.ingestion.proto_py.content_ingestion_service_pb2 import ContentProfile
-from src.ingestion.proto_py.content_ingestion_service_pb2 import WriteContentProfilesRequest
-from src.ingestion.proto_py.content_ingestion_service_pb2_grpc import ContentIngestionStub
+from src.ingestion.proto_py.content_ingestion_service_pb2 import \
+    WriteContentProfilesRequest
+from src.ingestion.proto_py.content_ingestion_service_pb2_grpc import \
+    ContentIngestionStub
 from src.loader.uploader import RecordUploaderConnection
 from src.loader.uploader import RecordUploaderInterface
 
@@ -48,8 +50,9 @@ class ContentProfileUploader(RecordUploaderInterface):
         """Connects to the content profile ingestion service.
         """
         grpc_channel = grpc.insecure_channel(target=self.host)
-        return RecordUploaderConnection(channel=grpc_channel,
-                                        stub=ContentIngestionStub(grpc_channel))
+        return RecordUploaderConnection(
+            channel=grpc_channel,
+            stub=ContentIngestionStub(grpc_channel))
 
     def UploadBatch(
             self, batch: List[Row],
@@ -81,5 +84,5 @@ class ContentProfileUploader(RecordUploaderInterface):
             content_ingestion_stub.WriteContentProfiles(request)
 
             return True
-        except grpc.RpcError as _:
+        except grpc.RpcError:
             return False

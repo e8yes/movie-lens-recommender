@@ -4,7 +4,7 @@ from pyspark.sql import SparkSession
 from src.loader.pipeline_content_profile import LoadMovieLensContentProfiles
 from src.loader.pipeline_user_feedback import LoadMovieLensUserFeedbacks
 from src.loader.pipeline_user_profile import LoadMovieLensUserProfiles
-from src.loader.reader_movie_lens import *
+from src.loader.reader_movie_lens import ReadMovieLensDataSet
 
 
 def LoadMovieLensDataSet(data_set_path: str,
@@ -17,6 +17,8 @@ def LoadMovieLensDataSet(data_set_path: str,
 
     spark_session = SparkSession.builder.       \
         appName("loader").                      \
+        config("spark.executor.memory", "2g").  \
+        config("spark.driver.memory", "2g").    \
         getOrCreate()
 
     logging.info("LoadMovieLensDataSet(): Start loading data records.")
@@ -26,19 +28,22 @@ def LoadMovieLensDataSet(data_set_path: str,
     num_users, failures = LoadMovieLensUserProfiles(
         data_set=data_set, ingestion_host=ingestion_host)
     logging.info(
-        "LoadMovieLensDataSet(): processed {num_users} user profiles, failures {failures}. ".
+        "LoadMovieLensDataSet(): processed {num_users} user profiles, "
+        "failures {failures}. ".
         format(num_users=num_users, failures=failures))
 
     num_contents, failures = LoadMovieLensContentProfiles(
         data_set=data_set, ingestion_host=ingestion_host)
     logging.info(
-        "LoadMovieLensDataSet(): processed {num_contents} content profiles, failures {failures}. ".
+        "LoadMovieLensDataSet(): processed {num_contents} content profiles, "
+        "failures {failures}. ".
         format(num_contents=num_contents, failures=failures))
 
     num_feedbacks, failures = LoadMovieLensUserFeedbacks(
         data_set=data_set, feedback_host=feedback_host)
     logging.info(
-        "LoadMovieLensDataSet(): processed {num_feedbacks} user feedbacks, failures {failures}. ".
+        "LoadMovieLensDataSet(): processed {num_feedbacks} user feedbacks, "
+        "failures {failures}. ".
         format(num_feedbacks=num_feedbacks, failures=failures))
 
     logging.info("LoadMovieLensDataSet(): loading completed.")

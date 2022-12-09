@@ -38,7 +38,7 @@ class UserRatingUploader(RecordUploaderInterface):
         self.col_name_rating = col_name_rating
 
     def MaxBatchSize(self) -> int:
-        return 1000
+        return 500
 
     def Connect(self) -> RecordUploaderConnection:
         """Connects to the user feedback ingestion service.
@@ -97,7 +97,7 @@ class UserTaggingUploader(RecordUploaderInterface):
         self.col_name_tag = col_name_tag
 
     def MaxBatchSize(self) -> int:
-        return 200
+        return 100
 
     def Connect(self) -> RecordUploaderConnection:
         """Connects to the user feedback ingestion service.
