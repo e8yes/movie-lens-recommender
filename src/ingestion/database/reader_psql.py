@@ -1,5 +1,6 @@
 from psycopg2 import connect
 from pyspark.sql import DataFrame, SparkSession
+from typing import List
 
 from src.ingestion.database.common import INGESTION_DATABASE
 from src.ingestion.database.common import CONTENT_PROFILE_TABLE
@@ -21,19 +22,25 @@ PSQL_JDBC_DRIVER_PATH = "third_party/postgresql-42.5.0.jar"
 
 
 def ConfigurePostgresSparkSession(
+        prerequisites_jars: List[str],
         builder: SparkSession.Builder) -> SparkSession.Builder:
     """Configures the spark session builder for it to be usable by the
     PostgreSQL based reader implementation.
 
     Args:
+        prerequisites_jars (List[str]): JAR files that needs to be configured
+            into spark.jars.
         builder (SparkSession.Builder): The spark session builder to be
             configured.
 
     Returns:
         SparkSession.Builder: The configured spark session builder.
     """
+    all_jars = prerequisites_jars + [PSQL_JDBC_DRIVER_PATH]
+    all_jars_as_cli_arg = ",".join(all_jars)
+
     return builder                                      \
-        .config("spark.jars", PSQL_JDBC_DRIVER_PATH)    \
+        .config("spark.jars", all_jars_as_cli_arg)      \
         .config("spark.executor.memory", "8g")          \
         .config("spark.driver.memory", "8g")            \
 

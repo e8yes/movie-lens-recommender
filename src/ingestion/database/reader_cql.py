@@ -26,6 +26,7 @@ SPARK_CASSANDRA_CONNECTOR_PATH = \
 
 def ConfigureCassandraSparkSession(
         contact_points: List[str],
+        prerequisites_jars: List[str],
         builder: SparkSession.Builder) -> SparkSession.Builder:
     """Configures the spark session builder for it to be usable by the
     Cassandra based reader implementation.
@@ -35,16 +36,21 @@ def ConfigureCassandraSparkSession(
             connecting for cluster discovery. A contact point can be a string
             (ip or hostname), a tuple (ip/hostname, port) or a
             :class:`.connection.EndPoint` instance.
+        prerequisites_jars (List[str]): JAR files that needs to be configured
+            into spark.jars.
         builder (SparkSession.Builder): The spark session builder to be
             configured.
 
     Returns:
         SparkSession.Builder: The configured spark session builder.
     """
-    return builder.\
-        config("spark.jars", SPARK_CASSANDRA_CONNECTOR_PATH).\
+    all_jars = prerequisites_jars + [SPARK_CASSANDRA_CONNECTOR_PATH]
+    all_jars_as_cli_arg = ",".join(all_jars)
+
+    return builder.                                                         \
+        config("spark.jars", all_jars_as_cli_arg).                          \
         config("spark.sql.extensions",
-               "com.datastax.spark.connector.CassandraSparkExtensions"). \
+               "com.datastax.spark.connector.CassandraSparkExtensions").    \
         config("spark.cassandra.connection.host",
                ",".join(contact_points))
 

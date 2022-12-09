@@ -57,13 +57,30 @@ class IngestionReaderFactory:
             raise "No suitable implementation found."
 
     def ConfigureSparkSession(
-            self, spark_builder: SparkSession.Builder) -> SparkSession.Builder:
+            self,
+            spark_builder: SparkSession.Builder,
+            prerequisites_jars: List[str] = []) -> SparkSession.Builder:
+        """Configures the spark builder to be suitable for the underlying
+        ingestion reader implementation.
+
+        Args:
+            spark_builder (SparkSession.Builder): The spark session builder to
+                be configured.
+            prerequisites_jars (List[str]): All external jars that needs to be
+                added to the spark session.
+
+        Returns:
+            SparkSession.Builder: A configured spark session builder.
+        """
         if self.implementation == "Cassandra":
             return ConfigureCassandraSparkSession(
                 contact_points=self.cassandra_contact_points,
+                prerequisites_jars=prerequisites_jars,
                 builder=spark_builder)
         elif self.implementation == "PostgreSQL":
-            return ConfigurePostgresSparkSession(builder=spark_builder)
+            return ConfigurePostgresSparkSession(
+                prerequisites_jars=prerequisites_jars,
+                builder=spark_builder)
 
     def Create(self, spark: SparkSession) -> IngestionReaderInterface:
         """Creates an ingestion reader.
