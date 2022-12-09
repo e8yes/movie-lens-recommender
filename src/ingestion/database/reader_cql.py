@@ -24,20 +24,22 @@ SPARK_CASSANDRA_CONNECTOR_PATH = \
     "third_party/spark-cassandra-connector_2.12-3.2.0.jar"
 
 
-def ConfigurePostgresSparkSession(
+def ConfigureCassandraSparkSession(
         contact_points: List[str],
         builder: SparkSession.Builder) -> SparkSession.Builder:
-    """_summary_
+    """Configures the spark session builder for it to be usable by the
+    Cassandra based reader implementation.
 
     Args:
         contact_points (List[str]): The list of contact points to try
             connecting for cluster discovery. A contact point can be a string
             (ip or hostname), a tuple (ip/hostname, port) or a
             :class:`.connection.EndPoint` instance.
-        builder (SparkSession.Builder): _description_
+        builder (SparkSession.Builder): The spark session builder to be
+            configured.
 
     Returns:
-        SparkSession.Builder: _description_
+        SparkSession.Builder: The configured spark session builder.
     """
     return builder.\
         config("spark.jars", SPARK_CASSANDRA_CONNECTOR_PATH).\
