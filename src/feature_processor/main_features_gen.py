@@ -25,19 +25,18 @@ def Main(cassandra_contact_points: List[str],
     builder = SparkSession.builder.appName("Feature Generator")
     builder = reader_factory.ConfigureSparkSession(spark_builder=builder)
     spark = builder.getOrCreate()
+    spark.sparkContext.setCheckpointDir(path.join(output_path, "check_points"))
 
     reader = reader_factory.Create(spark=spark)
 
-    content_features = ComputeContentFeatures(reader=reader)
+    content_features = ComputeContentFeatures(reader=reader, spark=spark)
     user_features = ComputeUserFeatures(reader=reader)
 
     WriteAsParquetDataSet(
         df=content_features,
-        spark=spark,
         output_path=path.join(output_path, "content_features"))
     WriteAsParquetDataSet(
         df=user_features,
-        spark=reader.spark,
         output_path=path.join(output_path, "user_features"))
 
 
@@ -52,22 +51,21 @@ if __name__ == "__main__":
         help="The list of contact points to try connecting for Cassandra "
              "cluster discovery.")
     parser.add_argument(
-        name_or_flags="--postgres_host",
+        "--postgres_host",
         type=str,
         help="The IP address which points to the postgres database server "
         "which stores the raw ingestion data set.")
     parser.add_argument(
-        name_or_flags="--postgres_user",
+        "--postgres_user",
         type=str,
         help="The user to use to access the ingestion database.")
     parser.add_argument(
-        name_or_flags="--postgres_password",
+        "--postgres_password",
         type=str,
         help="The password of the postgres user.")
     parser.add_argument(
-        name_or_flags="--output_path",
+        "--output_path",
         type=str,
-        nargs="+",
         help="Path where the user and content features are going to be written"
         ".")
 
