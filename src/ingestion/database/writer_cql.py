@@ -1,6 +1,7 @@
 import json
 from cassandra.query import BatchStatement
 from cassandra.cluster import Cluster
+from cassandra import InvalidRequest
 from datetime import datetime
 from typing import List
 
@@ -85,6 +86,9 @@ class CassandraIngestionWriter(IngestionWriterInterface):
 
     def WriteContentProfiles(
             self, contents: List[ContentProfileEntity]) -> None:
+        if len(contents) == 0:
+            return
+
         query = "INSERT INTO {table_name} ({id},            \
                                            {title},         \
                                            {genres},        \
@@ -117,8 +121,20 @@ class CassandraIngestionWriter(IngestionWriterInterface):
                     content.imdb_id,
                     content.tmdb_id,
                 ))
+        try:
+            self.session.execute(batch)
+        except InvalidRequest as e:
+            # Sometimes the batch size can be too large since the size of each
+            # content record is highly variable. We'll retry by splitting the
+            # batch of contents in half and write them into the database
+            # separately.
+            batch_size = len(contents)
+            if batch_size <= 1:
+                raise e
 
-        self.session.execute(batch)
+            mid_point = batch_size//2
+            self.WriteContentProfiles(contents=contents[:mid_point])
+            self.WriteContentProfiles(contents=contents[mid_point:])
 
     def WriteUserRatings(self, ratings: List[UserRatingEntity]) -> bool:
         query = "INSERT INTO {table_name} ({user_id},       \
