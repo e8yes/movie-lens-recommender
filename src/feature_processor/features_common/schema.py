@@ -38,9 +38,9 @@ CONTENT_TEXT_FEATURE_SCHEMA = types.StructType(
         types.StructField(name="keyword",
                           dataType=types.ArrayType(
                               elementType=types.FloatType())),
-        types.StructField(name="topic",
-                          dataType=types.ArrayType(
-                              elementType=types.FloatType())),
+        # types.StructField(name="topic",
+        #                   dataType=types.ArrayType(
+        #                       elementType=types.FloatType())),
     ])
 
 #
