@@ -3,11 +3,11 @@ from os import path
 from pyspark.sql import SparkSession
 from typing import List
 
+from src.feature_processor.pipelines.compute_features \
+    import ComputeContentFeatures
+from src.feature_processor.pipelines.compute_features \
+    import ComputeUserFeatures
 from src.feature_processor.pipelines.writer import WriteAsParquetDataSet
-from src.feature_processor.pipelines.assemble_features \
-    import AssembleContentFeatures
-from src.feature_processor.pipelines.assemble_features \
-    import AssembleUserFeatures
 from src.ingestion.database.factory import IngestionReaderFactory
 
 
@@ -28,8 +28,8 @@ def Main(cassandra_contact_points: List[str],
 
     reader = reader_factory.Create(spark=spark)
 
-    content_features = AssembleContentFeatures(reader=reader)
-    user_features = AssembleUserFeatures(reader=reader)
+    content_features = ComputeContentFeatures(reader=reader)
+    user_features = ComputeUserFeatures(reader=reader)
 
     WriteAsParquetDataSet(
         df=content_features,
