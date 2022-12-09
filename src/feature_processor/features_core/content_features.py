@@ -837,11 +837,11 @@ def ComputeCoreContentFeatures(contents: DataFrame,
     languages = VectorizeLanguages(spoken_language)
 
     avg_rating_nonNull = ComputeNormalizedAverageRating(user_rating_feebacks)
-    avg_rating = contents.select('id').join(avg_rating_nonNull,  ['id'], 'left')
+    avg_rating = contents.select('id').join(avg_rating_nonNull, ['id'], 'left')
 
     rating_count_nonNull = ComputeNormalizedRatingCount(user_rating_feebacks)
     rating_count = contents.select('id').join(
-        rating_count_nonNull, ['id'], 'left').show()
+        rating_count_nonNull, ['id'], 'left')
 
     dollar_budget = GetBuget(contents)
     budget = NormalizeBudget(dollar_budget)
@@ -857,7 +857,7 @@ def ComputeCoreContentFeatures(contents: DataFrame,
     tmdb_avg_rating = NormalizeTmdbAverageRating(tmdb_avg_rating)
     return contents.select('id').join(
         genres, ['id'],
-        'outer').genres.join(
+        'outer').join(
         languages, ['id'],
         'outer').join(
         avg_rating, ['id'],
