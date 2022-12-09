@@ -42,10 +42,8 @@ from src.ingestion.database.writer import IngestionWriterInterface
 
 
 class PostgresIngestionWriter(IngestionWriterInterface):
-    """_summary_
-
-    Args:
-        IngestionWriterInterface (_type_): _description_
+    """It encapsulates the writer operations over the PostgreSQL ingestion
+    database.
     """
 
     def __init__(self, host: str, password: str) -> None:
@@ -118,7 +116,8 @@ class PostgresIngestionWriter(IngestionWriterInterface):
                 content_profile.title,
                 content_profile.genres,
                 json.dumps(content_profile.tags,
-                           cls=StatelessClassJsonEncoder),
+                           cls=StatelessClassJsonEncoder)
+                if content_profile.tags is not None else None,
                 content_profile.imdb_id,
                 content_profile.tmdb_id,
             ))
@@ -227,9 +226,12 @@ class PostgresIngestionWriter(IngestionWriterInterface):
             (
                 content_id,
                 tmdb.tmdb_id,
-                json.dumps(tmdb.primary_info),
-                json.dumps(tmdb.credits),
-                json.dumps(tmdb.keywords),
+                json.dumps(tmdb.primary_info)
+                if tmdb.primary_info is not None else None,
+                json.dumps(tmdb.credits)
+                if tmdb.credits is not None else None,
+                json.dumps(tmdb.keywords)
+                if tmdb.keywords is not None else None,
             )
         ]
 
@@ -259,7 +261,8 @@ class PostgresIngestionWriter(IngestionWriterInterface):
             (
                 content_id,
                 imdb.imdb_id,
-                json.dumps(imdb.primary_info),
+                json.dumps(imdb.primary_info)
+                if imdb.primary_info is not None else None,
             )
         ]
 

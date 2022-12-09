@@ -22,13 +22,15 @@ PSQL_JDBC_DRIVER_PATH = "third_party/postgresql-42.5.0.jar"
 
 def ConfigurePostgresSparkSession(
         builder: SparkSession.Builder) -> SparkSession.Builder:
-    """_summary_
+    """Configures the spark session builder for it to be usable by the
+    PostgreSQL based reader implementation.
 
     Args:
-        builder (SparkSession.Builder): _description_
+        builder (SparkSession.Builder): The spark session builder to be
+            configured.
 
     Returns:
-        SparkSession.Builder: _description_
+        SparkSession.Builder: The configured spark session builder.
     """
     return builder                                      \
         .config("spark.jars", PSQL_JDBC_DRIVER_PATH)    \
