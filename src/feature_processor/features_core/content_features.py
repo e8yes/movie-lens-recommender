@@ -706,7 +706,8 @@ def NormalizeTmdbVoteCount(content_tmdb_vote_count: DataFrame) -> DataFrame:
     """
 
     content_tmdb_vote_count_nonNull = content_tmdb_vote_count.filter(
-        content_tmdb_vote_count['vote_count_unscaled'].isNotNull())  # null vote count are left unprocessed
+        # null vote count are left unprocessed
+        content_tmdb_vote_count['vote_count_unscaled'].isNotNull())
     summary = content_tmdb_vote_count_nonNull.select(
         [mean('vote_count_unscaled').alias('mu'),
          stddev('vote_count_unscaled').alias('sigma')]).collect().pop()
@@ -831,8 +832,8 @@ def ComputeCoreContentFeatures(contents: DataFrame,
                 |-- tmdb_avg_rating: float (nullable = true)
                 |-- tmdb_vote_count: float (nullable = true)
     """
-
     genres = VectorizeGenres(contents)
+
     spoken_language = GetSpokenLanguages(contents)
     languages = VectorizeLanguages(spoken_language)
 
@@ -843,18 +844,24 @@ def ComputeCoreContentFeatures(contents: DataFrame,
     rating_count = contents.select('id').join(
         rating_count_nonNull, ['id'], 'left')
 
-    dollar_budget = GetBuget(contents)
-    budget = NormalizeBudget(dollar_budget)
-    unscaled_runtime = GetRuntime(contents)
-    runtime = NormalizeRuntime(unscaled_runtime)
+    budget_unscaled = GetBuget(contents)
+    budget = NormalizeBudget(budget_unscaled)
+
+    runtime_unscaled = GetRuntime(contents)
+    runtime = NormalizeRuntime(runtime_unscaled)
+
     release_year_unscaled = GetReleaseYear(contents)
     release_year = NormalizeReleaseYear(release_year_unscaled)
+
     cast_composition = ComputeCasts(contents)
     crew_composition = ComputeCrews(contents)
+
     vote_count_unscaled = GetVoteCount(contents)
     tmdb_vote_count = NormalizeTmdbVoteCount(vote_count_unscaled)
-    tmdb_avg_rating = GetTmdbAverageRating(contents)
-    tmdb_avg_rating = NormalizeTmdbAverageRating(tmdb_avg_rating)
+
+    tmdb_avg_rating_unscaled = GetTmdbAverageRating(contents)
+    tmdb_avg_rating = NormalizeTmdbAverageRating(tmdb_avg_rating_unscaled)
+
     return contents.select('id').join(
         genres, ['id'],
         'outer').join(
@@ -873,8 +880,6 @@ def ComputeCoreContentFeatures(contents: DataFrame,
         cast_composition, ['id'],
         'outer').join(
         crew_composition, ['id'],
-        'outer').join(
-        tmdb_avg_rating, ['id'],
         'outer').join(
         tmdb_avg_rating, ['id'],
         'outer').join(
