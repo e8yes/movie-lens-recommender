@@ -1,8 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 from pyspark.sql import functions as F
-from pyspark.sql.functions import *
-import json
 import json
 import nltk
 import re
@@ -52,32 +50,35 @@ def CollectContentText(contents: DataFrame,
     Returns:
         DataFrame: See the example output above.
     """
-    if "../../third_party/nltk_data" not in nltk.data.path:
-        nltk.data.path.append("../../third_party/nltk_data")
     usable_content = contents.\
         filter(contents["tmdb_id"].isNotNull()).\
         filter(contents["tmdb_primary_info"] != "null").\
         select(["id", "title", "tmdb_primary_info"])
     speller = Speller()
 
-    def GetText(row: Row, correction: bool) -> Iterable[Row]:
+    def GetText(row: Row) -> Iterable[Row]:
         primary_info = json.loads(row["tmdb_primary_info"])
-        if primary_info["overview"] is not None and primary_info["overview"] != "":
+        if primary_info["overview"] is not None and \
+                primary_info["overview"] != "":
             title = row['title']
             title = re.sub(r'\(\d+\)', '', title)
             overview = primary_info['overview']
             tagline = primary_info['tagline']
+
             if spell_correction:
                 title = speller.autocorrect_sentence(title)
                 overview = speller.autocorrect_sentence(overview)
                 tagline = speller.autocorrect_sentence(tagline)
-            text = title + overview + " " + tagline
-            yield Row(id=row["id"], text=text)
-    res = usable_content.\
-        rdd.\
-        flatMap(lambda x: GetText(x, correction=spell_correction)).\
+
+            text = title + "\n" + overview + "\n" + tagline
+
+            yield Row(id=row["id"],
+                      text=text)
+
+    return usable_content.      \
+        rdd.                    \
+        flatMap(GetText).       \
         toDF()
-    return res
 
 
 def CollectContentTags(contents: DataFrame,
@@ -117,29 +118,60 @@ def CollectContentTags(contents: DataFrame,
     Returns:
         DataFrame: See the example output above.
     """
-    if "../../third_party/nltk_data" not in nltk.data.path:
-        nltk.data.path.append("../../third_party/nltk_data")
     usable_content = contents.\
         filter(contents["tags"] != "null").\
         select(["id", "tags"])
+
     speller = Speller()
 
-    def GetTags(row: Row, correction: bool) -> Iterable[Row]:
-        tags = ast.literal_eval(row["tags"])
-        all_tags = ""
-        for i in tags:
-            if "tag" in i:
-                tag_info = i['tag']
-                if correction:
-                    tag_info = speller.autocorrect_word(tag_info)
-                all_tags += tag_info+","
-        all_tags = all_tags[:-1]
-        yield Row(id=row["id"], text=all_tags)
-    res = usable_content.\
-        rdd.\
-        flatMap(lambda x: GetTags(x, correction=spell_correction)).\
+    def GetTags(row: Row) -> Iterable[Row]:
+        all_tags = str()
+
+        tags = json.loads(row["tags"])
+        for tag_struct in tags:
+            tag_info = tag_struct["tag"]
+
+            if spell_correction:
+                tag_info = speller.autocorrect_word(tag_info)
+
+            all_tags += tag_info + ","
+
+        yield Row(id=row["id"],
+                  text=all_tags[:-1])
+
+    return usable_content.      \
+        rdd.                    \
+        flatMap(GetTags).       \
         toDF()
-    return res
+
+
+def CollectContentKeywords(contents: DataFrame,
+                           spell_correction: bool) -> DataFrame:
+    usable_content = contents.\
+        filter((contents["tmdb_keywords"] != "null") &
+               (contents["tmdb_keywords"] != "[]")).\
+        select(["id", "tmdb_keywords"])
+
+    speller = Speller()
+
+    def GetKeywords(row: Row) -> Iterable[Row]:
+        keywords = json.loads(row["tmdb_keywords"])["keywords"]
+        all_keywords = str()
+
+        for keyword_struct in keywords:
+            keyword = keyword_struct["name"]
+            if spell_correction:
+                keyword = speller.autocorrect_word(keyword)
+
+            all_keywords += keyword + ","
+
+        yield Row(id=row["id"],
+                  text=all_keywords[:-1])
+
+    return usable_content.      \
+        rdd.                    \
+        flatMap(GetKeywords).   \
+        toDF()
 
 
 def TokenizeText(content_text: DataFrame) -> DataFrame:
@@ -169,21 +201,25 @@ def TokenizeText(content_text: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    if "../../third_party/nltk_data" not in nltk.data.path:
-        nltk.data.path.append("../../third_party/nltk_data")
-
     def TokenizeText(row: Row) -> Iterable[Row]:
+        if "third_party/nltk_data" not in nltk.data.path:
+            nltk.data.path.append("third_party/nltk_data")
+
         texts = row['text']
         counter = -1
+
         for word in word_tokenize(texts):
             word = word.lower()
             counter += 1
-            yield Row(id=row["id"], index=counter, token=word)
-    res = content_text.\
-        rdd.\
-        flatMap(TokenizeText).\
+
+            yield Row(id=row["id"],
+                      index=counter,
+                      token=word)
+
+    return content_text.        \
+        rdd.                    \
+        flatMap(TokenizeText).  \
         toDF()
-    return res
 
 
 def CollectTerms(content_tokens: DataFrame) -> DataFrame:
@@ -234,26 +270,35 @@ def CollectTerms(content_tokens: DataFrame) -> DataFrame:
     Returns:
         Tuple[DataFrame, DataFrame]: See the example output above.
     """
-    if "../../third_party/nltk_data" not in nltk.data.path:
-        nltk.data.path.append("../../third_party/nltk_data")
+    if "third_party/nltk_data" not in nltk.data.path:
+        nltk.data.path.append("third_party/nltk_data")
+
     PUNCT = re.compile(r'[%s\s‐‘’“”–—…]+' % re.escape(string.punctuation))
-    stemmer = PorterStemmer()
     STOP_WORDS = set(stopwords.words("english"))
 
     def GetTerm(row: Row) -> Iterable[Row]:
+        stemmer = PorterStemmer()
+
         words = PUNCT.split(row["token"])
         for word in words:
             word = word.lower()
-            if (word != "") and (word not in STOP_WORDS) and (word not in string.punctuation):
-                yield Row(id=row["id"], token=row['token'], term=stemmer.stem(word))
-    res1 = content_tokens.\
-        rdd.\
-        flatMap(lambda x: GetTerm(x)).\
+
+            if (word != "") and \
+               (word not in STOP_WORDS) and \
+               (word not in string.punctuation):
+                yield Row(id=row["id"],
+                          token=row['token'],
+                          term=stemmer.stem(word))
+
+    res1 = content_tokens.  \
+        rdd.                \
+        flatMap(GetTerm).   \
         toDF()
     res = content_tokens.join(
         res1, ['id', 'token'],
         'leftouter').select(
         'id', 'token', 'term')
+
     return res
 
 
@@ -328,10 +373,13 @@ def ComputeIdf(content_tokens_terms: DataFrame) -> DataFrame:
     Returns:
         DataFrame: See the example output above.
     """
-    N = content_tokens_terms.select(countDistinct('id')).collect()[0][0]
-    interm = content_tokens_terms.join(content_tokens_terms.groupby('term').agg(
-        countDistinct('id')), ['term'], 'left')  # get term frequency
-    interm2 = interm.withColumn('idf', log(N/col('count(id)'))).select(
+    N = content_tokens_terms.select(F.countDistinct('id')).collect()[0][0]
+    interm = content_tokens_terms.\
+        join(content_tokens_terms.
+             groupby('term').
+             # get term frequency
+             agg(F.countDistinct('id')), ['term'], 'left')
+    interm2 = interm.withColumn('idf', F.log(N/col('count(id)'))).select(
         'id', 'token', 'term', 'count(id)', 'idf')  # get idf for each term
     interm3 = interm2.groupBy(
         'id', 'token').agg(
