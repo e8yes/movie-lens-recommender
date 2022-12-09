@@ -59,13 +59,14 @@ def LoadGloveDefinitions(path: str,
         toDF(schema=schema)
 
 
-def VectorizeContentSummaryTokens(content_tokens_idf: DataFrame,
-                                  glove: DataFrame) -> DataFrame:
+def VectorizeTokensWithIdf(tokens_idf: DataFrame,
+                           glove: DataFrame,
+                           output_column_name: str) -> DataFrame:
     """Turns word tokens into a vector by summing word embeddings of each token
     and weighing each by the token's IDF.
 
     Example inputs:
-    content_tokens_idf
+    tokens_idf
     ------------------------------
     | id | token           | idf |
     ------------------------------
@@ -99,82 +100,38 @@ def VectorizeContentSummaryTokens(content_tokens_idf: DataFrame,
 
     Example output:
     ---------------------------
-    | id | summary            |
+    | id | output             |
     ---------------------------
     | 1  | [-0.6, -1.2, -1.8] |
     ---------------------------
 
     Args:
-        content_tokens_idf (DataFrame): See the example inputs above.
+        tokens_idf (DataFrame): See the example inputs above.
         glove (DataFrame): See the example inputs above.
+        output_column_name (str): Name of the output column.
 
     Returns:
         DataFrame: See the example output above.
     """
-    interm1 = content_tokens_idf.join(
-        glove, content_tokens_idf['token'] == glove['word'],
+    interm1 = tokens_idf.join(
+        glove, tokens_idf['token'] == glove['word'],
         'left').withColumn(
         'weighted_embedding', expr("""transform(embedding,x -> x*idf)"""))
     n = len(interm1.select("weighted_embedding").first()
             [0])  # dimension of the embedding
-    res = interm1.groupBy("id").agg(
-        array(*[sum(col("weighted_embedding")[i]) for i in range(n)]).alias("summary"))
+    res = interm1.groupBy("id").agg(array(
+        *[sum(col("weighted_embedding")[i]) for i in range(n)]).alias(output_column_name))
     return res
 
-# def VectorizeContentScoredTags(content_scored_tags: DataFrame,
-#                                glove: DataFrame) -> DataFrame:
-#     """Turns scored tags into a vector by summing word embeddings of each tag
-#     and weighing each entry by the tag's normalized relevance score.
 
-#     Example inputs:
-#     scored tags:
-#     -----------------------------------
-#     | id | scored_tags                |
-#     -----------------------------------
-#     | 1  | {"Good": 0.9, "Bad": 0.2}  |
-#     -----------------------------------
-
-#     glove:
-#     -------------------------
-#     | word   | embedding    |
-#     -------------------------
-#     | "good" | [1, 2, 3]    |
-#     -------------------------
-#     | "bad"  | [-1, -2, -3] |
-#     -------------------------
-
-#     Intermediate result (normalized relevance):
-#     ------------------------------------
-#     | id | scored_tags                 |
-#     ------------------------------------
-#     | 1  | {"Good": 0.82, "Bad": 0.18} |
-#     ------------------------------------
-
-#     Example output:
-#     ---------------------------
-#     | id | scored_tags        |
-#     ---------------------------
-#     | 1  | [0.64, 1.28, 1.92] |
-#     ---------------------------
-
-#     Args:
-#         content_scored_tags (DataFrame): See the example inputs above.
-#         glove (DataFrame): See the example inputs above.
-
-#     Returns:
-#         DataFrame: See the example output above.
-#     """
-#     content_scored_tags.show()
-#     glove.show()
-
-
-def VectorizeUserTokens(user_tag_tokens: DataFrame,
-                        glove: DataFrame) -> DataFrame:
-    """Turns user tags into a vector by averaging the word embeddings of each
-    tag token.
+def VectorizeTokens(tokens: DataFrame,
+                    glove: DataFrame,
+                    output_column_name: str) -> DataFrame:
+    """Turns word tokens into a vector by averaging the word embeddings of
+    each token.
 
     Example inputs:
-    user_tags
+    tokens
     -------------------------------
     | id | token                  |
     -------------------------------
@@ -202,7 +159,7 @@ def VectorizeUserTokens(user_tag_tokens: DataFrame,
 
     Example output:
     ------------------------
-    | id | tags            |
+    | id | output          |
     ------------------------
     | 1  | [5.5, 6.5, 7.5] |
     ------------------------
@@ -215,11 +172,11 @@ def VectorizeUserTokens(user_tag_tokens: DataFrame,
         DataFrame: See the example output above.
     """
 
-    interm1 = user_tag_tokens.withColumnRenamed(
+    interm1 = tokens.withColumnRenamed(
         'token', 'word').join(glove, ['word'], 'left')
 
     # dimension of the embedding
     n = len(interm1.select("embedding").first()[0])
     res = interm1.groupBy("id").agg(
-        array(*[sum(col("embedding")[i]) for i in range(n)]).alias("summary")).show()
+        array(*[avg(col("embedding")[i]) for i in range(n)]).alias(output_column_name))
     return res
