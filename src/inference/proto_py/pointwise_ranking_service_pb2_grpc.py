@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import pointwise_service_pb2 as pointwise__service__pb2
+from . import pointwise_ranking_service_pb2 as pointwise__ranking__service__pb2
 
 
 class PointwiseRankingStub(object):
@@ -16,8 +16,8 @@ class PointwiseRankingStub(object):
         """
         self.PointwiseEstimate = channel.unary_unary(
                 '/e8.PointwiseRanking/PointwiseEstimate',
-                request_serializer=pointwise__service__pb2.PointwiseEstimateRequest.SerializeToString,
-                response_deserializer=pointwise__service__pb2.PointwiseEstimateResponse.FromString,
+                request_serializer=pointwise__ranking__service__pb2.PointwiseEstimateRequest.SerializeToString,
+                response_deserializer=pointwise__ranking__service__pb2.PointwiseEstimateResponse.FromString,
                 )
 
 
@@ -36,8 +36,8 @@ def add_PointwiseRankingServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'PointwiseEstimate': grpc.unary_unary_rpc_method_handler(
                     servicer.PointwiseEstimate,
-                    request_deserializer=pointwise__service__pb2.PointwiseEstimateRequest.FromString,
-                    response_serializer=pointwise__service__pb2.PointwiseEstimateResponse.SerializeToString,
+                    request_deserializer=pointwise__ranking__service__pb2.PointwiseEstimateRequest.FromString,
+                    response_serializer=pointwise__ranking__service__pb2.PointwiseEstimateResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -60,7 +60,7 @@ class PointwiseRanking(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/e8.PointwiseRanking/PointwiseEstimate',
-            pointwise__service__pb2.PointwiseEstimateRequest.SerializeToString,
-            pointwise__service__pb2.PointwiseEstimateResponse.FromString,
+            pointwise__ranking__service__pb2.PointwiseEstimateRequest.SerializeToString,
+            pointwise__ranking__service__pb2.PointwiseEstimateResponse.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)
