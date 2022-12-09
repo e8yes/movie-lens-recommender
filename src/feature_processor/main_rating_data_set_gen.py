@@ -49,17 +49,14 @@ def Main(cassandra_contact_points: List[str],
 
     WriteAsTfRecordDataSet(
         df=train_set,
-        spark=spark,
         output_path=path.join(
             output_path, "ratings", "tfrecords", "train"))
     WriteAsTfRecordDataSet(
         df=valid_set,
-        spark=spark,
         output_path=path.join(
             output_path, "ratings", "tfrecords", "validation"))
     WriteAsTfRecordDataSet(
         df=test_set,
-        spark=spark,
         output_path=path.join(
             output_path, "ratings", "tfrecords", "test"))
 

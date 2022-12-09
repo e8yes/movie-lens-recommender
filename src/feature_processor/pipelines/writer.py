@@ -1,11 +1,10 @@
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 
 TFRECORDS_OUTPUT_FORMATTER_PATH = \
     "third_party/spark-tensorflow-connector_2.11-1.15.0.jar"
 
 
 def WriteAsTfRecordDataSet(df: DataFrame,
-                           spark: SparkSession,
                            output_path: str) -> None:
     try:
         df.write.\
