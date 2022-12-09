@@ -4,14 +4,14 @@ from src.ingestion.database.reader import IngestionReaderInterface
 from src.ingestion.database.reader_psql import ConfigurePostgresSparkSession
 from src.ingestion.database.reader_psql import PostgresIngestionReader
 from pyspark.sql import SparkSession, Window
-from pyspark.sql.functions import col, get_json_object, expr, avg, count,broadcast
+from pyspark.sql.functions import col, get_json_object, expr, avg, count, broadcast
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 from src.ingestion.database.reader import ReadContents
 from src.ingestion.database.reader import ReadUsers
 from src.ingestion.database.reader import ReadRatingFeedbacks
-from pyspark.sql.functions import array_contains, col, explode,  mean, stddev, substring,split,stddev_pop, avg, broadcast,regexp_replace
-from pyspark.ml.feature import StringIndexer, VectorAssembler,StandardScaler
+from pyspark.sql.functions import array_contains, col, explode,  mean, stddev, substring, split, stddev_pop, avg, broadcast, regexp_replace
+from pyspark.ml.feature import StringIndexer, VectorAssembler, StandardScaler
 from pyspark.ml.linalg import SparseVector, DenseVector
 
 
@@ -67,9 +67,15 @@ def ComputeNormalizedAverageRating(
         DataFrame: See the example output above.
     """
     user_rating = user_rating_feebacks.select('user_id', 'rating')
-    user_rating = user_rating.groupBy('user_id').agg(avg("rating").alias("avg_rating_unscaled"))
-    summary = user_rating.select([mean('avg_rating_unscaled').alias('mu'), stddev('avg_rating_unscaled').alias('sigma')]).collect().pop()
-    dft = user_rating.withColumn('avg_rating', (user_rating['avg_rating_unscaled']-summary.mu)/summary.sigma).select(col("user_id").alias("id"), 'avg_rating')
+    user_rating = user_rating.groupBy('user_id').agg(
+        avg("rating").alias("avg_rating_unscaled"))
+    summary = user_rating.select([mean('avg_rating_unscaled').alias(
+        'mu'), stddev('avg_rating_unscaled').alias('sigma')]).collect().pop()
+    dft = user_rating.withColumn(
+        'avg_rating', (user_rating['avg_rating_unscaled'] - summary.mu) / summary.
+        sigma).select(
+        col("user_id").alias("id"),
+        'avg_rating')
     return dft
 
 
@@ -127,9 +133,16 @@ def ComputeNormalizedRatingFeedbackCount(
         DataFrame: See the example output above.
     """
     user_rating = user_rating_feebacks.select('user_id', 'rating')
-    user_rating = user_rating.groupBy('user_id').agg(count("*").alias("count_unscaled"))
-    summary = user_rating.select([mean('count_unscaled').alias('mu'), stddev('count_unscaled').alias('sigma')]).collect().pop()
-    rating_count_scaled = user_rating.withColumn('rating_count', (user_rating['count_unscaled']-summary.mu)/summary.sigma).select(col('user_id').alias('id'), 'rating_count')
+    user_rating = user_rating.groupBy('user_id').agg(
+        count("*").alias("count_unscaled"))
+    summary = user_rating.select(
+        [mean('count_unscaled').alias('mu'),
+         stddev('count_unscaled').alias('sigma')]).collect().pop()
+    rating_count_scaled = user_rating.withColumn(
+        'rating_count', (user_rating['count_unscaled'] - summary.mu) / summary.
+        sigma).select(
+        col('user_id').alias('id'),
+        'rating_count')
     return rating_count_scaled
 
 
@@ -187,9 +200,16 @@ def ComputeNormalizedTaggingFeedbackCount(
         DataFrame: See the example output above.
     """
     user_tagging = user_tagging_feebacks.select('user_id', 'tag')
-    user_tagging = user_tagging.groupBy('user_id').agg(count("*").alias("count_unscaled"))
-    summary = user_tagging.select([mean('count_unscaled').alias('mu'), stddev('count_unscaled').alias('sigma')]).collect().pop()
-    tagging_count_scaled = user_tagging.withColumn('tagging_count', (user_tagging['count_unscaled']-summary.mu)/summary.sigma).select(col('user_id').alias('id'), 'tagging_count')
+    user_tagging = user_tagging.groupBy('user_id').agg(
+        count("*").alias("count_unscaled"))
+    summary = user_tagging.select(
+        [mean('count_unscaled').alias('mu'),
+         stddev('count_unscaled').alias('sigma')]).collect().pop()
+    tagging_count_scaled = user_tagging.withColumn(
+        'tagging_count', (user_tagging['count_unscaled'] - summary.mu) / summary.
+        sigma).select(
+        col('user_id').alias('id'),
+        'tagging_count')
     return tagging_count_scaled
 
 
@@ -229,7 +249,14 @@ def ComputeCoreUserFeatures(users: DataFrame,
     """
 
     avg_rating = ComputeNormalizedAverageRating(user_rating_feebacks)
-    rating_count= ComputeNormalizedRatingFeedbackCount(user_rating_feebacks)
-    tagging_count = ComputeNormalizedTaggingFeedbackCount(user_tagging_feedbacks)
-    res = users.join(avg_rating, ['id'], 'left').join(rating_count, ['id'], 'left').join(tagging_count, ['id'], 'left')   
+    rating_count = ComputeNormalizedRatingFeedbackCount(user_rating_feebacks)
+    tagging_count = ComputeNormalizedTaggingFeedbackCount(
+        user_tagging_feedbacks)
+    res = users.join(
+        avg_rating, ['id'],
+        'left').join(
+        rating_count, ['id'],
+        'left').join(
+        tagging_count, ['id'],
+        'left')
     return res
