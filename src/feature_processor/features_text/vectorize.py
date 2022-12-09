@@ -114,8 +114,7 @@ def VectorizeTokensWithIdf(tokens_idf: DataFrame,
         DataFrame: See the example output above.
     """
     interm1 = tokens_idf.join(
-        glove, tokens_idf['token'] == glove['word'],
-        'left').withColumn(
+        glove, tokens_idf['token'] == glove['word']).withColumn(
         'weighted_embedding', expr("""transform(embedding,x -> x*idf)"""))
     n = len(interm1.select("weighted_embedding").first()
             [0])  # dimension of the embedding
@@ -173,7 +172,7 @@ def VectorizeTokens(tokens: DataFrame,
     """
 
     interm1 = tokens.withColumnRenamed(
-        'token', 'word').join(glove, ['word'], 'left')
+        'token', 'word').join(glove, ['word'])
 
     # dimension of the embedding
     n = len(interm1.select("embedding").first()[0])
