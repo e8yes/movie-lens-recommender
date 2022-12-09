@@ -50,8 +50,8 @@ def ComputeContentTextFeatures(
     content_keyword_embed = VectorizeTokens(
         tokens=keywords_tokens, glove=glove_100, output_column_name="keyword")
 
-    return contents.                            \
-        select("id").                           \
-        join(content_summary_embed, ["id"]).    \
-        join(content_tag_embed, ["id"]).        \
-        join(content_keyword_embed, ["id"])
+    return contents.                                    \
+        select("id").                                   \
+        join(content_summary_embed, ["id"], "outer").   \
+        join(content_tag_embed, ["id"], "outer").       \
+        join(content_keyword_embed, ["id"], "outer")
