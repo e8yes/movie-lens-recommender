@@ -25,14 +25,15 @@ def main(uid,mid):
         value2 = x[1]
         break
 
+    user_array = np.asarray(value).astype('float32')
+    m_array = np.asarray(value2).astype('float32')
+    user_f = tf.convert_to_tensor([user_array])
+    u = tf.convert_to_tensor([[np.asarray(uid).astype('int')]])
+    movie_f =tf.convert_to_tensor([m_array])
 
-    user_f = tf.convert_to_tensor([np.array(value)])
-    movie_f =tf.convert_to_tensor([np.array(value2)])
-    id = tf.convert_to_tensor([uid])
- 
-    predict = new_model.predict([[uid],user_f,movie_f])
 
-    #print(predict)
+    predict = new_model.predict([(u,user_f,movie_f)])
+    print(predict)
 
 
 if __name__ == '__main__':
