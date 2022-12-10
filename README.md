@@ -15,3 +15,9 @@ Like the original Movie Lens system developed by a research lab in the Departmen
 - ![TMDB](docs/blue_long_2-9665a76b1ae401a510ec1e0ca40ddcb3b0cfe45f1d51b77a308fea0845885648.svg)
     - This product uses the TMDB API but is not endorsed or certified by TMDB.
 
+# Preparations
+1. third_party/README.md
+2. src/ingestion/README.md
+3. src/loader/README.md
+4. src/feature_processor/README.md
+5. src/model/README.md
