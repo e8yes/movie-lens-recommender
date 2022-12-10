@@ -8,8 +8,8 @@ import numpy as np
 #[user_id, user_feature, movie_feature]
 
 
-def main(uid,mid):
-    new_model = tf.keras.models.load_model('recommendation_model_half_without_matirx/my_model')
+def main(uid,mid,path):
+    new_model = tf.keras.models.load_model(path)
 
     sql1 = 'SELECT * FROM movie where id = ' + mid + ';'
     sql2 = 'SELECT * FROM user where id = ' + uid + ';'
@@ -39,4 +39,5 @@ def main(uid,mid):
 if __name__ == '__main__':
     uid = sys.argv[1]
     mid = sys.argv[2]
-    main(uid,mid)
+    path = sys.argv[3]
+    main(uid,mid,path)
