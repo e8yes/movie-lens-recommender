@@ -18,4 +18,6 @@ Design doc: https://docs.google.com/document/d/1h4WPJDB1XV3-0rYfTvzqV6r28yvEmMsC
  - Set up the ingestion database ```./push_schema.sh```
 
 ## Main programs
- - This program launches the XMDB crawler: ```python3 -m src.ingestion.main_crawler --kafka_host="IP address of the Kafka host" --cassandra_contact_points="A list of cassandra contact points" ----tmdb_api_key="TMDB developer API key"```
+ - This program runs the XMDB crawler: ```python3 -m src.ingestion.main_crawler --kafka_host="IP address of the Kafka host" --cassandra_contact_points="A list of cassandra contact points" ----tmdb_api_key="TMDB developer API key"```
+ - This program runs the ingestion server: ```python3 -m src.ingestion.main_ingestion_server --grpc_port="The port the server is going to run on" --kafka_host="IP address of the Kafka host"```
+ - This program runs the feedback server: ```python3 -m src.ingestion.main_feedback_server --grpc_port="The port the server is going to run on"```
