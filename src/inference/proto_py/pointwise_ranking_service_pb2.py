@@ -19,31 +19,31 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1fpointwise_ranking_service.proto\x12\x02\x65\x38\"?\n\x18PointwiseEstimateRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\x12\x12\n\ncontent_id\x18\x02 \x01(\x03\")\n\x19PointwiseEstimateResponse\x12\x0c\n\x04prob\x18\x01 \x01(\x02\x32k\n\x10PointwiseRanking\x12W\n\x18\x43omputePointwiseEstimate\x12\x1c.e8.PointwiseEstimateRequest\x1a\x1d.e8.PointwiseEstimateResponseb\x06proto3'
+  serialized_pb=b'\n\x1fpointwise_ranking_service.proto\x12\x02\x65\x38\"B\n\x19PointwiseEstimatesRequest\x12\x10\n\x08user_ids\x18\x01 \x03(\x03\x12\x13\n\x0b\x63ontent_ids\x18\x02 \x03(\x03\"+\n\x1aPointwiseEstimatesResponse\x12\r\n\x05probs\x18\x01 \x03(\x02\x32n\n\x10PointwiseRanking\x12Z\n\x19\x43omputePointwiseEstimates\x12\x1d.e8.PointwiseEstimatesRequest\x1a\x1e.e8.PointwiseEstimatesResponseb\x06proto3'
 )
 
 
 
 
-_POINTWISEESTIMATEREQUEST = _descriptor.Descriptor(
-  name='PointwiseEstimateRequest',
-  full_name='e8.PointwiseEstimateRequest',
+_POINTWISEESTIMATESREQUEST = _descriptor.Descriptor(
+  name='PointwiseEstimatesRequest',
+  full_name='e8.PointwiseEstimatesRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='user_id', full_name='e8.PointwiseEstimateRequest.user_id', index=0,
-      number=1, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
+      name='user_ids', full_name='e8.PointwiseEstimatesRequest.user_ids', index=0,
+      number=1, type=3, cpp_type=2, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='content_id', full_name='e8.PointwiseEstimateRequest.content_id', index=1,
-      number=2, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
+      name='content_ids', full_name='e8.PointwiseEstimatesRequest.content_ids', index=1,
+      number=2, type=3, cpp_type=2, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -60,22 +60,22 @@ _POINTWISEESTIMATEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=39,
-  serialized_end=102,
+  serialized_end=105,
 )
 
 
-_POINTWISEESTIMATERESPONSE = _descriptor.Descriptor(
-  name='PointwiseEstimateResponse',
-  full_name='e8.PointwiseEstimateResponse',
+_POINTWISEESTIMATESRESPONSE = _descriptor.Descriptor(
+  name='PointwiseEstimatesResponse',
+  full_name='e8.PointwiseEstimatesResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='prob', full_name='e8.PointwiseEstimateResponse.prob', index=0,
-      number=1, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      name='probs', full_name='e8.PointwiseEstimatesResponse.probs', index=0,
+      number=1, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -91,27 +91,27 @@ _POINTWISEESTIMATERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=104,
-  serialized_end=145,
+  serialized_start=107,
+  serialized_end=150,
 )
 
-DESCRIPTOR.message_types_by_name['PointwiseEstimateRequest'] = _POINTWISEESTIMATEREQUEST
-DESCRIPTOR.message_types_by_name['PointwiseEstimateResponse'] = _POINTWISEESTIMATERESPONSE
+DESCRIPTOR.message_types_by_name['PointwiseEstimatesRequest'] = _POINTWISEESTIMATESREQUEST
+DESCRIPTOR.message_types_by_name['PointwiseEstimatesResponse'] = _POINTWISEESTIMATESRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-PointwiseEstimateRequest = _reflection.GeneratedProtocolMessageType('PointwiseEstimateRequest', (_message.Message,), {
-  'DESCRIPTOR' : _POINTWISEESTIMATEREQUEST,
+PointwiseEstimatesRequest = _reflection.GeneratedProtocolMessageType('PointwiseEstimatesRequest', (_message.Message,), {
+  'DESCRIPTOR' : _POINTWISEESTIMATESREQUEST,
   '__module__' : 'pointwise_ranking_service_pb2'
-  # @@protoc_insertion_point(class_scope:e8.PointwiseEstimateRequest)
+  # @@protoc_insertion_point(class_scope:e8.PointwiseEstimatesRequest)
   })
-_sym_db.RegisterMessage(PointwiseEstimateRequest)
+_sym_db.RegisterMessage(PointwiseEstimatesRequest)
 
-PointwiseEstimateResponse = _reflection.GeneratedProtocolMessageType('PointwiseEstimateResponse', (_message.Message,), {
-  'DESCRIPTOR' : _POINTWISEESTIMATERESPONSE,
+PointwiseEstimatesResponse = _reflection.GeneratedProtocolMessageType('PointwiseEstimatesResponse', (_message.Message,), {
+  'DESCRIPTOR' : _POINTWISEESTIMATESRESPONSE,
   '__module__' : 'pointwise_ranking_service_pb2'
-  # @@protoc_insertion_point(class_scope:e8.PointwiseEstimateResponse)
+  # @@protoc_insertion_point(class_scope:e8.PointwiseEstimatesResponse)
   })
-_sym_db.RegisterMessage(PointwiseEstimateResponse)
+_sym_db.RegisterMessage(PointwiseEstimatesResponse)
 
 
 
@@ -122,16 +122,16 @@ _POINTWISERANKING = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=147,
-  serialized_end=254,
+  serialized_start=152,
+  serialized_end=262,
   methods=[
   _descriptor.MethodDescriptor(
-    name='ComputePointwiseEstimate',
-    full_name='e8.PointwiseRanking.ComputePointwiseEstimate',
+    name='ComputePointwiseEstimates',
+    full_name='e8.PointwiseRanking.ComputePointwiseEstimates',
     index=0,
     containing_service=None,
-    input_type=_POINTWISEESTIMATEREQUEST,
-    output_type=_POINTWISEESTIMATERESPONSE,
+    input_type=_POINTWISEESTIMATESREQUEST,
+    output_type=_POINTWISEESTIMATESRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

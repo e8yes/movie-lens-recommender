@@ -14,18 +14,18 @@ class PointwiseRankingStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.ComputePointwiseEstimate = channel.unary_unary(
-                '/e8.PointwiseRanking/ComputePointwiseEstimate',
-                request_serializer=pointwise__ranking__service__pb2.PointwiseEstimateRequest.SerializeToString,
-                response_deserializer=pointwise__ranking__service__pb2.PointwiseEstimateResponse.FromString,
+        self.ComputePointwiseEstimates = channel.unary_unary(
+                '/e8.PointwiseRanking/ComputePointwiseEstimates',
+                request_serializer=pointwise__ranking__service__pb2.PointwiseEstimatesRequest.SerializeToString,
+                response_deserializer=pointwise__ranking__service__pb2.PointwiseEstimatesResponse.FromString,
                 )
 
 
 class PointwiseRankingServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def ComputePointwiseEstimate(self, request, context):
-        """Computes Pr(likes(Content[j]) | User[i], theta).
+    def ComputePointwiseEstimates(self, request, context):
+        """Computes Pr(likes(Content[j]) | User[i], theta) in batch.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -34,10 +34,10 @@ class PointwiseRankingServicer(object):
 
 def add_PointwiseRankingServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'ComputePointwiseEstimate': grpc.unary_unary_rpc_method_handler(
-                    servicer.ComputePointwiseEstimate,
-                    request_deserializer=pointwise__ranking__service__pb2.PointwiseEstimateRequest.FromString,
-                    response_serializer=pointwise__ranking__service__pb2.PointwiseEstimateResponse.SerializeToString,
+            'ComputePointwiseEstimates': grpc.unary_unary_rpc_method_handler(
+                    servicer.ComputePointwiseEstimates,
+                    request_deserializer=pointwise__ranking__service__pb2.PointwiseEstimatesRequest.FromString,
+                    response_serializer=pointwise__ranking__service__pb2.PointwiseEstimatesResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -50,7 +50,7 @@ class PointwiseRanking(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def ComputePointwiseEstimate(request,
+    def ComputePointwiseEstimates(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,8 +59,8 @@ class PointwiseRanking(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/e8.PointwiseRanking/ComputePointwiseEstimate',
-            pointwise__ranking__service__pb2.PointwiseEstimateRequest.SerializeToString,
-            pointwise__ranking__service__pb2.PointwiseEstimateResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/e8.PointwiseRanking/ComputePointwiseEstimates',
+            pointwise__ranking__service__pb2.PointwiseEstimatesRequest.SerializeToString,
+            pointwise__ranking__service__pb2.PointwiseEstimatesResponse.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -2,19 +2,19 @@ syntax = "proto3";
 
 package e8;
 
-message PointwiseEstimateRequest {
-  int64 user_id = 1;
-  int64 content_id = 2;
+message PointwiseEstimatesRequest {
+  repeated int64 user_ids = 1;
+  repeated int64 content_ids = 2;
 }
 
-message PointwiseEstimateResponse {
-  // The probability that the user specified by the user_id likes the pieces of
-  // content specified by the content_id.
-  float prob = 1;
+message PointwiseEstimatesResponse {
+  // The probability that the users specified by the user_ids likes the pieces
+  // of contents specified by the content_ids.
+  repeated float probs = 1;
 }
 
 service PointwiseRanking {
-  // Computes Pr(likes(Content[j]) | User[i], theta).
-  rpc ComputePointwiseEstimate(PointwiseEstimateRequest)
-      returns (PointwiseEstimateResponse);
+  // Computes Pr(likes(Content[j]) | User[i], theta) in batch.
+  rpc ComputePointwiseEstimates(PointwiseEstimatesRequest)
+      returns (PointwiseEstimatesResponse);
 }
