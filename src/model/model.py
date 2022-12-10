@@ -46,7 +46,7 @@ movie_dense2 = keras.layers.Dense(
 # dot product of    (user_feature)x(movie_feature) to generate rating   of (user,moive) pair
 product = tf.keras.layers.Dot(axes=1)([movie_dense2, user_dense])
 
-ouput = tf.keras.activations.sigmoid(product)
+ouput = 5*tf.keras.activations.sigmoid(product)
 
 #ouput =  tf.keras.layers.Activation(tf.keras.activations.relu)(product)
 
