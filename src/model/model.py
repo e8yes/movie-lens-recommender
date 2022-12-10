@@ -9,9 +9,6 @@ import reader
 import tensorflow_addons as tfa
 
 EMBEDDING_SIZE = 20
-num_users = 280000
-num_movies = 60000
-
 
 data_path = 'real_data_set1/ratings/tfrecords'  # path to the data_set
 test_set = reader.TestSet(data_path)  # test set
