@@ -21,3 +21,7 @@ Like the original Movie Lens system developed by a research lab in the Departmen
 3. src/loader/README.md
 4. src/feature_processor/README.md
 5. src/model/README.md
+
+# Author Mapping
+DaviesX (Chifeng Wen) -> cwa258 (chifeng_wen@sfu.ca)
+
