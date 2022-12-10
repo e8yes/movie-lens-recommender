@@ -9,7 +9,9 @@ first need to load the feature data to the cassandra database,
 
 after start cassandra server, 
 
-create keyspace model;
+CREATE KEYSPACE model WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
+use model;
 
 create table movie (id int,data list<float>, PRIMAY KEY(id));
   
