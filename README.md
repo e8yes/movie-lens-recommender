@@ -23,5 +23,7 @@ Like the original Movie Lens system developed by a research lab in the Departmen
 5. src/model/README.md
 
 # Author Mapping
-DaviesX (Chifeng Wen) -> cwa258 (chifeng_wen@sfu.ca)
-greedcat (Mingyi Wu) -> mingyiwu (mingyiwu@sfu.ca)
+- DaviesX (Chifeng Wen) -> cwa258 (chifeng_wen@sfu.ca)
+- ffmm6521 (Min Fei) -> mfa94 (??@sfu.ca)
+- greedcat (Mingyi Wu) -> mingyiwu (mingyiwu@sfu.ca)
+
