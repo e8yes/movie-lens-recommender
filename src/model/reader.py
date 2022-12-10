@@ -17,7 +17,7 @@ def __DataSet(pathname: str) -> tf.data.Dataset:                                
         filenames=glob(pathname=pathname),
         compression_type="GZIP")
 
-    return data_set.map(DecodeFn).batch(2).map(to_string_lazy_function)
+    return data_set.map(DecodeFn).batch(1000).map(to_string_lazy_function)
 
 
 def to_string_user(batch) -> tf.Tensor:                                               
@@ -35,27 +35,32 @@ def to_string_user(batch) -> tf.Tensor:
 
     for id in batch.numpy():
         r.append(user_dic[id[0]])
+   
 
     return tf.convert_to_tensor(value=r, dtype=tf.float32)
 
 
 def to_string_content(batch) -> tf.Tensor:
-    set_r = set()
-    r = list()
+    set_c = set()
+    c = list()
     movie_dic = dict()
     for id in batch.numpy():
-        set_r.add(id[0])
+        set_c.add(id[0])
 
-    sql = sql_builder(set_r,'movie')
+    sql = sql_builder(set_c,'movie')
     rows= cassandra_session.session.execute(sql)
 
     for x in rows:
         movie_dic.update({x[0]: x[1]})
 
-    for id in batch.numpy():
-        r.append(movie_dic[id[0]])
 
-    return tf.convert_to_tensor(value=r, dtype=tf.float32)
+
+    for id in batch.numpy():
+
+        #print(movie_dic[id[0]])
+        c.append(movie_dic[id[0]])
+
+    return tf.convert_to_tensor(value=c, dtype=tf.float32)
 
 
 def to_string_lazy_function(input,rate) -> tf.Tensor:
