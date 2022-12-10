@@ -17,7 +17,7 @@ create table movie (id int,data list<float>, PRIMAY KEY(id));
   
 create table movie (id int,data list<float>, PRIMAY KEY(id));
 
-Then run load_cassandra.py  (set the path to the dataset file - line 9)
+Then run load_cassandra.py  (set the path to the dataset file - line 9) which will load data to the cassandra
 
 Last, run model.py        (set the path to the dataset/rating)
 then set the data_path to the ratings directory,
