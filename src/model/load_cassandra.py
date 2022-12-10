@@ -15,7 +15,7 @@ def main():
     #user_df= user_df.withColumn('data',functions.concat("rating_feature",'profile')).select('id','data','rating_feature')
 
     #user_df dataframe of user_feature, in a high dimensions vector  
-    #user_feature has 25 dimensions
+
 
     user_df.write.format("org.apache.spark.sql.cassandra").mode('append').options(table='user', keyspace="model").save()
   
