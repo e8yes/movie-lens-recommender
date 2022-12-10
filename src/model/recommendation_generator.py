@@ -55,11 +55,10 @@ def main(uid,path):
     
     l.sort(reverse=True)
 
-    print('reccomend 5 movies:')
+    print('reccomend 5 movies for user ' + str(uid))
     for i in range(5):
         print('recommend movie ' + str(dic[l[i]]) + ' with predicted rating ' +str(l[i]))
     
-
 
 
 if __name__ == '__main__':
