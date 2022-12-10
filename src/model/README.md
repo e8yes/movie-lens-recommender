@@ -38,3 +38,17 @@ r square currently is not aviable due to not feasible for training the whole use
 
 python3 rating_predict.py 1 2 'recommendation_model_half_without_matirx/my_model'
 first input: user_id   second: movie_id    third: path to model
+
+5. recommendation_generator.py can randomly generate 5 movies as recommendtaion to users
+
+python3 rating_predict.py 1 'recommendation_model_half_without_matirx/my_model'
+first input: user_id   second: path to model
+
+output like this:
+reccomend 5 movies for user 1:
+recommend movie 185677 with predicted rating 4.413979
+recommend movie 185515 with predicted rating 4.0680695
+recommend movie 187161 with predicted rating 3.9665365
+recommend movie 102947 with predicted rating 3.9243002
+recommend movie 179427 with predicted rating 3.8663406
+
