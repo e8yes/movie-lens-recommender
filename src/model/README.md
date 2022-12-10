@@ -36,7 +36,7 @@ r square currently is not aviable due to not feasible for training the whole use
 
 4. rating_predict.py can print the prediciton rating of given user_id and movie_id  (based on load model)
 
-In case, can not trained not successful from previous part,
+sample model
 https://drive.google.com/drive/folders/1YcZy-3ISL1kWtRqHXXyK6tGCzNo81k5q?usp=share_link      (trained model on reduced dataset)    
 
 python3 rating_predict.py 1 2 'recommendation_model_half_without_matirx/my_model'
