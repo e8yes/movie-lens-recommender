@@ -34,7 +34,10 @@ unzip, there will be three file content_features,user_features,ratings
 3. analyze.py will load data from cassandra to spark dataframe, to calculate mse of each user and r square (use prediction from model)
 r square currently is not aviable due to not feasible for training the whole user dataset
 
-4. rating_predict.py can print the prediciton rating of given user_id and movie_id  (based on load model,
+4. rating_predict.py can print the prediciton rating of given user_id and movie_id  (based on load model)
+
+In case, can not trained not successful from previous part,
+https://drive.google.com/drive/folders/1YcZy-3ISL1kWtRqHXXyK6tGCzNo81k5q?usp=share_link      (trained model on reduced dataset)    
 
 python3 rating_predict.py 1 2 'recommendation_model_half_without_matirx/my_model'
 first input: user_id   second: movie_id    third: path to model
