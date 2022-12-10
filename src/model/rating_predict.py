@@ -7,9 +7,7 @@ import numpy as np
 
 #[user_id, user_feature, movie_feature]
 
-
-def main(uid,mid,path):
-    new_model = tf.keras.models.load_model(path)
+def rating_predict(uid,mid,model):
 
     sql1 = 'SELECT * FROM movie where id = ' + mid + ';'
     sql2 = 'SELECT * FROM user where id = ' + uid + ';'
@@ -31,9 +29,14 @@ def main(uid,mid,path):
     u = tf.convert_to_tensor([[np.asarray(uid).astype('int')]])
     movie_f =tf.convert_to_tensor([m_array])
 
+    predict = model.predict([(u,user_f,movie_f)])
+    return predict
 
-    predict = new_model.predict([(u,user_f,movie_f)])
-    print(predict)
+
+
+def main(uid,mid,path):
+    model = tf.keras.models.load_model(path)
+    print('user ' + uid + ' predicted rating on movie ' + mid + ' is ' + str(rating_predict(uid,mid,model)[0][0]))
 
 
 if __name__ == '__main__':
