@@ -6,9 +6,9 @@ import numpy as np
 
 def main():
     
-    path = 'real_data_set1/user_features'
-    user_df = spark.read.parquet('real_data_set1/user_features')
-    movie_df = spark.read.parquet('real_data_set1/content_features')
+    path = 'real_data_set1'
+    user_df = spark.read.parquet(path +'user_features')
+    movie_df = spark.read.parquet(path +'content_features')
     
    
     user_df= user_df.withColumn("data",functions.array("avg_rating", "rating_count",'tagging_count')).select('id','data')
