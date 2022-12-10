@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1fpointwise_ranking_service.proto\x12\x02\x65\x38\"?\n\x18PointwiseEstimateRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\x12\x12\n\ncontent_id\x18\x02 \x01(\x03\")\n\x19PointwiseEstimateResponse\x12\x0c\n\x04prob\x18\x01 \x01(\x02\x32\x64\n\x10PointwiseRanking\x12P\n\x11PointwiseEstimate\x12\x1c.e8.PointwiseEstimateRequest\x1a\x1d.e8.PointwiseEstimateResponseb\x06proto3'
+  serialized_pb=b'\n\x1fpointwise_ranking_service.proto\x12\x02\x65\x38\"?\n\x18PointwiseEstimateRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\x12\x12\n\ncontent_id\x18\x02 \x01(\x03\")\n\x19PointwiseEstimateResponse\x12\x0c\n\x04prob\x18\x01 \x01(\x02\x32k\n\x10PointwiseRanking\x12W\n\x18\x43omputePointwiseEstimate\x12\x1c.e8.PointwiseEstimateRequest\x1a\x1d.e8.PointwiseEstimateResponseb\x06proto3'
 )
 
 
@@ -123,11 +123,11 @@ _POINTWISERANKING = _descriptor.ServiceDescriptor(
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=147,
-  serialized_end=247,
+  serialized_end=254,
   methods=[
   _descriptor.MethodDescriptor(
-    name='PointwiseEstimate',
-    full_name='e8.PointwiseRanking.PointwiseEstimate',
+    name='ComputePointwiseEstimate',
+    full_name='e8.PointwiseRanking.ComputePointwiseEstimate',
     index=0,
     containing_service=None,
     input_type=_POINTWISEESTIMATEREQUEST,

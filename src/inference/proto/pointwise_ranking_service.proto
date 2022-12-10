@@ -15,6 +15,6 @@ message PointwiseEstimateResponse {
 
 service PointwiseRanking {
   // Computes Pr(likes(Content[j]) | User[i], theta).
-  rpc PointwiseEstimate(PointwiseEstimateRequest)
+  rpc ComputePointwiseEstimate(PointwiseEstimateRequest)
       returns (PointwiseEstimateResponse);
 }

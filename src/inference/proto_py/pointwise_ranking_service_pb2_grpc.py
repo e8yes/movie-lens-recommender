@@ -14,8 +14,8 @@ class PointwiseRankingStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.PointwiseEstimate = channel.unary_unary(
-                '/e8.PointwiseRanking/PointwiseEstimate',
+        self.ComputePointwiseEstimate = channel.unary_unary(
+                '/e8.PointwiseRanking/ComputePointwiseEstimate',
                 request_serializer=pointwise__ranking__service__pb2.PointwiseEstimateRequest.SerializeToString,
                 response_deserializer=pointwise__ranking__service__pb2.PointwiseEstimateResponse.FromString,
                 )
@@ -24,7 +24,7 @@ class PointwiseRankingStub(object):
 class PointwiseRankingServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def PointwiseEstimate(self, request, context):
+    def ComputePointwiseEstimate(self, request, context):
         """Computes Pr(likes(Content[j]) | User[i], theta).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -34,8 +34,8 @@ class PointwiseRankingServicer(object):
 
 def add_PointwiseRankingServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'PointwiseEstimate': grpc.unary_unary_rpc_method_handler(
-                    servicer.PointwiseEstimate,
+            'ComputePointwiseEstimate': grpc.unary_unary_rpc_method_handler(
+                    servicer.ComputePointwiseEstimate,
                     request_deserializer=pointwise__ranking__service__pb2.PointwiseEstimateRequest.FromString,
                     response_serializer=pointwise__ranking__service__pb2.PointwiseEstimateResponse.SerializeToString,
             ),
@@ -50,7 +50,7 @@ class PointwiseRanking(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def PointwiseEstimate(request,
+    def ComputePointwiseEstimate(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,7 +59,7 @@ class PointwiseRanking(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/e8.PointwiseRanking/PointwiseEstimate',
+        return grpc.experimental.unary_unary(request, target, '/e8.PointwiseRanking/ComputePointwiseEstimate',
             pointwise__ranking__service__pb2.PointwiseEstimateRequest.SerializeToString,
             pointwise__ranking__service__pb2.PointwiseEstimateResponse.FromString,
             options, channel_credentials,
