@@ -41,6 +41,7 @@ https://drive.google.com/drive/folders/1YcZy-3ISL1kWtRqHXXyK6tGCzNo81k5q?usp=sha
 
 sample command:
 python3 rating_predict.py 1 2 'recommendation_model_half_without_matirx/my_model'
+  
 first input: user_id   second: movie_id    third: path to model
   
 sample output:
