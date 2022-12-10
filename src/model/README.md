@@ -29,16 +29,17 @@ https://drive.google.com/file/d/1OzfW8QKGQXxwiRJ9cSOhc4DLRyBGGfVs/view  (data_se
   
 https://drive.google.com/file/d/1IvzZZFS-zrSQY78D8bf24ZCdPqt75nd7/view?usp=share_link  (reduced data_set, only take part of users rating, which can be trained)
   
-unzip, there will be three file content_features,user_features,ratings
+unzip, there will be three files: 'content_features',  'user_features' ,'ratings'
   
 3. analyze.py will load data from cassandra to spark dataframe, to calculate mse of each user and r square (use prediction from model)
-r square currently is not aviable due to not feasible for training the whole user dataset
+r square currently is not available due to not feasible for training the whole user dataset
 
 4. rating_predict.py can print the prediciton rating of given user_id and movie_id  (based on load model)
 
-sample model
+sample model:
 https://drive.google.com/drive/folders/1YcZy-3ISL1kWtRqHXXyK6tGCzNo81k5q?usp=share_link      (trained model on reduced dataset)    
 
+sample command:
 python3 rating_predict.py 1 2 'recommendation_model_half_without_matirx/my_model'
 first input: user_id   second: movie_id    third: path to model
   
@@ -47,6 +48,7 @@ user 1 predicted rating on movie 2 is 3.2682076
 
 5. recommendation_generator.py can randomly generate 5 movies as recommendtaion to users
 
+sample command:
 python3 rating_predict.py 1 'recommendation_model_half_without_matirx/my_model'
 first input: user_id   second: path to model
 
