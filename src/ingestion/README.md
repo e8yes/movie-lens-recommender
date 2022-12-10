@@ -16,3 +16,6 @@ Design doc: https://docs.google.com/document/d/1h4WPJDB1XV3-0rYfTvzqV6r28yvEmMsC
  - Install python TMDB wrapper package ```pip3 install tmdbsimple```
  - Generate code ```./generate_code.sh ```
  - Set up the ingestion database ```./push_schema.sh```
+
+## Main programs
+ - This program launches the XMDB crawler: ```python3 -m src.ingestion.main_crawler --kafka_host="IP address of the Kafka host" --cassandra_contact_points="A list of cassandra contact points" ----tmdb_api_key="TMDB developer API key"```
