@@ -45,7 +45,8 @@ def main(uid,path):
     count = 0
     dic = dict()
     l = list()
-
+    
+    #idea randomly select 100 movies, based on the predicted rating, recommend top5 to user
     while(count<100):
         mid = random.sample(s, 1)[0]
         predict = rating_predict(uid,mid,model)
