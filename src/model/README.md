@@ -41,13 +41,16 @@ https://drive.google.com/drive/folders/1YcZy-3ISL1kWtRqHXXyK6tGCzNo81k5q?usp=sha
 
 python3 rating_predict.py 1 2 'recommendation_model_half_without_matirx/my_model'
 first input: user_id   second: movie_id    third: path to model
+  
+sample output:
+user 1 predicted rating on movie 2 is 3.2682076
 
 5. recommendation_generator.py can randomly generate 5 movies as recommendtaion to users
 
 python3 rating_predict.py 1 'recommendation_model_half_without_matirx/my_model'
 first input: user_id   second: path to model
 
-output like this:
+sample output:
 reccomend 5 movies for user 1:
 recommend movie 185677 with predicted rating 4.413979
 recommend movie 185515 with predicted rating 4.0680695
