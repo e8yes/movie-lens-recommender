@@ -35,3 +35,8 @@ unzip, there will be three file content_features,user_features,ratings
 
 analyze.py will load data from cassandra to spark dataframe, to calculate mse of each user and r square (use prediction from model)
 r square currently is not aviable due to not feasible for training the whole user dataset
+
+rating_predict.py can print the prediciton rating of given user_id and movie_id
+
+python3 rating_predict.py 1 2
+
