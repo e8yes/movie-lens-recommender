@@ -8,8 +8,11 @@ To train the model,
 first need to load the feature data to the cassandra database, 
 
 after start cassandra server, 
+
 create keyspace model;
+
 create table movie (id int,data list<float>, PRIMAY KEY(id));
+  
 create table movie (id int,data list<float>, PRIMAY KEY(id));
 
 Then run load_cassandra.py  (set the path to the dataset file - line 9)
