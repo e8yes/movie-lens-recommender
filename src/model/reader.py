@@ -53,11 +53,7 @@ def to_string_content(batch) -> tf.Tensor:
     for x in rows:
         movie_dic.update({x[0]: x[1]})
 
-
-
     for id in batch.numpy():
-
-        #print(movie_dic[id[0]])
         c.append(movie_dic[id[0]])
 
     return tf.convert_to_tensor(value=c, dtype=tf.float32)

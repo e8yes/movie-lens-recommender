@@ -25,9 +25,7 @@ def main():
                                                             'tmdb_vote_count'))
     movie_df= movie_df.withColumn("data",functions.concat("feature",'genres','languages','cast_composition','crew_composition','summary','tag','keyword')).select('id','data')
 
-    #movie_df.select('id').where(movie_df['id'] >50000).show()
-    
-    #movie_feature has 1506 dimensions, 60000 movie
+    #movie_feature has 503 dimensions
     #facing problem when load large to cassandra, try to do batch by batch
     
     i =10000

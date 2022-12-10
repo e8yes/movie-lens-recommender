@@ -34,9 +34,7 @@ def main():
     df = df.withColumn('R_square',  functions.lit(1)-(df['sum(differen_square)']/df['sum(mse)']) )
     
     #calculated mse for each user
-   
-
-
+    
     df.show()
     
 
