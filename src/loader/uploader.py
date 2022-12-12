@@ -117,8 +117,8 @@ def UploadDataFrame(data_frame: DataFrame,
         num_partitions = ceil(failed_uploads.count()/num_records_per_partition)
 
         logging.info(
-            "UploadDataFrame(): retry={retry} num_partitions={num_partitions}".format(
-                retry=retry, num_partitions=num_partitions))
+            "UploadDataFrame(): retry={retry} num_partitions={num_partitions}".
+            format(retry=retry, num_partitions=num_partitions))
 
         failed_uploads = failed_uploads.\
             repartition(numPartitions=num_partitions).\
@@ -129,5 +129,6 @@ def UploadDataFrame(data_frame: DataFrame,
             break
 
     logging.info(
-        "UploadDataFrame(): upload finished. Returning failed records, if there is any.")
+        "UploadDataFrame(): upload finished. Returning failed records, if "
+        "there is any.")
     return failed_uploads.toDF(schema=data_frame.schema)

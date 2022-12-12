@@ -12,7 +12,7 @@ message RatingFeedback {
   // In unix timestamp.
   int64 timestamp_secs = 3;
 
-  // From 0.5 to 5.0. Step unspecified.
+  // From 0 to 1. Step unspecified.
   float rating = 4;
 }
 
