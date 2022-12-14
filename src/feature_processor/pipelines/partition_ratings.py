@@ -1,4 +1,5 @@
 from pyspark.sql import DataFrame
+from pyspark.sql import functions
 from typing import Tuple
 
 from src.ingestion.database.reader import RATING_FEEDBACK_DF_USER_ID
@@ -22,6 +23,7 @@ def PartitionRatingGlobal(reader: IngestionReaderInterface) -> \
                               RATING_FEEDBACK_DF_CONTENT_ID,
                               RATING_FEEDBACK_DF_RATING])
     ratings = ratings.checkpoint()
+    ratings = ratings.orderBy(functions.rand())
     partitions = ratings.randomSplit(weights=[0.8, 0.1, 0.1])
 
     return partitions[0], partitions[1], partitions[2]
