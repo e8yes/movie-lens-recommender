@@ -53,6 +53,7 @@ def _ImputateContent(
         keyword_avg: List[float]) -> Row:
     return Row(
         id=row["id"],
+        index=row["index"],
         genres=row["genres"],
         languages=_SetColumnNullToVectorAverage(
             row, "languages", languages_avg),
@@ -79,6 +80,7 @@ def _ImputateContent(
 def _ImputateUser(row: Row) -> Row:
     return Row(
         id=row["id"],
+        index=row["index"],
         avg_rating=_SetColumnNullToZero(row, "avg_rating"),
         rating_count=_SetColumnNullToZero(row, "rating_count"),
         tagging_count=_SetColumnNullToNeg(row, "tagging_count"),

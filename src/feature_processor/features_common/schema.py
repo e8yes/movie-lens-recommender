@@ -1,6 +1,13 @@
 from pyspark.sql import types
 
 #
+INDEX_FEATURE_SCHEMA = types.StructType(
+    fields=[
+        types.StructField(name="id", dataType=types.LongType()),
+        types.StructField(name="index", dataType=types.LongType()),
+    ])
+
+#
 CONTENT_CORE_FEATURE_SCHEMA = types.StructType(
     fields=[
         types.StructField(name="id", dataType=types.LongType()),
@@ -52,6 +59,7 @@ USER_CORE_FEATURE_SCHEMA = types.StructType(
         types.StructField(name="tagging_count", dataType=types.FloatType()),
     ])
 
+#
 USER_PROFILE_FEATURE_SCHEMA = types.StructType(
     fields=[
         types.StructField(name="id", dataType=types.LongType()),

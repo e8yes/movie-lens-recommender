@@ -1,6 +1,8 @@
 from pyspark.sql import DataFrame
+from pyspark.sql import Row
 from pyspark.sql import SparkSession
 
+from src.feature_processor.features_common.schema import INDEX_FEATURE_SCHEMA
 from src.feature_processor.features_core.content_features \
     import ComputeCoreContentFeatures
 from src.feature_processor.features_core.user_features \
@@ -18,6 +20,19 @@ from src.ingestion.database.reader import ReadTaggingFeedbacks
 from src.ingestion.database.reader import ReadUsers
 
 
+def _ComputeIndexFeature(df: DataFrame) -> DataFrame:
+    id_and_inds = df.                                       \
+        select("id").                                       \
+        orderBy("id").                                      \
+        rdd.                                                \
+        zipWithIndex().                                     \
+        map(lambda row_and_ind: Row(id=row_and_ind[0]["id"],
+                                    index=row_and_ind[1])). \
+        toDF(schema=INDEX_FEATURE_SCHEMA)
+
+    return id_and_inds
+
+
 def ComputeContentFeatures(reader: IngestionReaderInterface,
                            spark: SparkSession) -> DataFrame:
     """A pipeline which builds content features for ranking modeling.
@@ -33,6 +48,7 @@ def ComputeContentFeatures(reader: IngestionReaderInterface,
             goes as below,
             root
                 |-- id: long (nullable = false)
+                |-- index: long (nullable = false)
                 |-- genres: array (nullable = false)
                 |    |-- element: float (containsNull = false)
                 |-- languages: array (nullable = false)
@@ -60,6 +76,8 @@ def ComputeContentFeatures(reader: IngestionReaderInterface,
     contents = ReadContents(reader=reader).checkpoint()
     rating_feedbacks = ReadRatingFeedbacks(reader=reader).checkpoint()
 
+    index_feature = _ComputeIndexFeature(df=contents)
+
     core_features = ComputeCoreContentFeatures(
         contents=contents,
         user_rating_feebacks=rating_feedbacks).checkpoint()
@@ -67,7 +85,8 @@ def ComputeContentFeatures(reader: IngestionReaderInterface,
     text_features = ComputeContentTextFeatures(
         contents=contents, spark=spark).checkpoint()
 
-    all_features = core_features.\
+    all_features = index_feature.       \
+        join(core_features, ["id"]).    \
         join(text_features, ["id"])
 
     return ImputateContentFeatures(content_features=all_features)
@@ -85,6 +104,7 @@ def ComputeUserFeatures(reader: IngestionReaderInterface) -> DataFrame:
         goes as below,
             root
                 |-- id: long (nullable = false)
+                |-- index: long (nullable = false)
                 |-- avg_rating: float (nullable = true)
                 |-- rating_count: float (nullable = true)
                 |-- tagging_count: float (nullable = true)
@@ -95,15 +115,15 @@ def ComputeUserFeatures(reader: IngestionReaderInterface) -> DataFrame:
     rating_feedbacks = ReadRatingFeedbacks(reader=reader).checkpoint()
     tagging_feedbacks = ReadTaggingFeedbacks(reader=reader).checkpoint()
 
+    index_feature = _ComputeIndexFeature(df=users)
+
     core_features = ComputeCoreUserFeatures(
         users=users,
         user_rating_feebacks=rating_feedbacks,
         user_tagging_feedbacks=tagging_feedbacks).checkpoint()
 
     # profile_features = CollectUserFeaturesFromProfile(user_ids=users)
-    # all_features = core_features.                       \
-    #     join(other=profile_features,
-    #          on=core_features.id == profile_features.id,
-    #          how="inner")
+    all_features = index_feature.       \
+        join(core_features, ["id"])
 
-    return ImputateUserFeatures(user_features=core_features)
+    return ImputateUserFeatures(user_features=all_features)

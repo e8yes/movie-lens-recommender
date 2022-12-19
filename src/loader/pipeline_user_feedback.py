@@ -1,6 +1,14 @@
 from typing import Tuple
 
-from src.loader.reader_movie_lens import *
+from src.loader.reader_movie_lens import RATINGS_COL_USER_ID
+from src.loader.reader_movie_lens import RATINGS_COL_MOVIE_ID
+from src.loader.reader_movie_lens import RATINGS_COL_TIMESTAMP
+from src.loader.reader_movie_lens import RATINGS_COL_RATING
+from src.loader.reader_movie_lens import TAGS_COL_USER_ID
+from src.loader.reader_movie_lens import TAGS_COL_MOVIE_ID
+from src.loader.reader_movie_lens import TAGS_COL_TIMESTAMP
+from src.loader.reader_movie_lens import TAGS_COL_TAG
+from src.loader.reader_movie_lens import MovieLensDataset
 from src.loader.uploader import UploadDataFrame
 from src.loader.uploader_user_feedback import UserRatingUploader
 from src.loader.uploader_user_feedback import UserTaggingUploader
@@ -19,8 +27,6 @@ def LoadMovieLensUserFeedbacks(data_set: MovieLensDataset,
     Returns:
         Tuple[int, int]: #total feedbacks and #failed feedbacks.
     """
-    data_set.df_ratings.cache()
-
     tagging_uploader = UserTaggingUploader(
         host=feedback_host,
         col_name_user_id=TAGS_COL_USER_ID,
@@ -31,13 +37,19 @@ def LoadMovieLensUserFeedbacks(data_set: MovieLensDataset,
                                        uploader=tagging_uploader,
                                        num_retries=4)
 
+    scaled_ratings = data_set.                                          \
+        df_ratings.                                                     \
+        withColumn(colName="scaled_rating",
+                   col=data_set.df_ratings[RATINGS_COL_RATING]/5.0).    \
+        drop(RATINGS_COL_RATING)
+
     rating_uploader = UserRatingUploader(
         host=feedback_host,
         col_name_user_id=RATINGS_COL_USER_ID,
         col_name_content_id=RATINGS_COL_MOVIE_ID,
         col_name_timestamp=RATINGS_COL_TIMESTAMP,
-        col_name_rating=RATINGS_COL_RATING)
-    rating_failures = UploadDataFrame(data_frame=data_set.df_ratings,
+        col_name_rating="scaled_rating")
+    rating_failures = UploadDataFrame(data_frame=scaled_ratings,
                                       uploader=rating_uploader,
                                       num_retries=4)
 
