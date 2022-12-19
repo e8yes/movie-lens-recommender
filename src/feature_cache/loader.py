@@ -14,6 +14,10 @@ _NONE_FEATURE_FIELDS = [_INDEX_FIELD, _ID_FIELD]
 
 
 def _ReadFieldData(row: Row, field_name: str) -> List[float]:
+    """Some of the feature fields are zero dimensional while the others are
+    one dimensional. This function unifies the access by putting a zero
+    dimensional scalar into an array with exactly 1 element.
+    """
     field_data = row[field_name]
     if type(field_data) == list:
         return field_data
@@ -93,6 +97,7 @@ def _CacheFeatures(
         features: DataFrame,
         feature_type: str,
         cache_config: FeatureCacheConfig) -> int:
+    # Captures all the feature field names in the data frame.
     feature_fields = list()
     for field in features.schema.fields:
         if field.name in _NONE_FEATURE_FIELDS:
@@ -101,6 +106,7 @@ def _CacheFeatures(
 
     assert len(feature_fields) > 0
 
+    # Caches the data frame in parallel.
     return features.                                        \
         rdd.                                                \
         mapPartitions(
@@ -113,14 +119,14 @@ def _CacheFeatures(
 
 def LoadUserFeaturesToCache(
         user_features: DataFrame, cache_config: FeatureCacheConfig) -> int:
-    """_summary_
+    """Loads features in the specified data frame to the user feature cache.
 
     Args:
-        user_features (DataFrame): _description_
-        cache_config (FeatureCacheConfig): _description_
+        user_features (DataFrame): The data frame to be loaded.
+        cache_config (FeatureCacheConfig): Feature cache configuration.
 
     Returns:
-        int: _description_
+        int: The total number of entries loaded.
     """
     return _CacheFeatures(
         features=user_features,
@@ -130,14 +136,14 @@ def LoadUserFeaturesToCache(
 
 def LoadContentFeaturesToCache(
         content_features: DataFrame, cache_config: FeatureCacheConfig) -> int:
-    """_summary_
+    """Loads features in the specified data frame to the content feature cache.
 
     Args:
-        content_features (DataFrame): _description_
-        cache_config (FeatureCacheConfig): _description_
+        content_features (DataFrame): The data frame to be loaded.
+        cache_config (FeatureCacheConfig): Feature cache configuration.
 
     Returns:
-        int: _description_
+        int: The total number of entries loaded.
     """
     return _CacheFeatures(
         features=content_features,
